@@ -52,27 +52,16 @@ class login(ObtainAuthToken):
                     token= Token.objects.create(user=user)
                     #ELIMINAR USUARIOS EXPIRADOS
                     deleteExpiredTokens()
-                    #inner join para sacar los permisos urls
-                    # acciones=AccionesPermitidas.objects.extra(tables=['central_acciones_acciones','central_acciones_accionesporrol'], 
-                    # where=[
-                        # 'central_acciones_acciones._id=central_acciones_accionespermitidas.idAccion_id',
-                        # 'central_acciones_acciones.state=1',
-                        # 'central_acciones_accionesporrol.idAccion_id=central_acciones_acciones._id',
-                        # 'central_acciones_accionesporrol.idRol_id='+str(user.roles._id)
-                    # ], select={'url': 'central_acciones_accionespermitidas.url'})
-                    # acciones = cursor.execute('''db.central_acciones_acciones.find()''')
-                    # acciones = AccionesPermitidas.objects.raw('db.central_acciones_accionespermitidas.find()')
-                    # print(acciones)
+                    # Obtener json de permisos de roles
+                    permisos = Roles.objects.get(pk=user.roles._id)
                     data={
                         'token': token.key,
                         'id': str(user.pk),
-                        'full_name': user.nombres+" "+user.apellidos,
+                        # 'full_name': user.nombres+" "+user.apellidos,
                         'email': user.email,
                         'tokenExpiracion': expires_in(token),
-                        'permisos':[]
+                        'permisos': permisos.config
                     }
-                    # for accion in acciones:
-                    #     data['permisos'].append({'url':str(accion)})
                     createLog(logModel,data,logTransaccion)
                     return Response(data,status=status.HTTP_200_OK)        
                 else:

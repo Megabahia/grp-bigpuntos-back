@@ -254,11 +254,10 @@ def usuario_create(request):
                 account = serializer.save()
                 data['response'] = 'Usuario creado correctamente'
                 data['email'] = account.email
-                data['username'] = account.username
                 token = Token.objects.get(user=account).key
                 data['token'] = token
                 createLog(logModel,data,logTransaccion)
-                data['tokenEmail']=str(resetPasswordNewUser(data['email']))
+                # data['tokenEmail']=str(resetPasswordNewUser(data['email']))
             else:
                 data = serializer.errors
                 createLog(logModel,data,logExcepcion)
