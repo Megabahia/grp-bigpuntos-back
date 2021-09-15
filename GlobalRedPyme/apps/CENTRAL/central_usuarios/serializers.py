@@ -36,19 +36,7 @@ class UsuarioCrearSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # usuario = Usuarios.objects.create(**validated_data)
-        usuario = Usuarios(
-            nombres=self.validated_data['nombres'],
-            apellidos=self.validated_data['apellidos'],
-            username=self.validated_data['username'],
-            email=self.validated_data['email'],
-            compania=self.validated_data['compania'],
-            pais=self.validated_data['pais'],
-            telefono=self.validated_data['telefono'],
-            whatsapp=self.validated_data['whatsapp'],
-            estado=self.validated_data['estado'],
-            roles=self.validated_data['roles']
-        )
+        usuario = Usuarios.objects.create(**validated_data)
         password = self.validated_data['password']
         usuario.set_password(password)
         usuario.save()

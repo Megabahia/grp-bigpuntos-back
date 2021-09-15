@@ -1,8 +1,14 @@
 GlobalRedPyme/GlobalRedPyme/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_acciones/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_acciones/migrations/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_autenticacion/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_autenticacion/migrations/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_catalogo/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_catalogo/migrations/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_logs/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_logs/migrations/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_roles/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_roles/migrations/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_usuarios/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_usuarios/migrations/__pycache__/
 GlobalRedPyme/apps/config/__pycache__/

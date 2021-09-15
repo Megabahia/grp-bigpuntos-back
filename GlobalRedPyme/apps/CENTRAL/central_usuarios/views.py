@@ -245,7 +245,6 @@ def usuario_create(request):
                 request.data.pop('updated_at')
             logModel['dataEnviada'] = str(request.data)
             #AGREGA CONTRASEÑA
-            request.data['password']=get_random_string(length=32)
             # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
             request.data['roles'] = ObjectId(request.data['roles'])
 
