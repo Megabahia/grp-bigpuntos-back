@@ -223,6 +223,7 @@ def usuario_delete(request, pk):
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
 #CREAR USUARIO
 @api_view(['POST'])
 def usuario_create(request):
@@ -244,7 +245,6 @@ def usuario_create(request):
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
             logModel['dataEnviada'] = str(request.data)
-            #AGREGA CONTRASEÑA
             # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
             request.data['roles'] = ObjectId(request.data['roles'])
 

@@ -11,7 +11,6 @@ def upload_path(instance, filname):
 
 class Usuarios(AbstractBaseUser):
     _id = models.ObjectIdField()
-    username = models.CharField(blank=True, null=True,max_length=150, unique=True)    
     email = models.CharField(max_length=250,blank=True, null=True, unique=True)
     estado = models.CharField(max_length=200,blank=True, null=True)
     roles = models.ForeignKey(Roles, null=False, on_delete=models.CASCADE)  # Relacion Rol    

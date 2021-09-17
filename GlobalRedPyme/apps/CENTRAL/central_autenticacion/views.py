@@ -2,6 +2,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from apps.CENTRAL.central_usuarios.models import Usuarios
+# Importar base de datos personas
+from apps.PERSONAS.personas_personas.models import  Personas
+# Importar serializer de personas
+from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
 from apps.CENTRAL.central_usuarios.serializers import UsuarioSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import login,logout,authenticate
@@ -54,10 +58,17 @@ class login(ObtainAuthToken):
                     deleteExpiredTokens()
                     # Obtener json de permisos de roles
                     permisos = Roles.objects.get(pk=user.roles._id)
+                    # Consultar datos de la persona en GRP_PERSONAS_PERSONAS
+                    try:
+                        persona = Personas.objects.get(user_id=user._id)
+                        personaSerializer = PersonasSerializer(persona).data
+                    except Exception as e:
+                        personaSerializer = {}
+                        
                     data={
                         'token': token.key,
                         'id': str(user.pk),
-                        # 'full_name': user.nombres+" "+user.apellidos,
+                        'persona': personaSerializer,
                         'email': user.email,
                         'tokenExpiracion': expires_in(token),
                         'permisos': permisos.config

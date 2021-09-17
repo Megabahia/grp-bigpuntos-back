@@ -20,7 +20,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
     #MODULO CENTRAL
     path('central/roles/', include(('apps.CENTRAL.central_roles.urls', 'roles'), namespace='roles')),
     path('central/usuarios/', include(('apps.CENTRAL.central_usuarios.urls', 'usuarios'), namespace='usuarios')),
@@ -28,6 +27,9 @@ urlpatterns = [
     path('central/acciones/', include(('apps.CENTRAL.central_acciones.urls', 'acciones'), namespace='acciones')),
     path('central/param/', include(('apps.CENTRAL.central_catalogo.urls', 'catalogo'), namespace='catalogo')),
     url(r'^central/auth/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+    # PERSONAS
+    path('personas/personas/', include(('apps.PERSONAS.personas_personas.urls', 'personas'), namespace='personas')),
+    path('personas/historialLaboral/', include(('apps.PERSONAS.personas_historialLaboral.urls', 'historialLaboral'), namespace='historialLaboral')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

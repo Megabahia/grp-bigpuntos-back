@@ -41,38 +41,6 @@ if PRODUCTION:
             'PASSWORD': 'Tc2;1EE{DBE^oN',
             'HOST': '209.145.61.41',
             'PORT': 3306
-        },
-        'vittoria_mdp_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_mdp',
-            'USER': 'usr_maintainer',
-            'PASSWORD': 'Tc2;1EE{DBE^oN',
-            'HOST': '209.145.61.41',
-            'PORT': 3306
-        },
-        'vittoria_mdo_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_mdo',
-            'USER': 'usr_maintainer',
-            'PASSWORD': 'Tc2;1EE{DBE^oN',
-            'HOST': '209.145.61.41',
-            'PORT': 3306
-        },
-        'vittoria_gdo_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_gdo',
-            'USER': 'usr_maintainer',
-            'PASSWORD': 'Tc2;1EE{DBE^oN',
-            'HOST': '209.145.61.41',
-            'PORT': 3306
-        },
-        'vittoria_gde_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_gde',
-            'USER': 'usr_maintainer',
-            'PASSWORD': 'Tc2;1EE{DBE^oN',
-            'HOST': '209.145.61.41',
-            'PORT': 3306
         }
     }
 else:
@@ -97,51 +65,13 @@ else:
     #databases
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_adm',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': 3307
+            'ENGINE': 'djongo',
+            'NAME': 'globalRedPymes',
+            'ENFORCE_SCHEMA': False,
         },
-        'vittoria_mdm_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_mdm',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': 3307
-        },
-        'vittoria_mdp_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_mdp',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': 3307
-        },
-        'vittoria_mdo_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_mdo',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': 3307
-        },
-        'vittoria_gdo_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_gdo',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': 3307
-        },
-        'vittoria_gde_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_gde',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': 3307
+        'grp_personas_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_personas',
+            'ENFORCE_SCHEMA': False,
         }
     }

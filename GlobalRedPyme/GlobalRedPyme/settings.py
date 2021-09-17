@@ -35,6 +35,9 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    # apps personas
+    'apps.PERSONAS.personas_personas',
+    'apps.PERSONAS.personas_historialLaboral',
     #apps central CENTRAL
     'apps.CENTRAL.central_logs',
     'apps.CENTRAL.central_roles',
@@ -100,14 +103,12 @@ WSGI_APPLICATION = 'GlobalRedPyme.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'globalRedPymes',
-        'ENFORCE_SCHEMA': False,
-    }
-}
+DATABASES = config.DATABASES
 
+#AGREGO LAS RUTAS DE LAS DIFERENTES BASES DE DATOS
+DATABASE_ROUTERS = [
+    'apps.config.routersDB.GRPPERSONASRouter'
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -156,3 +157,7 @@ CORS_ALLOWED_ORIGINS = config.CORS_ALLOWED_ORIGINS
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# CONFIGURACION DE TWILIO
+TWILIO_ACCOUNT_SID = 'AC9a0870175ac61b6a4866e08b75d7688e'
+TWILIO_AUTH_TOKEN = 'cf6ebd57ad6f81f690779d17b6b9bbaf'
