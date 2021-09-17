@@ -27,6 +27,7 @@ urlpatterns = [
     path('central/acciones/', include(('apps.CENTRAL.central_acciones.urls', 'acciones'), namespace='acciones')),
     path('central/param/', include(('apps.CENTRAL.central_catalogo.urls', 'catalogo'), namespace='catalogo')),
     url(r'^central/auth/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+    path('central/publicaciones/', include(('apps.CENTRAL.central_publicaciones.urls', 'publicaciones'), namespace='publicaciones')),
     # PERSONAS
     path('personas/personas/', include(('apps.PERSONAS.personas_personas.urls', 'personas'), namespace='personas')),
     path('personas/historialLaboral/', include(('apps.PERSONAS.personas_historialLaboral.urls', 'historialLaboral'), namespace='historialLaboral')),
