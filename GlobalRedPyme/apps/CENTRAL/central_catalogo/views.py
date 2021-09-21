@@ -66,7 +66,7 @@ def catalogo_list(request):
 
 #CREAR
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def catalogo_create(request):
     timezone_now = timezone.localtime(timezone.now())
     logModel = {

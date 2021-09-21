@@ -175,7 +175,7 @@ def personas_delete(request, pk):
 
 #ENCONTRAR UNO
 # @api_view(['GET'])
-# # @permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 # def productos_findOne(request):
 #     timezone_now = timezone.localtime(timezone.now())
 #     logModel = {

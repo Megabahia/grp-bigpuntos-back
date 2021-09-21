@@ -9,7 +9,9 @@ from apps.CENTRAL.central_roles.views import(
     rol_update,
     rol_delete,
     rol_listFiltro,
-    rol_listAccionPadre
+    rol_listAccionPadre,
+    rol_createUsuario,
+    rol_listUsuario
 )
 
 urlpatterns = [
@@ -21,5 +23,7 @@ urlpatterns = [
     path('delete/<str:pk>', rol_delete, name="rol_delete"),
     path('list/filtro/', rol_listFiltro, name="listFiltro"),
     path('list/padres/', rol_listAccionPadre, name="listFiltro"),
+    path('usuario/create/', rol_createUsuario, name="rol_createUsuario"),
+    path('usuario/list/<str:pk>', rol_listUsuario, name="rol_listUsuario"),
 ]
 

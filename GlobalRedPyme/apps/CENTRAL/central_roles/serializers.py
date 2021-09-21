@@ -21,7 +21,7 @@ class ListRolSerializer(serializers.ModelSerializer):
         model = Roles
         fields = ['codigo','nombre','config']
 
-# LISTAR SUBCATEGORIAS
+# LISTAR ROLES USUARIO LOGIN
 class ListRolesSerializer(serializers.ModelSerializer):
     rol = ListRolSerializer(many=False, read_only=True)
     class Meta:
@@ -38,3 +38,19 @@ class ListRolesSerializer(serializers.ModelSerializer):
         if rol['config']:
             data['config'] = rol['config']
         return data
+
+class RolesUsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RolesUsuarios
+       	fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super(RolesUsuarioSerializer, self).to_representation(instance)
+        # tomo el campo rol y convierto de OBJECTID a string
+        rol = str(data.pop('rol'))
+        data.update({"rol": rol})
+        # tomo el campo usuario y convierto de OBJECTID a string
+        usuario = str(data.pop('usuario'))
+        data.update({"usuario": usuario})
+        return data
+

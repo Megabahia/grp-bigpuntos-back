@@ -1,8 +1,8 @@
 
-from apps.CENTRAL.central_roles.models import Roles
+from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
 from apps.CENTRAL.central_acciones.models import Acciones, AccionesPermitidas, AccionesPorRol
 from apps.CENTRAL.central_acciones.serializers import AccionesSerializer,AccionesPadreSerializer, AccionesPermitidasSerializer, AccionesPorRolSerializer
-from apps.CENTRAL.central_roles.serializers import RolSerializer,RolCreateSerializer,RolFiltroSerializer
+from apps.CENTRAL.central_roles.serializers import RolSerializer,RolCreateSerializer,RolFiltroSerializer, RolesUsuarioSerializer, ListRolesSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
@@ -307,3 +307,78 @@ def rol_listFiltro(request):
     except Exception as e: 
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
+
+#CREAR
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def rol_createUsuario(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'usuarios/create/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'CREAR',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            request.data['created_at'] = str(timezone_now)
+            if 'updated_at' in request.data:
+                request.data.pop('updated_at')
+
+            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
+            request.data['rol'] = ObjectId(request.data['rol'])
+            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
+            request.data['usuario'] = ObjectId(request.data['usuario'])
+        
+            serializer = RolesUsuarioSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                createLog(logModel,serializer.data,logTransaccion)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            createLog(logModel,serializer.errors,logExcepcion)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
+# LISTAR ROLES USUARIO
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def rol_listUsuario(request, pk):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'listOne/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    try:
+        try:
+            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
+            pk = ObjectId(pk)
+            query = RolesUsuarios.objects.filter(usuario=pk, state=1)
+        except RolesUsuarios.DoesNotExist:
+            err={"error":"No existe"}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err,status=status.HTTP_404_NOT_FOUND)
+        #tomar el dato
+        if request.method == 'GET':
+            serializer = ListRolesSerializer(query,many=True)
+            createLog(logModel,serializer.data,logTransaccion)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+    except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+    
