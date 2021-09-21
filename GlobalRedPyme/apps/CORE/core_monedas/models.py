@@ -1,0 +1,32 @@
+from djongo import models
+from django.utils.translation import gettext_lazy as _
+
+# Create your models here.
+class Monedas(models.Model):
+
+    class TipoEnum(models.TextChoices):
+        SUPERMONEDAS = 'supermonedas'
+        CREDITO = 'credito'
+        PAGOS = 'pagos'
+        COBROS = 'cobros'
+        DESCUENTOS = 'descuentos'
+        OTRO = 'otro'
+
+    class EstadoEnum(models.TextChoices):
+        APROBADO = 'aprobado'
+        RECHAZADO = 'rechazado'
+        CANDELADO = 'candelado'
+        PENDIENTE = 'pendiente'
+
+    _id = models.ObjectIdField()
+    user_id = models.CharField(max_length=200,null=False)
+    autorizador_id = models.CharField(max_length=200, null=True, blank=True)
+    tipo = models.CharField(max_length=255, choices=TipoEnum.choices, default=TipoEnum.OTRO)
+    estado = models.CharField(max_length=255, choices=EstadoEnum.choices, default=EstadoEnum.PENDIENTE)
+    credito = models.IntegerField(default=0)
+    debito = models.IntegerField(default=0)
+    saldo = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    state = models.SmallIntegerField(default=1)

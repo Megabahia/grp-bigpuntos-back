@@ -35,6 +35,8 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    # apps core
+    'apps.CORE.core_monedas',
     # apps personas
     'apps.PERSONAS.personas_personas',
     'apps.PERSONAS.personas_historialLaboral',
@@ -108,7 +110,8 @@ DATABASES = config.DATABASES
 
 #AGREGO LAS RUTAS DE LAS DIFERENTES BASES DE DATOS
 DATABASE_ROUTERS = [
-    'apps.config.routersDB.GRPPERSONASRouter'
+    'apps.config.routersDB.GRPPERSONASRouter',
+    'apps.config.routersDB.GRPCORERouter'
 ]
 
 # Password validation

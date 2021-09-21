@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
+    # CENTRAL
+    path('core/monedas/', include(('apps.CORE.core_monedas.urls', 'monedas'), namespace='monedas')),
     #MODULO CENTRAL
     path('central/roles/', include(('apps.CENTRAL.central_roles.urls', 'roles'), namespace='roles')),
     path('central/usuarios/', include(('apps.CENTRAL.central_usuarios.urls', 'usuarios'), namespace='usuarios')),

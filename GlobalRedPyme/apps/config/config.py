@@ -73,5 +73,10 @@ else:
             'ENGINE': 'djongo',
             'NAME': 'grp_personas',
             'ENFORCE_SCHEMA': False,
+        },
+        'grp_core_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_core',
+            'ENFORCE_SCHEMA': False,
         }
     }
