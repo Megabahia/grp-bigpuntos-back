@@ -245,8 +245,6 @@ def usuario_create(request):
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
             logModel['dataEnviada'] = str(request.data)
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            request.data['roles'] = ObjectId(request.data['roles'])
 
             serializer = UsuarioCrearSerializer(data=request.data)
             data = {}

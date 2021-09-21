@@ -3,7 +3,6 @@ from rest_framework import serializers
 from apps.CENTRAL.central_usuarios.models import Usuarios
 from apps.CENTRAL.central_roles.serializers import RolFiltroSerializer
 
-
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuarios
@@ -29,7 +28,7 @@ class UsuarioCrearSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Usuarios
-        fields = ['email', 'roles', 'password', 'estado']
+        fields = ['email', 'password', 'estado']
         extra_kwargs = {
             'password': {'write_only': True},
         }

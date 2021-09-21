@@ -19,7 +19,8 @@ from django.utils import timezone
 #logs
 from apps.CENTRAL.central_logs.methods import createLog,datosAuth,datosTipoLog
 #permisos
-from apps.CENTRAL.central_roles.models import Roles
+from apps.CENTRAL.central_roles.models import RolesUsuarios
+from apps.CENTRAL.central_roles.serializers import ListRolesSerializer
 from apps.CENTRAL.central_acciones.models import Acciones, AccionesPermitidas, AccionesPorRol
 #declaracion variables log
 datosAux=datosAuth()
@@ -56,8 +57,9 @@ class login(ObtainAuthToken):
                     token= Token.objects.create(user=user)
                     #ELIMINAR USUARIOS EXPIRADOS
                     deleteExpiredTokens()
-                    # Obtener json de permisos de roles
-                    permisos = Roles.objects.get(pk=user.roles._id)
+                    # Consultar roles de usuario
+                    rolesUsuario = RolesUsuarios.objects.filter(usuario= user, state=1)
+                    roles = ListRolesSerializer(rolesUsuario,many=True).data
                     # Consultar datos de la persona en GRP_PERSONAS_PERSONAS
                     try:
                         persona = Personas.objects.get(user_id=user._id)
@@ -71,7 +73,7 @@ class login(ObtainAuthToken):
                         'persona': personaSerializer,
                         'email': user.email,
                         'tokenExpiracion': expires_in(token),
-                        'permisos': permisos.config
+                        'roles': roles
                     }
                     createLog(logModel,data,logTransaccion)
                     return Response(data,status=status.HTTP_200_OK)        

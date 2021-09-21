@@ -66,7 +66,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'djongo',
-            'NAME': 'globalRedPymes',
+            'NAME': 'grp_central',
             'ENFORCE_SCHEMA': False,
         },
         'grp_personas_db': {
