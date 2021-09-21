@@ -1,6 +1,6 @@
 from apps.CORE.core_monedas.models import  Monedas
 from apps.CORE.core_monedas.serializers import (
-    MonedasSerializer
+    MonedasSerializer, MonedasUsuarioSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -209,4 +209,35 @@ def monedas_delete(request, pk):
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
+#ENCONTRAR MONEDAS USUARIO
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def monedas_usuario(request, pk):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'listOne/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    try:
+        try:
+            query = Monedas.objects.filter(user_id=pk, state=1).order_by('-created_at').first()
+        except Monedas.DoesNotExist:
+            err={"error":"No existe"}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err,status=status.HTTP_404_NOT_FOUND)
+        #tomar el dato
+        if request.method == 'GET':
+            serializer = MonedasUsuarioSerializer(query)
+            createLog(logModel,serializer.data,logTransaccion)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+    except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 

@@ -4,7 +4,8 @@ from apps.CORE.core_monedas.views import(
 	monedas_list,
 	monedas_listOne,
 	monedas_update,
-	monedas_delete
+	monedas_delete,
+	monedas_usuario
 )
 app_name = 'core_monedas'
 
@@ -14,5 +15,6 @@ urlpatterns = [
 	path('listOne/<str:pk>', monedas_listOne, name="monedas_listOne"),
 	path('update/<str:pk>', monedas_update, name="monedas_update"),
 	path('delete/<str:pk>', monedas_delete, name="monedas_delete"),
+	path('usuario/<str:pk>', monedas_usuario, name="monedas_usuario"),
 ]
 
