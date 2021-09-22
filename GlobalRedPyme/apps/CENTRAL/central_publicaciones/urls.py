@@ -4,7 +4,8 @@ from apps.CENTRAL.central_publicaciones.views import(
 	publicaciones_list,
 	publicaciones_listOne,
 	publicaciones_update,
-	publicaciones_delete
+	publicaciones_delete,
+	publicaciones_imagenUpdate
 )
 app_name = 'central_publicaciones'
 
@@ -14,5 +15,6 @@ urlpatterns = [
 	path('listOne/<str:pk>', publicaciones_listOne, name="publicaciones_listOne"),
 	path('update/<str:pk>', publicaciones_update, name="publicaciones_update"),
 	path('delete/<str:pk>', publicaciones_delete, name="publicaciones_delete"),
+	path('update/imagen/<str:pk>', publicaciones_imagenUpdate, name="publicaciones_imagenUpdate"),
 ]
 

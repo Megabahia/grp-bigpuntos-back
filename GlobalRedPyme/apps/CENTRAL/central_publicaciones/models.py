@@ -9,7 +9,7 @@ class Publicaciones(models.Model):
     titulo = models.CharField(max_length=200,null=False)
     subtitulo = models.CharField(max_length=200,null=False)
     descripcion = models.TextField(null=False)
-    imagen = models.ImageField(blank=True,null=True,upload_to=upload_path)
+    imagen = models.FileField(blank=True,null=True,upload_to=upload_path)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)

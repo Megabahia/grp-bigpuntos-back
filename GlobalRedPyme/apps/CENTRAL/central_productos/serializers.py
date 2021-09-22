@@ -8,3 +8,8 @@ class ProductosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Productos
        	fields = '__all__'
+
+class ProductosImagenSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Productos
+        fields = ['imagen','updated_at']

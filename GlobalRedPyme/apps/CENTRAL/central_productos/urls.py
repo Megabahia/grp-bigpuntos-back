@@ -4,7 +4,8 @@ from apps.CENTRAL.central_productos.views import(
 	productos_list,
 	productos_listOne,
 	productos_update,
-	productos_delete
+	productos_delete,
+	productos_imagenUpdate
 )
 app_name = 'central_productos'
 
@@ -14,5 +15,6 @@ urlpatterns = [
 	path('listOne/<str:pk>', productos_listOne, name="productos_listOne"),
 	path('update/<str:pk>', productos_update, name="productos_update"),
 	path('delete/<str:pk>', productos_delete, name="productos_delete"),
+	path('update/imagen/<str:pk>', productos_imagenUpdate, name="productos_imagenUpdate"),
 ]
 

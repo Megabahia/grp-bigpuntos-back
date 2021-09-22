@@ -238,7 +238,6 @@ def personas_imagenUpdate(request, pk):
             # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
             pk = ObjectId(pk)
             query = Personas.objects.get(pk=pk, state=1)
-            print(query)
         except Personas.DoesNotExist:
             errorNoExiste={'error':'No existe'}
             createLog(logModel,errorNoExiste,logExcepcion)
