@@ -78,5 +78,10 @@ else:
             'ENGINE': 'djongo',
             'NAME': 'grp_core',
             'ENFORCE_SCHEMA': False,
+        },
+        'grp_pymes_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_pymes',
+            'ENFORCE_SCHEMA': False,
         }
     }

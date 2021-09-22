@@ -35,6 +35,8 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    # Pymes
+    'apps.PYMES.pymes_empresas',
     # apps core
     'apps.CORE.core_monedas',
     # apps personas
@@ -112,7 +114,8 @@ DATABASES = config.DATABASES
 #AGREGO LAS RUTAS DE LAS DIFERENTES BASES DE DATOS
 DATABASE_ROUTERS = [
     'apps.config.routersDB.GRPPERSONASRouter',
-    'apps.config.routersDB.GRPCORERouter'
+    'apps.config.routersDB.GRPCORERouter',
+    'apps.config.routersDB.GRPPYMESRouter',
 ]
 
 # Password validation
