@@ -4,7 +4,7 @@ from apps.PERSONAS.personas_personas.views import(
 	personas_listOne,
 	personas_update,
 	personas_delete,
-	# productos_findOne
+	personas_imagenUpdate
 )
 app_name = 'personas'
 
@@ -13,6 +13,6 @@ urlpatterns = [
 	path('listOne/<str:pk>', personas_listOne, name="personas_listOne"),
 	path('update/<str:pk>', personas_update, name="personas_update"),
 	path('delete/<str:pk>', personas_delete, name="personas_delete"),
-	# path('list/', productos_findOne, name="productos_findOne"),
+	path('update/imagen/<str:pk>', personas_imagenUpdate, name="personas_imagenUpdate"),
 ]
 

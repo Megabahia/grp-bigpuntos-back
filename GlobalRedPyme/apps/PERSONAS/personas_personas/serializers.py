@@ -14,3 +14,8 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
         model = Personas
         fields = '__all__'
         read_only_fields = ['user_id']
+
+class PersonasImagenSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Personas
+        fields = ['imagen','updated_at']
