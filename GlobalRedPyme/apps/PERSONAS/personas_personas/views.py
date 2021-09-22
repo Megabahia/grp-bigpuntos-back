@@ -1,6 +1,7 @@
-from apps.PERSONAS.personas_personas.models import  Personas
+from apps.CENTRAL.central_catalogo.models import  Catalogo
+from apps.PERSONAS.personas_personas.models import  Personas, ValidarCuenta
 from apps.PERSONAS.personas_personas.serializers import (
-    PersonasSerializer, PersonasUpdateSerializer, PersonasImagenSerializer
+    PersonasSerializer, PersonasUpdateSerializer, PersonasImagenSerializer, ValidarCuentaSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,6 +9,9 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from django.conf import settings
+# Generar codigos aleatorios
+import string
+import random
 # TWILIO
 from twilio.rest import Client
 # ObjectId
@@ -49,6 +53,24 @@ def personas_create(request):
             serializer = PersonasSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                # Genera el codigo
+                account_sid = settings.TWILIO_ACCOUNT_SID
+                auth_token = settings.TWILIO_AUTH_TOKEN
+                client = Client(account_sid, auth_token)
+                longitud_codigo = Catalogo.objects.filter(tipo='CONFIG_TWILIO',nombre='LONGITUD_CODIGO',state=1).first().valor
+                mensaje = Catalogo.objects.filter(tipo='CONFIG_TWILIO',nombre='MENSAJE',state=1).first().valor
+                numeroTwilio = Catalogo.objects.filter(tipo='CONFIG_TWILIO',nombre='NUMERO_TWILIO',state=1).first().valor
+                # Genera el codigo
+                codigo = (''.join(random.choice(string.digits) for _ in range(int(longitud_codigo))))
+                # Guardar codigo en base
+                ValidarCuenta.objects.create(codigo=codigo,user_id=request.data['user_id'])
+                # Enviar codigo
+                message = client.messages.create(
+                    from_='whatsapp:'+numeroTwilio,
+                    body=mensaje+' '+codigo,
+                    to='whatsapp:'+serializer.data['whatsapp']
+                )
+
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             createLog(logModel,serializer.errors,logExcepcion)
@@ -153,7 +175,7 @@ def personas_delete(request, pk):
         try:
             # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
             pk = ObjectId(pk)
-            persona = Personas.objects.get(pk=pk, state=1)
+            query = Personas.objects.get(pk=pk, state=1)
         except Personas.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
@@ -161,7 +183,7 @@ def personas_delete(request, pk):
             return Response(status=status.HTTP_404_NOT_FOUND)
         #tomar el dato
         if request.method == 'DELETE':
-            serializer = PersonasSerializer(persona, data={'state': '0','updated_at':str(nowDate)},partial=True)
+            serializer = PersonasSerializer(query, data={'state': '0','updated_at':str(nowDate)},partial=True)
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
@@ -173,51 +195,7 @@ def personas_delete(request, pk):
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
-#ENCONTRAR UNO
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def productos_findOne(request):
-#     timezone_now = timezone.localtime(timezone.now())
-#     logModel = {
-#         'endPoint': logApi+'listOne/',
-#         'modulo':logModulo,
-#         'tipo' : logExcepcion,
-#         'accion' : 'LEER',
-#         'fechaInicio' : str(timezone_now),
-#         'dataEnviada' : '{}',
-#         'fechaFin': str(timezone_now),
-#         'dataRecibida' : '{}'
-#     }
-#     try:
-#         try:
-#             account_sid = settings.TWILIO_ACCOUNT_SID
-#             auth_token = settings.TWILIO_AUTH_TOKEN
-#             client = Client(account_sid, auth_token) 
-            
-#             message = client.messages.create( 
-#                 from_='whatsapp:+14155238886',  
-#                 body='Hola le saluda Global Red Pymes, tu codigo de seguridad es: 11111.',      
-#                 to='whatsapp:+593984317030'
-#             ) 
-            
-#             # print(message.sid)
-#             err={"error":"Envio completado"}  
-#             return Response(err, status=status.HTTP_400_BAD_REQUEST)
-#         except Productos.DoesNotExist:
-#             err={"error":"No existe"}  
-#             createLog(logModel,err,logExcepcion)
-#             return Response(err,status=status.HTTP_404_NOT_FOUND)
-#         # tomar el dato
-#         if request.method == 'GET':
-#             serializer = ProductoCreateSerializer(query)
-#             createLog(logModel,serializer.data,logTransaccion)
-#             return Response(serializer.data,status=status.HTTP_200_OK)
-#     except Exception as e: 
-#             err={"error":'Un error ha ocurrido: {}'.format(e)}  
-#             createLog(logModel,err,logExcepcion)
-#             return Response(err, status=status.HTTP_400_BAD_REQUEST)
-
-
+# Subir imagen
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_imagenUpdate(request, pk):
@@ -258,3 +236,45 @@ def personas_imagenUpdate(request, pk):
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
+# validar codigo
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def personas_validarCodigo(request):
+    nowDate = timezone.localtime(timezone.now())
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'validarCodigo/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'ESCRIBIR',
+        'fechaInicio' : str(nowDate),
+        'dataEnviada' : '{}',
+        'fechaFin': str(nowDate),
+        'dataRecibida' : '{}'
+    }
+    try:
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            query = ValidarCuenta.objects.filter(codigo=request.data['codigo'],user_id=request.data['user_id'], state=1).first()
+        except ValidarCuenta.DoesNotExist:
+            errorNoExiste={'error':'No existe'}
+            createLog(logModel,errorNoExiste,logExcepcion)
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        if request.method == 'POST':
+            now = timezone.localtime(timezone.now())
+            request.data['updated_at'] = str(now)
+            if 'created_at' in request.data:
+                request.data.pop('created_at')
+            serializer = ValidarCuentaSerializer(query, data={'state': '0','updated_at':str(nowDate)},partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                createLog(logModel,serializer.data,logTransaccion)
+                return Response({"message":"ok"}, status=status.HTTP_202_ACCEPTED)
+            createLog(logModel,serializer.errors,logExcepcion)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e: 
+        err={"error":'Un error ha ocurrido: {}'.format(e)}  
+        createLog(logModel,err,logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
