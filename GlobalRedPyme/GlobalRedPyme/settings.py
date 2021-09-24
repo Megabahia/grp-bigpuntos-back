@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.CENTRAL.central_autenticacion',
     'apps.CENTRAL.central_acciones',
     'apps.CENTRAL.central_catalogo',
+    'apps.CENTRAL.central_facturas',
     'apps.CENTRAL.central_productos',
     'apps.CENTRAL.central_publicaciones',
     #Django external apps
