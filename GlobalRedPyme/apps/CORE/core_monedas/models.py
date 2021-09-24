@@ -5,12 +5,14 @@ from django.utils.translation import gettext_lazy as _
 class Monedas(models.Model):
 
     class TipoEnum(models.TextChoices):
-        SUPERMONEDAS = 'supermonedas'
-        CREDITO = 'credito'
-        PAGOS = 'pagos'
-        COBROS = 'cobros'
-        DESCUENTOS = 'descuentos'
-        OTRO = 'otro'
+        SUPERMONEDAS = 'Supermonedas'
+        CREDITO = 'Credito'
+        PAGOS = 'Pagos'
+        COBROS = 'Cobros'
+        DESCUENTOS = 'Descuentos'
+        ACUMULACION = 'Acumulación'
+        COMSUMO = 'Consumo'
+        OTRO = 'Otro'
 
     class EstadoEnum(models.TextChoices):
         APROBADO = 'aprobado'
@@ -21,6 +23,7 @@ class Monedas(models.Model):
     _id = models.ObjectIdField()
     user_id = models.CharField(max_length=200,null=False)
     autorizador_id = models.CharField(max_length=200, null=True, blank=True)
+    empresa_id = models.CharField(max_length=255, null=True, blank=True)
     tipo = models.CharField(max_length=255, choices=TipoEnum.choices, default=TipoEnum.OTRO)
     estado = models.CharField(max_length=255, choices=EstadoEnum.choices, default=EstadoEnum.PENDIENTE)
     credito = models.IntegerField(default=0)

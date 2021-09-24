@@ -1,6 +1,6 @@
 from apps.CORE.core_monedas.models import  Monedas
 from apps.CORE.core_monedas.serializers import (
-    MonedasSerializer, MonedasUsuarioSerializer
+    MonedasSerializer, MonedasUsuarioSerializer, ListMonedasSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -47,9 +47,13 @@ def monedas_list(request):
             #Filtros
             filters={"state":"1"}
 
+            if 'user_id' in request.data:
+                if request.data['user_id'] != '':
+                    filters['user_id']=request.data['user_id']
+
             #Serializar los datos
             query = Monedas.objects.filter(**filters).order_by('-created_at')
-            serializer = MonedasSerializer(query[offset:limit], many=True)
+            serializer = ListMonedasSerializer(query[offset:limit], many=True)
             new_serializer_data={'cont': query.count(),
             'info':serializer.data}
             #envio de datos
@@ -241,3 +245,45 @@ def monedas_usuario(request, pk):
             createLog(logModel,err,logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
+#LISTAR MONEDAS OTORGADAS POR COMPRA
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def monedas_listOtorgadas(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/otorgadas/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #paginacion
+            page_size=int(request.data['page_size'])
+            page=int(request.data['page'])
+            offset = page_size* page
+            limit = offset + page_size
+            #Filtros
+            filters={"state":"1"}
+            filters['tipo__icontains']='credito'
+            
+            if 'user_id' in request.data:
+                if request.data['user_id'] != '':
+                    filters['user_id']=request.data['user_id']
+
+            #Serializar los datos
+            query = Monedas.objects.filter(**filters).order_by('-created_at')
+            serializer = ListMonedasSerializer(query[offset:limit], many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
