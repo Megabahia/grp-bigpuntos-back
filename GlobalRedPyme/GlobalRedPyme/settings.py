@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import environ
 from pathlib import Path
 import os
 from django.urls import reverse_lazy
@@ -20,16 +21,20 @@ from apps.config import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# environ init
+env = environ.Env()
+environ.Env.read_env() # LEE ARCHIVO .ENV
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-h^6317*zd6r8w@ciur3)4*-1i*q-(e6@zg=9&66wzzq@!@v-)'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[]))
 
 
 # Application definition
