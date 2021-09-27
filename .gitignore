@@ -25,4 +25,6 @@ GlobalRedPyme/apps/PYMES/pymes_empresas/__pycache__/
 GlobalRedPyme/apps/PYMES/pymes_empresas/migrations/__pycache__/
 GlobalRedPyme/apps/config/__pycache__/
 GlobalRedPyme/GlobalRedPyme/.env
+.env
 GlobalRedPyme/GlobalRedPyme/.env.example
+.env.example
