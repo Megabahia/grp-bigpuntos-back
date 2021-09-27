@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import environ
 from pathlib import Path
 import os
 from django.urls import reverse_lazy
@@ -20,16 +21,20 @@ from apps.config import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# environ init
+env = environ.Env()
+environ.Env.read_env() # LEE ARCHIVO .ENV
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-h^6317*zd6r8w@ciur3)4*-1i*q-(e6@zg=9&66wzzq@!@v-)'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[]))
 
 
 # Application definition
@@ -158,19 +163,19 @@ USE_TZ = True
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = "central_usuarios.Usuarios"
 #TIEMPO DE EXPIRACION DE TOKEN (EN SEGUNDOS)
-TOKEN_EXPIRED_AFTER_SECONDS = config.TOKEN_EXPIRED_AFTER_SECONDS
+TOKEN_EXPIRED_AFTER_SECONDS = env.int('TOKEN_EXPIRED_AFTER_SECONDS')
 #NOMBRE KEYWORK TOKEN
-TOKEN_KEYWORD= config.TOKEN_KEYWORD
+TOKEN_KEYWORD= env.str('TOKEN_KEYWORD')
 #CORS
-CORS_ALLOWED_ORIGINS = config.CORS_ALLOWED_ORIGINS
+CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS', default=[]))
 
 # CONFIGURACION DE TWILIO
-TWILIO_ACCOUNT_SID = config.TWILIO_ACCOUNT_SID
-TWILIO_AUTH_TOKEN = config.TWILIO_AUTH_TOKEN
+TWILIO_ACCOUNT_SID = env.str('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = env.str('TWILIO_AUTH_TOKEN')
 
 # CONFIGURACION DE AMAZON S3
-DEFAULT_FILE_STORAGE = config.DEFAULT_FILE_STORAGE
-AWS_ACCESS_KEY_ID = config.AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY = config.AWS_SECRET_ACCESS_KEY
-AWS_STORAGE_BUCKET_NAME = config.AWS_STORAGE_BUCKET_NAME
+DEFAULT_FILE_STORAGE = env.str('DEFAULT_FILE_STORAGE')
+AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env.str('AWS_STORAGE_BUCKET_NAME')
 AWS_QUERYSTRING_AUTH = False 
