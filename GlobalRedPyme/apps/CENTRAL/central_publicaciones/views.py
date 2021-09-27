@@ -1,6 +1,6 @@
-from apps.CENTRAL.central_publicaciones.models import  Publicaciones
+from apps.CENTRAL.central_publicaciones.models import  Publicaciones, CompartirPublicaciones
 from apps.CENTRAL.central_publicaciones.serializers import (
-    PublicacionesSerializer, PublicacionesImagenSerializer
+    PublicacionesSerializer, PublicacionesImagenSerializer, CompartirPublicacionesSerializer, ListCompartirPublicacionesSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -248,4 +248,85 @@ def publicaciones_imagenUpdate(request, pk):
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
+
+# COMPARTIR PUBLICACIONES
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def publicaciones_compartir(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'compartir/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'CREAR',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            request.data['created_at'] = str(timezone_now)
+            if 'updated_at' in request.data:
+                request.data.pop('updated_at')
+
+            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
+            request.data['publicacion'] = ObjectId(request.data['publicacion'])
+            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
+            request.data['user'] = ObjectId(request.data['user'])
+        
+            serializer = CompartirPublicacionesSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                createLog(logModel,serializer.data,logTransaccion)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            createLog(logModel,serializer.errors,logExcepcion)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+# 
+# LISTAR PUBLICACION USUARIO
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def publicaciones_usuario(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'usuario/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #paginacion
+            page_size=int(request.data['page_size'])
+            page=int(request.data['page'])
+            offset = page_size* page
+            limit = offset + page_size
+            #Filtros
+            filters={"state":"1"}
+
+            filters['user'] = ObjectId(request.data['user'])
+
+            #Serializar los datos
+            query = CompartirPublicaciones.objects.filter(**filters).order_by('-created_at')
+            serializer = ListCompartirPublicacionesSerializer(query[offset:limit], many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
