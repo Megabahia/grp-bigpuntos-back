@@ -17,6 +17,8 @@ GlobalRedPyme/apps/CENTRAL/central_roles/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_roles/migrations/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_usuarios/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_usuarios/migrations/__pycache__/
+GlobalRedPyme/apps/CORE/core_monedas/__pycache__/
+GlobalRedPyme/apps/CORE/core_monedas/migrations/__pycache__/
 GlobalRedPyme/apps/PERSONAS/personas_historialLaboral/__pycache__/
 GlobalRedPyme/apps/PERSONAS/personas_historialLaboral/migrations/__pycache__/
 GlobalRedPyme/apps/PERSONAS/personas_personas/__pycache__/
