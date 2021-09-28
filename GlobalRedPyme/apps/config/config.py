@@ -1,8 +1,8 @@
 PRODUCTION=False
 
 #VARIABLES GLOBALES
-endpointEmailAsignacionPassword="/auth/usuario/asignacionPassword/"
-endpointEmailReseteoPassword="/auth/usuario/reseteoPassword/"
+endpointEmailAsignacionPassword="/grp/asignacionPassword/"
+endpointEmailReseteoPassword="/grp/reseteoPassword/"
 
 #VARIABLES VARIAN DE ACUERDO A PRODUCCION O DESARROLLO
 if PRODUCTION:
