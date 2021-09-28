@@ -9,6 +9,8 @@ class Catalogo(models.Model):
     tipoVariable = models.CharField(max_length=150,null=False)
     valor = models.CharField(max_length=150,null=False)
     descripcion = models.CharField(max_length=250,null=True)
+    config = models.TextField(null=False, default="{}")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
