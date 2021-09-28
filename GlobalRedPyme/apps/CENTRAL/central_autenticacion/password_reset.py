@@ -104,11 +104,11 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     try:
         #enviar por email
         # email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'), reset_password_token.key)
-        url=config.API_FRONT_END+config.endpointEmailReseteoPassword+"?token="+reset_password_token.key+"&user="+reset_password_token.user.username+"&email="+reset_password_token.user.email
-        subject, from_email, to = 'Solicitud de Reinicio de contraseña Viitoria', "08d77fe1da-d09822@inbox.mailtrap.io",reset_password_token.user.email
+        url=config.API_FRONT_END+config.endpointEmailReseteoPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
+        subject, from_email, to = 'Solicitud de Reinicio de contraseña Global Red Pyme', "73ddd8bfb3-6a4910@inbox.mailtrap.io",reset_password_token.user.email
         txt_content="""
                 Reinicio de Contraseña
-                Para iniciar el proceso de restablecimiento de contraseña para usted """+reset_password_token.user.username+""" para su cuenta Vittoria,
+                Para iniciar el proceso de restablecimiento de contraseña para su cuenta de Global Red Pyme,
                 Haga clic en el siguiente enlace:
                 """+url+"""
                 Si al hacer click en el enlace anterior no funciona, copie y pegue la URL en una nueva ventana del navegador
@@ -119,7 +119,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         <html>
             <body>
                 <h1>Reinicio de Contraseña</h1>
-                Para iniciar el proceso de restablecimiento de contraseña para usted """+reset_password_token.user.username+""" para su cuenta Vittoria,<br>
+                Para iniciar el proceso de restablecimiento de contraseña para su cuenta de Global Red Pyme,<br>
                 Haga clic en el siguiente enlace:<br>
                 <a href='"""+url+"""'>Clic Aquí!</a><br>
                 Si al hacer click en el enlace anterior no funciona, copie y pegue la URL en una nueva ventana del navegador<br>
