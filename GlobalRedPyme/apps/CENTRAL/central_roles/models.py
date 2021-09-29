@@ -26,15 +26,3 @@ class RolesUsuarios(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
-
-
-@receiver(post_save, sender=Usuarios)
-def create_usuario(sender, instance, **kwargs):
-    rol = Roles.objects.filter(codigo='001',state=1).first()
-    rolUsuario = RolesUsuarios.objects.filter(usuario=instance,rol=rol, state=1).first()
-    
-    if rolUsuario is None:
-        RolesUsuarios.objects.create(
-            rol= rol,
-            usuario= instance
-        )

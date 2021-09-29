@@ -2,6 +2,9 @@ from rest_framework import status, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from apps.CENTRAL.central_usuarios.models import Usuarios
+from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
+from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
+from apps.CENTRAL.central_roles.serializers import ListRolesSerializer
 from apps.CENTRAL.central_usuarios.serializers import UsuarioSerializer,UsuarioImagenSerializer,UsuarioRolSerializer,UsuarioCrearSerializer,UsuarioFiltroSerializer
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend 
@@ -9,6 +12,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth import logout
 from apps.CENTRAL.central_autenticacion.models import Token
+from apps.CENTRAL.central_autenticacion.auth import token_expire_handler,expires_in, deleteExpiredTokens
 # ObjectId
 from bson import ObjectId
 #contraeña
@@ -250,10 +254,35 @@ def usuario_create(request):
             data = {}
             if serializer.is_valid():
                 account = serializer.save()
-                data['response'] = 'Usuario creado correctamente'
-                data['email'] = account.email
-                token = Token.objects.get(user=account).key
-                data['token'] = token
+                rol = Roles.objects.filter(nombre=str(request.data['roles']), state=1).first()
+                rolUsuario = RolesUsuarios.objects.filter(usuario=account,rol=rol, state=1).first()
+                
+                if rolUsuario is None:
+                    RolesUsuarios.objects.create(
+                        rol= rol,
+                        usuario= account
+                    )
+                # Consultar roles de usuario
+                rolesUsuario = RolesUsuarios.objects.filter(usuario=account, state=1)
+                roles = ListRolesSerializer(rolesUsuario,many=True).data
+                # Consultar datos de la persona en GRP_PERSONAS_PERSONAS
+                try:
+                    persona = Personas.objects.get(user_id=account._id)
+                    personaSerializer = PersonasSerializer(persona).data
+                except Exception as e:
+                    personaSerializer = {}
+                # data['response'] = 'Usuario creado correctamente'
+                # data['email'] = account.email
+                token = Token.objects.get(user=account)
+                # data['token'] = token
+                data={
+                    'token': token.key,
+                    'id': str(account.pk),
+                    'persona': personaSerializer,
+                    'email': account.email,
+                    'tokenExpiracion': expires_in(token),
+                    'roles': roles
+                }
                 createLog(logModel,data,logTransaccion)
                 # data['tokenEmail']=str(resetPasswordNewUser(data['email']))
             else:
