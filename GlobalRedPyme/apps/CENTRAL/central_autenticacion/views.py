@@ -73,7 +73,8 @@ class login(ObtainAuthToken):
                         'persona': personaSerializer,
                         'email': user.email,
                         'tokenExpiracion': expires_in(token),
-                        'roles': roles
+                        'roles': roles,
+                        'estado': user.estado
                     }
                     createLog(logModel,data,logTransaccion)
                     return Response(data,status=status.HTTP_200_OK)        

@@ -281,7 +281,8 @@ def usuario_create(request):
                     'persona': personaSerializer,
                     'email': account.email,
                     'tokenExpiracion': expires_in(token),
-                    'roles': roles
+                    'roles': roles,
+                    'estado': account.estado
                 }
                 createLog(logModel,data,logTransaccion)
                 # data['tokenEmail']=str(resetPasswordNewUser(data['email']))
