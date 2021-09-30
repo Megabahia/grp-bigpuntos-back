@@ -170,6 +170,8 @@ def usuario_update(request, pk):
     try:
         try:
             logModel['dataEnviada'] = str(request.data)
+            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
+            pk = ObjectId(pk)
             usuario = Usuarios.objects.get(pk=pk, state=1)
         except Usuarios.DoesNotExist:
             errorNoExiste={'error':'No existe'}
