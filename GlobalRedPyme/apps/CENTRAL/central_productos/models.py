@@ -15,7 +15,8 @@ class Productos(models.Model):
     codigoQR = models.CharField(max_length=200,null=True, blank=True)
     cantidad = models.IntegerField(null=False, blank=False)
     empresa_id = models.CharField(max_length=200, null=False, blank=False)
-    tipo = models.CharField(max_length=255,null=False, blank=False)
+    tipo = models.CharField(default="presentacion",max_length=255,null=False, blank=False)
+    vigencia = models.DateField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
