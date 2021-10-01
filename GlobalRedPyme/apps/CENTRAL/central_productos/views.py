@@ -1,3 +1,4 @@
+from apps.CENTRAL.central_catalogo.models import  Catalogo
 from apps.CENTRAL.central_productos.models import  Productos
 from apps.CENTRAL.central_productos.serializers import (
     ProductosSerializer, ProductosImagenSerializer
@@ -40,10 +41,7 @@ def productos_list(request):
         try:
             logModel['dataEnviada'] = str(request.data)
             #paginacion
-            page_size=int(request.data['page_size'])
-            page=int(request.data['page'])
-            offset = page_size* page
-            limit = offset + page_size
+            limit = Catalogo.objects.filter(tipo="CONFIG_SLIDER").first().valor
             #Filtros
             filters={"state":"1"}
 
@@ -52,7 +50,7 @@ def productos_list(request):
 
             #Serializar los datos
             query = Productos.objects.filter(**filters).order_by('-created_at')
-            serializer = ProductosSerializer(query[offset:limit], many=True)
+            serializer = ProductosSerializer(query[:int(limit)], many=True)
             new_serializer_data={'cont': query.count(),
             'info':serializer.data}
             #envio de datos
