@@ -213,9 +213,7 @@ def personas_imagenUpdate(request, pk):
     try:
         try:
             logModel['dataEnviada'] = str(request.data)
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            pk = ObjectId(pk)
-            query = Personas.objects.get(pk=pk, state=1)
+            query = Personas.objects.filter(user_id=pk, state=1).first()
         except Personas.DoesNotExist:
             errorNoExiste={'error':'No existe'}
             createLog(logModel,errorNoExiste,logExcepcion)
