@@ -97,9 +97,7 @@ def personas_listOne(request, pk):
     }
     try:
         try:
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            pk = ObjectId(pk)
-            query = Personas.objects.get(pk=pk, state=1)
+            query = Personas.objects.filter(user_id=pk, state=1).first()
         except Personas.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
@@ -132,9 +130,7 @@ def personas_update(request, pk):
     try:
         try:
             logModel['dataEnviada'] = str(request.data)
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            pk = ObjectId(pk)
-            query = Personas.objects.get(pk=pk, state=1)
+            query = Personas.objects.filter(user_id=pk, state=1).first()
         except Personas.DoesNotExist:
             errorNoExiste={'error':'No existe'}
             createLog(logModel,errorNoExiste,logExcepcion)
@@ -173,9 +169,7 @@ def personas_delete(request, pk):
     }
     try:
         try:
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            pk = ObjectId(pk)
-            query = Personas.objects.get(pk=pk, state=1)
+            query = Personas.objects.filter(user_id=pk, state=1).first()
         except Personas.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
