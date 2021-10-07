@@ -2,6 +2,7 @@ from rest_framework import status, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from apps.CENTRAL.central_usuarios.models import Usuarios
+from apps.PERSONAS.personas_personas.models import Personas
 from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
 from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
 from apps.CENTRAL.central_roles.serializers import ListRolesSerializer
@@ -268,11 +269,12 @@ def usuario_create(request):
                 rolesUsuario = RolesUsuarios.objects.filter(usuario=account, state=1)
                 roles = ListRolesSerializer(rolesUsuario,many=True).data
                 # Consultar datos de la persona en GRP_PERSONAS_PERSONAS
-                try:
-                    persona = Personas.objects.get(user_id=account._id)
-                    personaSerializer = PersonasSerializer(persona).data
-                except Exception as e:
-                    personaSerializer = {}
+                dataPeronsa = {}
+                dataPeronsa['user_id']=str(account.pk)
+                dataPeronsa['email']=str(account.email)
+                persona = Personas.objects.create(**dataPeronsa)
+                personaSerializer = PersonasSerializer(persona).data
+
                 # data['response'] = 'Usuario creado correctamente'
                 # data['email'] = account.email
                 token = Token.objects.get(user=account)

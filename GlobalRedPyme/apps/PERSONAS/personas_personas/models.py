@@ -6,10 +6,10 @@ def upload_path(instance, filname):
 # Create your models here.
 class Personas(models.Model):
     _id = models.ObjectIdField()
-    identificacion = models.CharField(max_length=200,null=False)
-    nombres = models.CharField(max_length=200,null=False)
-    apellidos = models.CharField(max_length=200,null=False)
-    genero = models.CharField(max_length=200,null=False)
+    identificacion = models.CharField(max_length=200,null=True)
+    nombres = models.CharField(max_length=200,null=True)
+    apellidos = models.CharField(max_length=200,null=True)
+    genero = models.CharField(max_length=200,null=True)
     fechaNacimiento = models.DateField(null=True)
     edad = models.SmallIntegerField(null=True)
     ciudad = models.CharField(max_length=200,null=True)
