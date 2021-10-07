@@ -23,7 +23,7 @@ class Personas(models.Model):
     tiktok = models.CharField(max_length=250,blank=True, null=True)
     youtube = models.CharField(max_length=250,blank=True, null=True)
     imagen = models.FileField(blank=True,null=True,upload_to=upload_path)
-    user_id = models.CharField(max_length=250,blank=True, null=True)  # Relacion usuario
+    user_id = models.CharField(max_length=250,blank=False, null=False)  # Relacion usuario
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
