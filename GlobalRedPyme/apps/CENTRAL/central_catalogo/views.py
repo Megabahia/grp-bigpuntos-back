@@ -60,9 +60,7 @@ def catalogo_list(request):
         except Exception as e: 
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             createLog(logModel,err,logExcepcion)
-            return Response(err, status=status.HTTP_400_BAD_REQUEST) 
-
-    
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 #CREAR
 @api_view(['POST'])
@@ -324,5 +322,43 @@ def catalogo_list_hijos(request):
             return Response(serializer.data,status=status.HTTP_200_OK)
         except Exception as e:
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def catalogo_listSinPaginacion(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'listSinPaginacion/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #Filtros
+            filters={"state":"1"}
+            if 'nombre' in request.data:
+                if request.data['nombre']!='':
+                    filters['nombre__startswith'] = str(request.data['nombre'])
+            if 'tipo' in request.data:
+                if request.data['tipo']!='':
+                    filters['tipo'] = str(request.data['tipo'])
+          
+            #Serializar los datos
+            query = Catalogo.objects.filter(**filters).order_by('-created_at')
+            serializer = CatalogoListaSerializer(query, many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 

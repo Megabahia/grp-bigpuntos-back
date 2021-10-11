@@ -2,7 +2,7 @@ from django.urls import path,include
 from apps.CENTRAL.central_catalogo.views import(
 	catalogo_list,catalogo_create,catalogo_findOne,catalogo_update,catalogo_delete,
 	estado_list, pais_list,tipo_list,catalogo_list_hijo,catalogo_list_hijoNombre,catalogo_list_hijos,
-	catalogo_list_parametrosTipo
+	catalogo_list_parametrosTipo, catalogo_listSinPaginacion
 
 )
 
@@ -13,6 +13,7 @@ app_name = 'catalogo'
 urlpatterns = [
 	#catalogo
 	path('list/', catalogo_list, name="catalogo_list"),
+	path('listSinPaginacion/', catalogo_listSinPaginacion, name="catalogo_listSinPaginacion"),
 	path('create/', catalogo_create, name="catalogo_create"),
 	path('listOne/<str:pk>', catalogo_findOne, name="catalogo_findOne"), 
 	path('update/<str:pk>', catalogo_update, name="catalogo_update"), 
