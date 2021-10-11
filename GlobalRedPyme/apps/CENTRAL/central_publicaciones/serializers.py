@@ -40,3 +40,23 @@ class ListCompartirPublicacionesSerializer(serializers.ModelSerializer):
         # user
         data.pop('user')
         return data
+
+class PublicacionesSinCompartirSerializer(serializers.ModelSerializer):
+    publicacion = PublicacionesSerializer(many=False, read_only=True)
+    class Meta:
+        model = CompartirPublicaciones
+        fields = ['publicacion']
+
+    def to_representation(self, instance):
+        data = super(PublicacionesSinCompartirSerializer, self).to_representation(instance)
+        # publicacion
+        publicacion = data.pop('publicacion')
+        data['_id'] = publicacion['_id']
+        data['titulo'] = publicacion['titulo']
+        data['subtitulo'] = publicacion['subtitulo']
+        data['descripcion'] = publicacion['descripcion']
+        data['imagen'] = publicacion['imagen']
+        data['created_at'] = publicacion['created_at']
+        data['updated_at'] = publicacion['updated_at']
+        data['state'] = publicacion['state']
+        return data

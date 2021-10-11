@@ -1,6 +1,7 @@
 from apps.CENTRAL.central_publicaciones.models import  Publicaciones, CompartirPublicaciones
 from apps.CENTRAL.central_publicaciones.serializers import (
-    PublicacionesSerializer, PublicacionesImagenSerializer, CompartirPublicacionesSerializer, ListCompartirPublicacionesSerializer
+    PublicacionesSerializer, PublicacionesImagenSerializer, CompartirPublicacionesSerializer, ListCompartirPublicacionesSerializer,
+    PublicacionesSinCompartirSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -49,6 +50,17 @@ def publicaciones_list(request):
 
             #Serializar los datos
             query = Publicaciones.objects.filter(**filters).order_by('-created_at')
+            
+            # Publicaciones de usuario
+            filters['user'] = ObjectId(request.data['user_id'])
+            query1 = CompartirPublicaciones.objects.filter(user=ObjectId(request.data['user_id'])).order_by('-created_at')
+            publicaciones = PublicacionesSinCompartirSerializer(query1, many=True)
+            detalles_actualizar = {item['_id']: item for item in publicaciones.data}
+
+            for serial in query.all():
+                if str(serial._id) in detalles_actualizar:
+                    query = query.exclude(_id=serial._id)
+
             serializer = PublicacionesSerializer(query[offset:limit], many=True)
             new_serializer_data={'cont': query.count(),
             'info':serializer.data}
