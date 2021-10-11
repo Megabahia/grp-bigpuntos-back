@@ -40,11 +40,6 @@ def publicaciones_list(request):
     if request.method == 'POST':
         try:
             logModel['dataEnviada'] = str(request.data)
-            #paginacion
-            page_size=int(request.data['page_size'])
-            page=int(request.data['page'])
-            offset = page_size* page
-            limit = offset + page_size
             #Filtros
             filters={"state":"1"}
 
@@ -61,7 +56,7 @@ def publicaciones_list(request):
                 if str(serial._id) in detalles_actualizar:
                     query = query.exclude(_id=serial._id)
 
-            serializer = PublicacionesSerializer(query[offset:limit], many=True)
+            serializer = PublicacionesSerializer(query, many=True)
             new_serializer_data={'cont': query.count(),
             'info':serializer.data}
             #envio de datos
