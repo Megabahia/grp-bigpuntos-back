@@ -34,7 +34,8 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[]))
+# ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[]))
+ALLOWED_HOSTS = ['127.0.0.1', '209.145.61.41', 'web.vittoria_app.com']
 
 
 # Application definition
@@ -173,7 +174,8 @@ EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env.int('EMAIL_PORT')
 #CORS
-CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS', default=[]))
+# CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS', default=[]))
+CORS_ALLOWED_ORIGINS = config.CORS_ALLOWED_ORIGINS
 
 # CONFIGURACION DE TWILIO
 TWILIO_ACCOUNT_SID = env.str('TWILIO_ACCOUNT_SID')
