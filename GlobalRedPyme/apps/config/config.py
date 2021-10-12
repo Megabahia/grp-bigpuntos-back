@@ -1,4 +1,4 @@
-PRODUCTION=False
+PRODUCTION=True
 
 #VARIABLES GLOBALES
 endpointEmailAsignacionPassword="/grp/asignacionPassword/"
@@ -9,7 +9,7 @@ if PRODUCTION:
     # URL BACK END
     API_BACK_END = '209.145.61.41:8000/'
     #URL FRONT END
-    API_FRONT_END="209.145.61.41:4200"
+    API_FRONT_END="209.145.61.41:4201"
     #TIEMPO DE EXPIRACION DE TOKEN (EN SEGUNDOS)
     TOKEN_EXPIRED_AFTER_SECONDS = 86400
     #NOMBRE KEYWORK TOKEN
@@ -30,26 +30,30 @@ if PRODUCTION:
     AWS_STORAGE_BUCKET_NAME = ''
     #CORS
     CORS_ALLOWED_ORIGINS = [
-        "http://209.145.61.41:4200",
-        "http://127.0.0.1:4200"
+        "http://209.145.61.41:4201",
+        "http://127.0.0.1:4201"
     ]
     #databases
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_adm',
-            'USER': 'usr_maintainer',
-            'PASSWORD': 'Tc2;1EE{DBE^oN',
-            'HOST': '209.145.61.41',
-            'PORT': 3306
+            'ENGINE': 'djongo',
+            'NAME': 'grp_central',
+            'ENFORCE_SCHEMA': False,
         },
-        'vittoria_mdm_db': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'vittoria_mdm',
-            'USER': 'usr_maintainer',
-            'PASSWORD': 'Tc2;1EE{DBE^oN',
-            'HOST': '209.145.61.41',
-            'PORT': 3306
+        'grp_personas_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_personas',
+            'ENFORCE_SCHEMA': False,
+        },
+        'grp_core_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_core',
+            'ENFORCE_SCHEMA': False,
+        },
+        'grp_pymes_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_pymes',
+            'ENFORCE_SCHEMA': False,
         }
     }
 else:
