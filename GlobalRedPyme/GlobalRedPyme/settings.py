@@ -35,7 +35,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
 # ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[]))
-ALLOWED_HOSTS = ["127.0.0.1","localhost","http://209.145.61.41"]
+ALLOWED_HOSTS = ['127.0.0.1', '209.145.61.41', 'web.vittoria_app.com']
 
 
 # Application definition
