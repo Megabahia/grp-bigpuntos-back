@@ -39,89 +39,21 @@ if PRODUCTION:
             'ENGINE': 'djongo',
             'NAME': 'grp_central',
             'ENFORCE_SCHEMA': False,
-            'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_maintainer',
-                'password': 'Tc2;1EE{DBE^oN',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
-            },
-            'LOGGING': {
-                'version': 1,
-                'loggers': {
-                    'djongo': {
-                        'level': 'DEBUG',
-                        'propagate': False,
-                    }
-                },
-            },
         },
         'grp_personas_db': {
             'ENGINE': 'djongo',
             'NAME': 'grp_personas',
             'ENFORCE_SCHEMA': False,
-            'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_maintainer',
-                'password': 'Tc2;1EE{DBE^oN',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
-            },
-            'LOGGING': {
-                'version': 1,
-                'loggers': {
-                    'djongo': {
-                        'level': 'DEBUG',
-                        'propagate': False,
-                    }
-                },
-            },
         },
         'grp_core_db': {
             'ENGINE': 'djongo',
             'NAME': 'grp_core',
             'ENFORCE_SCHEMA': False,
-            'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_maintainer',
-                'password': 'Tc2;1EE{DBE^oN',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
-            },
-            'LOGGING': {
-                'version': 1,
-                'loggers': {
-                    'djongo': {
-                        'level': 'DEBUG',
-                        'propagate': False,
-                    }
-                },
-            },
         },
         'grp_pymes_db': {
             'ENGINE': 'djongo',
             'NAME': 'grp_pymes',
             'ENFORCE_SCHEMA': False,
-            'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_maintainer',
-                'password': 'Tc2;1EE{DBE^oN',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
-            },
-            'LOGGING': {
-                'version': 1,
-                'loggers': {
-                    'djongo': {
-                        'level': 'DEBUG',
-                        'propagate': False,
-                    }
-                },
-            },
         }
     }
 else:
