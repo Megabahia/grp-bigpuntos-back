@@ -39,23 +39,6 @@ if PRODUCTION:
             'ENGINE': 'djongo',
             'NAME': 'grp_central',
             'ENFORCE_SCHEMA': False,
-            'CLIENT': {
-                'host': 'host-name or ip address',
-                'port': 27017,
-                'username': 'usr_maintainer',
-                'password': 'Tc2;1EE{DBE^oN',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
-            },
-            'LOGGING': {
-                'version': 1,
-                'loggers': {
-                    'djongo': {
-                        'level': 'DEBUG',
-                        'propagate': False,
-                    }
-                },
-            },
         },
         'grp_personas_db': {
             'ENGINE': 'djongo',
