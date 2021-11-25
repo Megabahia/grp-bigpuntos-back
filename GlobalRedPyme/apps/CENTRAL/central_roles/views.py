@@ -100,6 +100,7 @@ def rol_create(request):
             if 'updated_at' in request.data:
                 rolCrear.pop('updated_at')
             #Guardo los roles
+            request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
             serializer = RolCreateSerializer(data=rolCrear,partial=True)
             if serializer.is_valid():
                 serializer.save()

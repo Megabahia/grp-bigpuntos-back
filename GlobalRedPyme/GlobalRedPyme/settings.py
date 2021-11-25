@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'apps.CENTRAL.central_facturas',
     'apps.CENTRAL.central_productos',
     'apps.CENTRAL.central_publicaciones',
+    'apps.CENTRAL.central_tipoUsuarios',
     #Django external apps
     'corsheaders',
     'rest_framework',

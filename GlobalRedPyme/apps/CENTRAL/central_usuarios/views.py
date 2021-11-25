@@ -183,6 +183,7 @@ def usuario_update(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+                request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
             serializer = UsuarioSerializer(usuario, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -252,7 +253,7 @@ def usuario_create(request):
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
             logModel['dataEnviada'] = str(request.data)
-
+            request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
             serializer = UsuarioCrearSerializer(data=request.data)
             data = {}
             if serializer.is_valid():

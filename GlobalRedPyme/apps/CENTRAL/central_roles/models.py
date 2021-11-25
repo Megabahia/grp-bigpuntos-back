@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from djongo import models
 
 from apps.CENTRAL.central_usuarios.models import Usuarios
+from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
 
 # Create your models here.
 class Roles(models.Model):
@@ -14,6 +15,8 @@ class Roles(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
+
+    tipoUsuario = models.ForeignKey(TipoUsuario, null=True, on_delete=models.CASCADE)  # Relacion Tipo usuario
 
     def __str__(self):
         return self.nombre

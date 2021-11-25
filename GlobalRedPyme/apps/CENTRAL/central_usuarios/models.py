@@ -1,5 +1,6 @@
 from djongo import models
 from django.contrib.auth.models import AbstractBaseUser, UserManager
+from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
 
 # Create your models here.
 
@@ -15,4 +16,5 @@ class Usuarios(AbstractBaseUser):
     REQUIRED_FIELDS = ['username']
     objects = UserManager()
 
+    tipoUsuario = models.ForeignKey(TipoUsuario, null=True, on_delete=models.CASCADE)  # Relacion Tipo usuario
     
