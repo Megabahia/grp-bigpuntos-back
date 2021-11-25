@@ -2,6 +2,7 @@ from rest_framework import status, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from apps.CENTRAL.central_usuarios.models import Usuarios
+from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
 from apps.PERSONAS.personas_personas.models import Personas
 from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
 from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
@@ -232,6 +233,75 @@ def usuario_delete(request, pk):
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
+#CREAR USUARIO CORP
+@api_view(['POST'])
+def usuario_core_create(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+    'endPoint': logApi+'create/',
+    'modulo':logModulo,
+    'tipo' : logExcepcion,
+    'accion' : 'CREAR',
+    'fechaInicio' : str(timezone_now),
+    'dataEnviada' : '{}',
+    'fechaFin': str(timezone_now),
+    'dataRecibida' : '{}'
+    }
+
+    try:
+        if request.method == 'POST':
+            request.data['created_at'] = str(timezone_now)
+            if 'updated_at' in request.data:
+                request.data.pop('updated_at')
+            logModel['dataEnviada'] = str(request.data)
+            tipoUsuario = TipoUsuario.objects.filter(nombre='corp',state=1).first()
+            request.data['tipoUsuario'] = tipoUsuario._id
+            serializer = UsuarioCrearSerializer(data=request.data)
+            data = {}
+            if serializer.is_valid():
+                account = serializer.save()
+                rol = Roles.objects.filter(nombre=str(request.data['roles']), state=1).first()
+                rolUsuario = RolesUsuarios.objects.filter(usuario=account,rol=rol, state=1).first()
+                
+                if rolUsuario is None:
+                    RolesUsuarios.objects.create(
+                        rol= rol,
+                        usuario= account
+                    )
+                # Consultar roles de usuario
+                rolesUsuario = RolesUsuarios.objects.filter(usuario=account, state=1)
+                roles = ListRolesSerializer(rolesUsuario,many=True).data
+                # Consultar datos de la persona en GRP_PERSONAS_PERSONAS
+                dataPeronsa = {}
+                dataPeronsa['user_id']=str(account.pk)
+                dataPeronsa['email']=str(account.email)
+                persona = Personas.objects.create(**dataPeronsa)
+                personaSerializer = PersonasSerializer(persona).data
+
+                # data['response'] = 'Usuario creado correctamente'
+                # data['email'] = account.email
+                token = Token.objects.get(user=account)
+                # data['token'] = token
+                data={
+                    'token': token.key,
+                    'id': str(account.pk),
+                    'persona': personaSerializer,
+                    'email': account.email,
+                    'tokenExpiracion': expires_in(token),
+                    'roles': roles,
+                    'estado': account.estado
+                }
+                createLog(logModel,data,logTransaccion)
+                # data['tokenEmail']=str(resetPasswordNewUser(data['email']))
+            else:
+                data = serializer.errors
+                createLog(logModel,data,logExcepcion)
+            return Response(data)           
+    except Exception as e: 
+        err={"error":'Un error ha ocurrido: {}'.format(e)}  
+        createLog(logModel,err,logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
 #CREAR USUARIO
 @api_view(['POST'])
 def usuario_create(request):
@@ -253,7 +323,8 @@ def usuario_create(request):
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
             logModel['dataEnviada'] = str(request.data)
-            request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
+            tipoUsuario = TipoUsuario.objects.filter(nombre='core',state=1).first()
+            request.data['tipoUsuario'] = tipoUsuario._id
             serializer = UsuarioCrearSerializer(data=request.data)
             data = {}
             if serializer.is_valid():

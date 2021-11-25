@@ -8,7 +8,8 @@ from apps.CENTRAL.central_usuarios.views import(
 	usuario_delete,
 	usuarioImagen_update,
 	vendedor_list,
-	usuarios_list_rol
+	usuarios_list_rol,
+	usuario_core_create
 )
 app_name = 'usuarios'
 
@@ -16,6 +17,7 @@ urlpatterns = [
 	path('list/', usuario_list, name="usuario_list"),
 	path('list/export/', usuario_listExport, name="usuario_export"),
 	path('create/', usuario_create, name="usuario_create"),
+	path('corp/create/', usuario_core_create, name="usuario_core_create"),
 	path('listOne/<str:pk>', usuario_findOne, name="usuario_findOne"),
 	path('update/<str:pk>', usuario_update, name="usuario_update"),
 	path('delete/<str:pk>', usuario_delete, name="usuario_delete"),
