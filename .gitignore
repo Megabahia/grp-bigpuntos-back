@@ -27,6 +27,10 @@ GlobalRedPyme/apps/PERSONAS/personas_personas/__pycache__/
 GlobalRedPyme/apps/PERSONAS/personas_personas/migrations/__pycache__/
 GlobalRedPyme/apps/PYMES/pymes_empresas/__pycache__/
 GlobalRedPyme/apps/PYMES/pymes_empresas/migrations/__pycache__/
+GlobalRedPyme/apps/CORP/corp_corp_cobrarSupermonedas/__pycache__/
+GlobalRedPyme/apps/CORP/corp_corp_cobrarSupermonedas/migrations/__pycache__/
+GlobalRedPyme/apps/CORP/corp_autorizaciones/__pycache__/
+GlobalRedPyme/apps/CORP/corp_autorizaciones/migrations/__pycache__/
 GlobalRedPyme/apps/config/__pycache__/
 /GlobalRedPyme/GlobalRedPyme/.env
 /GlobalRedPyme/GlobalRedPyme/.env.example

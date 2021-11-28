@@ -31,7 +31,9 @@ if PRODUCTION:
     #CORS
     CORS_ALLOWED_ORIGINS = [
         "http://209.145.61.41:4201",
-        "http://127.0.0.1:4201"
+        "http://127.0.0.1:4201",
+        "http://209.145.61.41:4202",
+        "http://127.0.0.1:4202"
     ]
     #databases
     DATABASES = {
@@ -104,6 +106,28 @@ if PRODUCTION:
         'grp_pymes_db': {
             'ENGINE': 'djongo',
             'NAME': 'grp_pymes',
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': '209.145.61.41',
+                'port': 27017,
+                'username': 'usr_testing',
+                'password': 'FAiK&OgZpP8^',
+                'authSource': 'admin',
+                'authMechanism': 'SCRAM-SHA-1'
+            },
+            'LOGGING': {
+                'version': 1,
+                'loggers': {
+                    'djongo': {
+                        'level': 'DEBUG',
+                        'propagate': False,                        
+                    }
+                },
+            },
+        },
+        'grp_corp_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_corp',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
                 'host': '209.145.61.41',
@@ -172,6 +196,11 @@ else:
         'grp_pymes_db': {
             'ENGINE': 'djongo',
             'NAME': 'grp_pymes',
+            'ENFORCE_SCHEMA': False,
+        },
+        'grp_corp_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_corp',
             'ENFORCE_SCHEMA': False,
         }
     }

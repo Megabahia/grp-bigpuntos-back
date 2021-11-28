@@ -41,6 +41,9 @@ ALLOWED_HOSTS = ['127.0.0.1', '209.145.61.41', 'web.vittoria_app.com']
 # Application definition
 
 INSTALLED_APPS = [
+    # Corp
+    'apps.CORP.corp_cobrarSupermonedas',
+    'apps.CORP.corp_autorizaciones',
     # Pymes
     'apps.PYMES.pymes_empresas',
     # apps core
@@ -124,6 +127,7 @@ DATABASE_ROUTERS = [
     'apps.config.routersDB.GRPPERSONASRouter',
     'apps.config.routersDB.GRPCORERouter',
     'apps.config.routersDB.GRPPYMESRouter',
+    'apps.config.routersDB.GRPCORPRouter',
 ]
 
 # Password validation
