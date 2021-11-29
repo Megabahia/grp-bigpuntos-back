@@ -63,7 +63,7 @@ def cobrarSupermonedas_list(request):
                     filters['correo__icontains'] = str(request.data['correo'])
 
             #Serializar los datos
-            query = CobrarSupermonedas.objects.filter(**filters).order_by('-created_at')
+            query = CobrarSupermonedas.objects.filter(**filters).order_by('estado')
             serializer = CobrarSupermonedasSerializer(query[offset:limit], many=True)
             new_serializer_data={'cont': query.count(),
             'info':serializer.data}
