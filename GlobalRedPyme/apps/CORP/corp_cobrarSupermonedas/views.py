@@ -182,7 +182,12 @@ def cobrarSupermonedas_update(request, pk):
             if serializer.is_valid():
                 serializer.save()
                 if request.data['estado'] == 'Pre-autorizado':
-                    Autorizaciones.objects.create(codigoAutorizacion='',estado=request.data['estado'],user_id=request.data['user_id'],cobrar=query)
+                    autorizacion = Autorizaciones.objects.filter(cobrar=query).first()
+                    if autorizacion is None:
+                        Autorizaciones.objects.create(codigoAutorizacion='',estado=request.data['estado'],user_id=request.data['user_id'],cobrar=query)
+                    else:
+                        autorizacion.estado = request.data['estado']
+                        autorizacion.save()
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data)
             createLog(logModel,serializer.errors,logExcepcion)
