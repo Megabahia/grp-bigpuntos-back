@@ -1,4 +1,5 @@
 from apps.CORP.corp_autorizaciones.models import  Autorizaciones
+from apps.CORP.corp_cobrarSupermonedas.models import  CobrarSupermonedas
 from apps.CORP.corp_autorizaciones.serializers import (
     AutorizacionSerializer
 )
@@ -165,6 +166,8 @@ def autorizacion_update(request, pk):
             serializer = AutorizacionSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
+                if request.data['estado'] == 'Autorizado':
+                    CobrarSupermonedas.objects.filter(_id=query.cobrar._id,state=1).update(estado='Autorizado')
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data)
             createLog(logModel,serializer.errors,logExcepcion)

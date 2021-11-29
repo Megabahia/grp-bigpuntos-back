@@ -1,4 +1,5 @@
 from apps.CORP.corp_cobrarSupermonedas.models import  CobrarSupermonedas
+from apps.CORP.corp_autorizaciones.models import  Autorizaciones
 from apps.CORE.core_monedas.models import  Monedas
 from apps.CORP.corp_cobrarSupermonedas.serializers import (
     CobrarSupermonedasSerializer
@@ -180,6 +181,8 @@ def cobrarSupermonedas_update(request, pk):
             serializer = CobrarSupermonedasSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
+                if request.data['estado'] == 'Pre-autorizado':
+                    Autorizaciones.objects.create(codigoAutorizacion='',estado=request.data['estado'],user_id=request.data['user_id'],cobrar=query)
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data)
             createLog(logModel,serializer.errors,logExcepcion)
