@@ -48,6 +48,19 @@ def cobrarSupermonedas_list(request):
             #Filtros
             filters={"state":"1"}
 
+            if 'identificacion' in request.data:
+                if request.data['identificacion']!='':
+                    filters['identificacion__icontains'] = str(request.data['identificacion'])
+            if 'codigoCobro' in request.data:
+                if request.data['codigoCobro']!='':
+                    filters['codigoCobro__icontains'] = str(request.data['codigoCobro'])
+            if 'monto' in request.data:
+                if request.data['monto']!='':
+                    filters['monto__icontains'] = str(request.data['monto'])
+            if 'correo' in request.data:
+                if request.data['correo']!='':
+                    filters['correo__icontains'] = str(request.data['correo'])
+
             #Serializar los datos
             query = CobrarSupermonedas.objects.filter(**filters).order_by('-created_at')
             serializer = CobrarSupermonedasSerializer(query[offset:limit], many=True)
