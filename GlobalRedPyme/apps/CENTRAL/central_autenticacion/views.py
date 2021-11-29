@@ -54,6 +54,9 @@ class login(ObtainAuthToken):
             if serializer.is_valid():
                 user = serializer.validated_data['user']
                 if user.state==1:
+                    if user.tipoUsuario.nombre != request.data['tipoUsuario']:
+                        data={'error':'Usted no tiene una cuenta.'}
+                        return Response(data,status=status.HTTP_404_NOT_FOUND)
                     token= Token.objects.create(user=user)
                     #ELIMINAR USUARIOS EXPIRADOS
                     deleteExpiredTokens()
