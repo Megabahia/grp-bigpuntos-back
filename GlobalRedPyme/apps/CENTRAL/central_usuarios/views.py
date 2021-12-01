@@ -323,7 +323,7 @@ def usuario_create(request):
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
             logModel['dataEnviada'] = str(request.data)
-            tipoUsuario = TipoUsuario.objects.filter(nombre='core',state=1).first()
+            tipoUsuario = TipoUsuario.objects.filter(nombre=request.data['tipoUsuario'],state=1).first()
             request.data['tipoUsuario'] = tipoUsuario._id
             serializer = UsuarioCrearSerializer(data=request.data)
             data = {}
