@@ -6,10 +6,24 @@ class RolSerializer(serializers.ModelSerializer):
         model = Roles
         fields = '__all__'
 
+    def to_representation(self, instance):
+        data = super(RolSerializer, self).to_representation(instance)
+        # convierto a str tipoUsuario
+        tipoUsuario = str(data.pop('tipoUsuario'))
+        data.update({"tipoUsuario": tipoUsuario})
+        return data
+
 class RolCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roles
         fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super(RolCreateSerializer, self).to_representation(instance)
+        # convierto a str tipoUsuario
+        tipoUsuario = str(data.pop('tipoUsuario'))
+        data.update({"tipoUsuario": tipoUsuario})
+        return data
 
 class RolFiltroSerializer(serializers.ModelSerializer):
     class Meta:
@@ -52,5 +66,8 @@ class RolesUsuarioSerializer(serializers.ModelSerializer):
         # tomo el campo usuario y convierto de OBJECTID a string
         usuario = str(data.pop('usuario'))
         data.update({"usuario": usuario})
+        # convierto a str tipoUsuario
+        tipoUsuario = str(data.pop('tipoUsuario'))
+        data.update({"tipoUsuario": tipoUsuario})
         return data
 

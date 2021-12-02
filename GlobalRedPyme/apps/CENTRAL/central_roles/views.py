@@ -1,5 +1,6 @@
 
 from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
+from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
 from apps.CENTRAL.central_acciones.models import Acciones, AccionesPermitidas, AccionesPorRol
 from apps.CENTRAL.central_acciones.serializers import AccionesSerializer,AccionesPadreSerializer, AccionesPermitidasSerializer, AccionesPorRolSerializer
 from apps.CENTRAL.central_roles.serializers import RolSerializer,RolCreateSerializer,RolFiltroSerializer, RolesUsuarioSerializer, ListRolesSerializer
@@ -100,7 +101,8 @@ def rol_create(request):
             if 'updated_at' in request.data:
                 rolCrear.pop('updated_at')
             #Guardo los roles
-            request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
+            tipoUsuario = TipoUsuario.objects.filter(nombre=rolCrear['tipoUsuario'],state=1).first()
+            rolCrear['tipoUsuario'] = tipoUsuario._id
             serializer = RolCreateSerializer(data=rolCrear,partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -336,6 +338,8 @@ def rol_createUsuario(request):
             request.data['rol'] = ObjectId(request.data['rol'])
             # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
             request.data['usuario'] = ObjectId(request.data['usuario'])
+            tipoUsuario = TipoUsuario.objects.filter(nombre=rolCrear['tipoUsuario'],state=1).first()
+            rolCrear['tipoUsuario'] = tipoUsuario._id
         
             serializer = RolesUsuarioSerializer(data=request.data)
             if serializer.is_valid():
