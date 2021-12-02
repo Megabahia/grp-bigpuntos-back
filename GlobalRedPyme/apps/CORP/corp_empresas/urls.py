@@ -1,12 +1,12 @@
 from django.urls import path,include
-from apps.PYMES.pymes_empresas.views import(
+from apps.CORP.corp_empresas.views import(
 	empresas_create,
 	empresas_list,
 	empresas_listOne,
 	empresas_update,
 	empresas_delete
 )
-app_name = 'pymes_empresas'
+app_name = 'corp_empresas'
 
 urlpatterns = [
 	path('create/', empresas_create, name="empresas_create"),

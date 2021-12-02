@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'apps.CORP.corp_cobrarSupermonedas',
     'apps.CORP.corp_autorizaciones',
     # Pymes
-    'apps.PYMES.pymes_empresas',
+    'apps.CORP.corp_empresas',
     # apps core
     'apps.CORE.core_monedas',
     # apps personas
@@ -126,7 +126,6 @@ DATABASES = config.DATABASES
 DATABASE_ROUTERS = [
     'apps.config.routersDB.GRPPERSONASRouter',
     'apps.config.routersDB.GRPCORERouter',
-    'apps.config.routersDB.GRPPYMESRouter',
     'apps.config.routersDB.GRPCORPRouter',
 ]
 

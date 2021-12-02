@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.PYMES.pymes_empresas.models import (
+from apps.CORP.corp_empresas.models import (
     Empresas
 )
 

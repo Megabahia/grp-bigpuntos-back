@@ -2,7 +2,7 @@ from rest_framework import serializers
 # ObjectId
 from bson import ObjectId
 
-from apps.PYMES.pymes_empresas.models import Empresas
+from apps.CORP.corp_empresas.models import Empresas
 
 from apps.CENTRAL.central_productos.models import (
     Productos

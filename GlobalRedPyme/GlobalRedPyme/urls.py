@@ -20,8 +20,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    # PYMES
-    path('pymes/empresas/', include(('apps.PYMES.pymes_empresas.urls', 'empresas'), namespace='empresas')),
+    # CORP
+    path('corp/empresas/', include(('apps.CORP.corp_empresas.urls', 'empresas'), namespace='empresas')),
     # CENTRAL
     path('core/monedas/', include(('apps.CORE.core_monedas.urls', 'monedas'), namespace='monedas')),
     #MODULO CENTRAL

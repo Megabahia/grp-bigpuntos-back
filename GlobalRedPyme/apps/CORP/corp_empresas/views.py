@@ -1,5 +1,5 @@
-from apps.PYMES.pymes_empresas.models import  Empresas
-from apps.PYMES.pymes_empresas.serializers import (
+from apps.CORP.corp_empresas.models import  Empresas
+from apps.CORP.corp_empresas.serializers import (
     EmpresasSerializer
 )
 from rest_framework import status

@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class PymesEmpresasConfig(AppConfig):
-    name = 'pymes_empresas'
+    name = 'corp_empresas'
