@@ -9,7 +9,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         exclude = ('password',)
     
     def to_representation(self, instance):
-        data = super(UsuarioCrearSerializer, self).to_representation(instance)
+        data = super(UsuarioSerializer, self).to_representation(instance)
         # convierto a str tipoUsuario
         tipoUsuario = str(data.pop('tipoUsuario'))
         data.update({"tipoUsuario": tipoUsuario})
