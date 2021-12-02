@@ -7,6 +7,13 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuarios
         exclude = ('password',)
+    
+    def to_representation(self, instance):
+        data = super(UsuarioCrearSerializer, self).to_representation(instance)
+        # convierto a str tipoUsuario
+        tipoUsuario = str(data.pop('tipoUsuario'))
+        data.update({"tipoUsuario": tipoUsuario})
+        return data
 
 
 class UsuarioRolSerializer(serializers.ModelSerializer):
@@ -32,6 +39,13 @@ class UsuarioCrearSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True},
         }
+    
+    def to_representation(self, instance):
+        data = super(UsuarioCrearSerializer, self).to_representation(instance)
+        # convierto a str tipoUsuario
+        tipoUsuario = str(data.pop('tipoUsuario'))
+        data.update({"tipoUsuario": tipoUsuario})
+        return data
 
     def create(self, validated_data):
         usuario = Usuarios.objects.create(**validated_data)
