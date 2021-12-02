@@ -11,6 +11,8 @@ GlobalRedPyme/apps/CENTRAL/central_logs/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_logs/migrations/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_productos/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_productos/migrations/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_parametrizaciones/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_parametrizaciones/migrations/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_publicaciones/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_publicaciones/migrations/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_roles/__pycache__/
