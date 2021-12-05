@@ -9,6 +9,9 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from django.conf import settings
+# Swagger
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 # Generar codigos aleatorios
 import string
 import random
@@ -29,6 +32,8 @@ logTransaccion=datosTipoLogAux['transaccion']
 logExcepcion=datosTipoLogAux['excepcion']
 #CRUD PERSONAS
 #CREAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=PersonasSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_create(request):
@@ -113,6 +118,8 @@ def personas_listOne(request, pk):
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 # ACTUALIZAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=PersonasSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_update(request, pk):
@@ -190,9 +197,12 @@ def personas_delete(request, pk):
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
 # Subir imagen
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=PersonasImagenSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_imagenUpdate(request, pk):
+    '''id de persona'''
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'update/imagen/',
@@ -230,6 +240,8 @@ def personas_imagenUpdate(request, pk):
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
 # validar codigo
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=ValidarCuentaSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_validarCodigo(request):

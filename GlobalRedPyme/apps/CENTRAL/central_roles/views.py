@@ -9,6 +9,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
+# Swagger
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 # ObjectId
 from bson import ObjectId
 #logs
@@ -23,6 +26,19 @@ logApi=datosAux['api']
 logTransaccion=datosTipoLogAux['transaccion']
 logExcepcion=datosTipoLogAux['excepcion']
 
+# Listar
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'],
+                         request_body=openapi.Schema(
+                             type=openapi.TYPE_OBJECT,
+                             required=['page_size','page'],
+                             properties={
+                                 'page_size': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'page': openapi.Schema(type=openapi.TYPE_NUMBER),
+                             },
+                         ),
+                         operation_description='Uninstall a version of Site',
+                         responses={200: RolSerializer(many=True)})
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def rol_list(request):
@@ -75,6 +91,8 @@ def rol_listExport(request):
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
 # CREAR ROL
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=RolCreateSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def rol_create(request):
@@ -136,6 +154,8 @@ def rol_create(request):
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
 
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=RolCreateSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def rol_update(request,pk):
@@ -313,6 +333,8 @@ def rol_listFiltro(request):
 
 
 #CREAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=RolesUsuarioSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def rol_createUsuario(request):

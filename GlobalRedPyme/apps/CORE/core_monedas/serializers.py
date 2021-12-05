@@ -12,6 +12,7 @@ class MonedasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Monedas
        	fields = '__all__'
+        read_only_fields = ['_id']
 
 class MonedasUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,6 +23,7 @@ class ListMonedasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Monedas
        	fields = '__all__'
+        read_only_fields = ['_id']
 
     def to_representation(self, instance):
         data = super(ListMonedasSerializer, self).to_representation(instance)

@@ -7,6 +7,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
+# Swagger
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 # ObjectId
 from bson import ObjectId
 #logs
@@ -22,6 +25,19 @@ logTransaccion=datosTipoLogAux['transaccion']
 logExcepcion=datosTipoLogAux['excepcion']
 #CRUD CORE
 #LISTAR TODOS
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'],
+                         request_body=openapi.Schema(
+                             type=openapi.TYPE_OBJECT,
+                             required=['page_size','page'],
+                             properties={
+                                 'page_size': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'page': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'user_id': openapi.Schema(type=openapi.TYPE_STRING),
+                             },
+                         ),
+                         operation_description='Uninstall a version of Site',
+                         responses={200: ListMonedasSerializer(many=True)})
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def monedas_list(request):
@@ -64,6 +80,8 @@ def monedas_list(request):
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 #CREAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=MonedasSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def monedas_create(request):
@@ -132,6 +150,8 @@ def monedas_listOne(request, pk):
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 # ACTUALIZAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=MonedasSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def monedas_update(request, pk):
@@ -246,6 +266,19 @@ def monedas_usuario(request, pk):
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 #LISTAR MONEDAS OTORGADAS POR COMPRA
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'],
+                         request_body=openapi.Schema(
+                             type=openapi.TYPE_OBJECT,
+                             required=['page_size','page'],
+                             properties={
+                                 'page_size': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'page': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'user_id': openapi.Schema(type=openapi.TYPE_STRING),
+                             },
+                         ),
+                         operation_description='Uninstall a version of Site',
+                         responses={200: ListMonedasSerializer(many=True)})
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def monedas_listOtorgadas(request):

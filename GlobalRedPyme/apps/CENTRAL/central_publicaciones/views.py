@@ -9,6 +9,9 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from django.conf import settings
+# Swagger
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 # ObjectId
 from bson import ObjectId
 #logs
@@ -23,6 +26,19 @@ logApi=datosAux['api']
 logTransaccion=datosTipoLogAux['transaccion']
 logExcepcion=datosTipoLogAux['excepcion']
 #CRUD CENTRAL
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'],
+                         request_body=openapi.Schema(
+                             type=openapi.TYPE_OBJECT,
+                             required=['page_size','page','user_id'],
+                             properties={
+                                 'page_size': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'page': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'user_id': openapi.Schema(type=openapi.TYPE_STRING),
+                             },
+                         ),
+                         operation_description='Uninstall a version of Site',
+                         responses={200: PublicacionesSinCompartirSerializer(many=True)})
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_list(request):
@@ -67,6 +83,8 @@ def publicaciones_list(request):
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 #CREAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=PublicacionesSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_create(request):
@@ -135,6 +153,8 @@ def publicaciones_listOne(request, pk):
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 # ACTUALIZAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=PublicacionesSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_update(request, pk):
@@ -258,6 +278,8 @@ def publicaciones_imagenUpdate(request, pk):
 
 
 # COMPARTIR PUBLICACIONES
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'], request_body=CompartirPublicacionesSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_compartir(request):
@@ -298,6 +320,19 @@ def publicaciones_compartir(request):
 
 # 
 # LISTAR PUBLICACION USUARIO
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'],
+                         request_body=openapi.Schema(
+                             type=openapi.TYPE_OBJECT,
+                             required=['page_size','page','user'],
+                             properties={
+                                 'page_size': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'page': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'user': openapi.Schema(type=openapi.TYPE_STRING),
+                             },
+                         ),
+                         operation_description='Uninstall a version of Site',
+                         responses={200: PublicacionesSinCompartirSerializer(many=True)})
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_usuario(request):

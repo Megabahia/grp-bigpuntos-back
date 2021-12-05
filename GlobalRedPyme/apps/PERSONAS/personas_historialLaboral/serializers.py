@@ -8,6 +8,7 @@ class HistorialLaboralSerializer(serializers.ModelSerializer):
     class Meta:
         model = HistorialLaboral
        	fields = '__all__'
+        read_only_fields = ['_id']
 
     def to_representation(self, instance):
         data = super(HistorialLaboralSerializer, self).to_representation(instance)

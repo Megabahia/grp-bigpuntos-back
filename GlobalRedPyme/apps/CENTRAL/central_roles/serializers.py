@@ -5,6 +5,7 @@ class RolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roles
         fields = '__all__'
+        read_only_fields = ['_id']
 
     def to_representation(self, instance):
         data = super(RolSerializer, self).to_representation(instance)
@@ -17,6 +18,7 @@ class RolCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roles
         fields = '__all__'
+        read_only_fields = ['_id']
 
     def to_representation(self, instance):
         data = super(RolCreateSerializer, self).to_representation(instance)
@@ -57,6 +59,7 @@ class RolesUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = RolesUsuarios
        	fields = '__all__'
+        read_only_fields = ['_id']
 
     def to_representation(self, instance):
         data = super(RolesUsuarioSerializer, self).to_representation(instance)

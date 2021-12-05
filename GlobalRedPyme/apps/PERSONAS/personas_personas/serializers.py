@@ -8,6 +8,7 @@ class PersonasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Personas
        	fields = '__all__'
+        read_only_fields = ['_id']
 
 class PersonasUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,5 +25,6 @@ class ValidarCuentaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ValidarCuenta
        	fields = '__all__'
+        read_only_fields = ['_id']
 
 
