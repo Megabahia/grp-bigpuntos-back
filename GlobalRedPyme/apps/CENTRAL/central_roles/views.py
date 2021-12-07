@@ -132,21 +132,9 @@ def rol_create(request):
                 serializer.save()
                 #Asigno id del rol creado para usarlo en las acciones
                 rolId=serializer.data['_id']
-            #Valido que existan las acciones
-            if 'acciones' in request.data:
-                accionesCrear=request.data['acciones']
-                #recorro los padres(modulos)
-                #recorro el json de acciones, busco el id de la accion del modulo, Leer, Escribir,etc, por último lo almaceno con los datos 
-                for keyPadre, valuePadre in accionesCrear.items():
-                    nombrePadre=str(keyPadre) 
-                    for keyHijo, valueHijo in valuePadre.items():
-                        nombreHijo,estado=str(keyHijo),int(valueHijo)
-                        accion=Acciones.objects.filter(idAccionPadre__nombre=nombrePadre,nombre=nombreHijo).only('_id').first()
-                        #creo la accion
-                        AccionesPorRol.objects.create(idAccion_id=int(accion.id),idRol_id=rolId,state=estado,created_at=nowDate)
-            dataExitosa={"mensaje":"rol y acciones creadas exitosamente","rol":serializer.data,"acciones":accionesCrear}
-            createLog(logModel,dataExitosa,logTransaccion)
-            return Response(dataExitosa, status=status.HTTP_201_CREATED)
+                dataExitosa={"mensaje":"rol y acciones creadas exitosamente","rol":serializer.data}
+                createLog(logModel,dataExitosa,logTransaccion)
+                return Response(dataExitosa, status=status.HTTP_201_CREATED)
     except Exception as e: 
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion)
