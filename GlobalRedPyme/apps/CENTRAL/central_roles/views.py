@@ -150,7 +150,10 @@ def rol_create(request):
             else:
                 err={"error":"El rol ha sido creado pero sin ninguna acción!","rol":serializer.data}  
                 createLog(logModel,err,logExcepcion)
-                return Response(err, status=status.HTTP_400_BAD_REQUEST)  
+                return Response(err, status=status.HTTP_400_BAD_REQUEST)
+            dataExitosa={"mensaje":"rol y acciones creadas exitosamente","rol":serializer.data,"acciones":accionesCrear}
+            createLog(logModel,dataExitosa,logTransaccion)
+            return Response(dataExitosa, status=status.HTTP_201_CREATED)
     except Exception as e: 
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion)
