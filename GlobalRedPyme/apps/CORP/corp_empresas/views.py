@@ -1,6 +1,6 @@
 from apps.CORP.corp_empresas.models import  Empresas
 from apps.CORP.corp_empresas.serializers import (
-    EmpresasSerializer
+    EmpresasSerializer, EmpresasFiltroSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -65,6 +65,58 @@ def empresas_list(request):
             #Serializar los datos
             query = Empresas.objects.filter(**filters).order_by('-created_at')
             serializer = EmpresasSerializer(query[offset:limit], many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'],
+                         request_body=openapi.Schema(
+                             type=openapi.TYPE_OBJECT,
+                             required=[],
+                             properties={
+                                 'ruc': openapi.Schema(type=openapi.TYPE_STRING),
+                             },
+                         ),
+                         operation_description='Uninstall a version of Site',
+                         responses={200: EmpresasFiltroSerializer(many=True)})
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def empresas_list_filtro(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #paginacion
+            page_size=int(20)
+            page=int(0)
+            offset = page_size* page
+            limit = offset + page_size
+            #Filtros
+            filters={"state":"1"}
+
+            if "ruc" in request.data:
+                if request.data["ruc"] != '':
+                    filters['ruc__icontains'] = str(request.data["ruc"])
+
+            #Serializar los datos
+            query = Empresas.objects.filter(**filters).order_by('-created_at')
+            serializer = EmpresasFiltroSerializer(query[offset:limit], many=True)
             new_serializer_data={'cont': query.count(),
             'info':serializer.data}
             #envio de datos

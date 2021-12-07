@@ -9,3 +9,8 @@ class EmpresasSerializer(serializers.ModelSerializer):
         model = Empresas
        	fields = '__all__'
         read_only_fields = ['_id']
+
+class EmpresasFiltroSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Empresas
+       	fields = ['_id','nombre','ruc']
