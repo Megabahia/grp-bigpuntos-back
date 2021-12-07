@@ -63,10 +63,10 @@ def rol_list(request):
             limit = offset + page_size
             filters={"state":"1"}
         
-            # if 'tipoUsuario' in request.data:
-            #     if request.data['tipoUsuario'] != '':
-            #         tipoUsuario = Roles.objects.filter(nombre=request.data['tipoUsuario']).first()
-            #         print(tipoUsuario)
+            if 'tipoUsuario' in request.data:
+                if request.data['tipoUsuario'] != '':
+                    rol = TipoUsuario.objects.filter(nombre=request.data['tipoUsuario'],state=1).first()
+                    filters['tipoUsuario'] = rol._id
             #Serializar los datos
             rol = Roles.objects.filter(**filters).order_by('-created_at')
             serializer = RolSerializer(rol[offset:limit], many=True)
