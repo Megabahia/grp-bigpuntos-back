@@ -144,13 +144,6 @@ def rol_create(request):
                         accion=Acciones.objects.filter(idAccionPadre__nombre=nombrePadre,nombre=nombreHijo).only('_id').first()
                         #creo la accion
                         AccionesPorRol.objects.create(idAccion_id=int(accion.id),idRol_id=rolId,state=estado,created_at=nowDate)
-                dataExitosa={"mensaje":"rol y acciones creadas exitosamente","rol":serializer.data,"acciones":accionesCrear}
-                createLog(logModel,dataExitosa,logTransaccion)
-                return Response(dataExitosa, status=status.HTTP_201_CREATED)
-            else:
-                err={"error":"El rol ha sido creado pero sin ninguna acción!","rol":serializer.data}  
-                createLog(logModel,err,logExcepcion)
-                return Response(err, status=status.HTTP_400_BAD_REQUEST)
             dataExitosa={"mensaje":"rol y acciones creadas exitosamente","rol":serializer.data,"acciones":accionesCrear}
             createLog(logModel,dataExitosa,logTransaccion)
             return Response(dataExitosa, status=status.HTTP_201_CREATED)
