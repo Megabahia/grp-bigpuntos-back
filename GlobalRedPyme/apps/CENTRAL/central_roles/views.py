@@ -65,10 +65,11 @@ def rol_list(request):
         
             if 'tipoUsuario' in request.data:
                 if request.data['tipoUsuario'] != '':
-                    tipoUsuario = RolesUsuarios.objects.filter(tipoUsuario=request.request.data['tipoUsuarios']).first()
+                    tipoUsuario = RolesUsuarios.objects.filter(usuario=request.data['tipoUsuarios']).first()
                     filters['usuario'] = tipoUsuario._id
             #Serializar los datos
             rol = Roles.objects.filter(**filters).order_by('-created_at')
+            print(rol)
             serializer = RolSerializer(rol[offset:limit], many=True)
             new_serializer_data={'cont': rol.count(),
             'info':serializer.data}
@@ -237,7 +238,7 @@ def rol_findOne(request, pk):
                 createLog(logModel,err,logExcepcion) 
                 return Response(err,status=status.HTTP_404_NOT_FOUND)
             #tomo los datos del rol
-            serializer = RolFiltroSerializer(rol)
+            serializer = RolCreateSerializer(rol)
             rolId=serializer.data['_id']
             #recorro los padres(modulos)
             for accionPadre in Acciones.objects.filter(idAccionPadre__isnull=True):
