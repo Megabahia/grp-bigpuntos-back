@@ -186,6 +186,12 @@ def usuario_update(request, pk):
             if 'created_at' in request.data:
                 request.data.pop('created_at')
                 request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
+            
+            if 'empresa' in request.data:
+                    if request.data['empresa'] != '':
+                        empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
+                        UsuariosEmpresas.objects.create(empresa_id=empresa_id._id,usuario=usuario)
+
             serializer = UsuarioSerializer(usuario, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
