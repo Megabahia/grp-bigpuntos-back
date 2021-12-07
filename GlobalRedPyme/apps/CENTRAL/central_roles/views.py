@@ -176,9 +176,6 @@ def rol_update(request,pk):
             rolUpdate['updated_at'] = str(nowDate)
             if 'created_at' in request.data:
                 rolUpdate.pop('created_at')
-            #Guardo los roles
-            tipoUsuario = TipoUsuario.objects.filter(nombre=rolUpdate['tipoUsuario'],state=1).first()
-            rolUpdate['tipoUsuario'] = tipoUsuario._id
 
             serializer = RolSerializer(rol, data=rolUpdate,partial=True)
             if serializer.is_valid():
