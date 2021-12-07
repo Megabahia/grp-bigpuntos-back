@@ -176,33 +176,19 @@ def rol_update(request,pk):
             rolUpdate['updated_at'] = str(nowDate)
             if 'created_at' in request.data:
                 rolUpdate.pop('created_at')
+            #Guardo los roles
+            tipoUsuario = TipoUsuario.objects.filter(nombre=rolUpdate['tipoUsuario'],state=1).first()
+            rolUpdate['tipoUsuario'] = tipoUsuario._id
+
             serializer = RolSerializer(rol, data=rolUpdate,partial=True)
             if serializer.is_valid():
                 serializer.save()
+                dataExitosa={"mensaje":"rol y acciones creadas exitosamente","rol":serializer.data}
+                createLog(logModel,dataExitosa,logTransaccion)
+                return Response(dataExitosa, status=status.HTTP_201_CREATED)
             else:
                 createLog(logModel,serializer.errors,logExcepcion)
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-            
-            #Valido que existan las acciones
-            if 'acciones' in request.data:
-                accionesUpdate=request.data['acciones']
-                #recorro los padres(modulos)
-                #recorro el json de acciones, busco el id de la accion del modulo, Leer, Escribir,etc, por último actualizo los datos
-                for keyPadre, valuePadre in accionesUpdate.items():
-                    nombrePadre=str(keyPadre) 
-                    for keyHijo, valueHijo in valuePadre.items():
-                        nombreHijo,estado=str(keyHijo),int(valueHijo)
-                        accion=Acciones.objects.filter(idAccionPadre__nombre=nombrePadre,nombre=nombreHijo).only('id').first()
-                        #creo la accion
-                        AccionesPorRol.objects.filter(idAccion_id=int(accion.id),idRol_id=rolId).update(state=estado,updated_at=nowDate)
-                #retorno el rol creado con sus acciones
-                dataExitosa={"mensaje":"rol y acciones actualizadas exitosamente","rol":serializer.data,"acciones":accionesUpdate}
-                createLog(logModel,dataExitosa,logTransaccion) 
-                return Response(dataExitosa, status=status.HTTP_201_CREATED)
-            else:
-                err={"error":"El rol ha sido actualizado pero las acciones no!","rol":serializer.data}  
-                createLog(logModel,err,logExcepcion) 
-                return Response(err, status=status.HTTP_400_BAD_REQUEST)  
     except Exception as e: 
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion) 
