@@ -66,7 +66,7 @@ def rol_list(request):
             if 'tipoUsuario' in request.data:
                 if request.data['tipoUsuario'] != '':
                     tipoUsuario = RolesUsuarios.objects.filter(tipoUsuario=request.request.data['tipoUsuarios']).first()
-                    filters['tipoUsuario'] = tipoUsuario._id
+                    filters['usuario'] = tipoUsuario._id
             #Serializar los datos
             rol = Roles.objects.filter(**filters).order_by('-created_at')
             serializer = RolSerializer(rol[offset:limit], many=True)
