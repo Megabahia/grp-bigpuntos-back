@@ -63,7 +63,7 @@ def rol_list(request):
             limit = offset + page_size
             filters={"state":"1"}
         
-            if 'tipoUuario' in request.data:
+            if 'tipoUsuario' in request.data:
                 if request.data['tipoUsuario'] != '':
                     tipoUsuario = RolesUsuarios.objects.filter(tipoUsuario=request.request.data['tipoUsuarios']).first()
                     filters['tipoUsuario'] = tipoUsuario._id
