@@ -132,9 +132,6 @@ def rol_create(request):
                 serializer.save()
                 #Asigno id del rol creado para usarlo en las acciones
                 rolId=serializer.data['_id']
-            else:
-                createLog(logModel,serializer.errors,logExcepcion)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             #Valido que existan las acciones
             if 'acciones' in request.data:
                 accionesCrear=request.data['acciones']
