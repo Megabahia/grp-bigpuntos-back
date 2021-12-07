@@ -1,9 +1,10 @@
 from rest_framework import status, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
-from apps.CENTRAL.central_usuarios.models import Usuarios
+from apps.CENTRAL.central_usuarios.models import Usuarios, UsuariosEmpresas
 from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
 from apps.PERSONAS.personas_personas.models import Personas
+from apps.CORP.corp_empresas.models import Empresas
 from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
 from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
 from apps.CENTRAL.central_roles.serializers import ListRolesSerializer
@@ -337,6 +338,12 @@ def usuario_create(request):
                         rol= rol,
                         usuario= account
                     )
+
+                if 'empresa' in request.data:
+                    if request.data['empresa'] != '':
+                        empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
+                        UsuariosEmpresas.objects.create(empresa_id=empresa_id._id,usuario=account)
+
                 # Consultar roles de usuario
                 rolesUsuario = RolesUsuarios.objects.filter(usuario=account, state=1)
                 roles = ListRolesSerializer(rolesUsuario,many=True).data

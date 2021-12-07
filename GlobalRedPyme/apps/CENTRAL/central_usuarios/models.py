@@ -17,4 +17,14 @@ class Usuarios(AbstractBaseUser):
     objects = UserManager()
 
     tipoUsuario = models.ForeignKey(TipoUsuario, null=True, on_delete=models.CASCADE)  # Relacion Tipo usuario
+
+
+class UsuariosEmpresas(models.Model):
+    _id = models.ObjectIdField()
+    empresa_id = models.TextField(null=True, blank=True)
+    usuario = models.ForeignKey(Usuarios, null=True, on_delete=models.CASCADE)  # Relacion Tipo usuario
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    state = models.SmallIntegerField(default=1)
     
