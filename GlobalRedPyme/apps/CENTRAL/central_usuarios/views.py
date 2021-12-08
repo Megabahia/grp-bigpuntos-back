@@ -217,7 +217,7 @@ def usuario_findOne(request, pk):
     try:
         try:
             logModel['dataEnviada'] = str(request.data)
-            usuario = Usuarios.objects.get(pk=pk, state=1)
+            usuario = Usuarios.objects.get(pk=ObjectId(pk), state=1)
         except Usuarios.DoesNotExist:
             errorNoExiste={'error':'No existe'}
             logModel['dataRecibida']=str(errorNoExiste)
@@ -270,6 +270,9 @@ def usuario_update(request, pk):
                     if request.data['empresa'] != '':
                         empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
                         UsuariosEmpresas.objects.create(empresa_id=empresa_id._id,usuario=usuario)
+
+            if 'empresa' in request.data and request.data['empresa'] != '':
+                print(request.data['empresa'])
 
             serializer = UsuarioSerializer(usuario, data=request.data,partial=True)
             if serializer.is_valid():
