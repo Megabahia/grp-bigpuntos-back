@@ -1,7 +1,12 @@
 from rest_framework import serializers
 
-from apps.CENTRAL.central_usuarios.models import Usuarios
-from apps.CENTRAL.central_roles.serializers import RolFiltroSerializer
+from apps.CENTRAL.central_usuarios.models import Usuarios, UsuariosEmpresas
+from apps.CENTRAL.central_roles.models import RolesUsuarios
+from apps.CENTRAL.central_roles.serializers import RolFiltroSerializer, ListRolSerializer
+from apps.CORP.corp_empresas.models import Empresas
+from apps.CORP.corp_empresas.serializers import EmpresasSerializer
+# ObjectId
+from bson import ObjectId
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,9 +30,34 @@ class UsuarioRolSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(UsuarioRolSerializer, self).to_representation(instance)
-        rol = data.pop('roles')
-        for key, val in rol.items():
-            data.update({"rol"+key.lower().capitalize(): val})
+        # rol = data.pop('roles')
+        # for key, val in rol.items():
+        #     data.update({"rol"+key.lower().capitalize(): val})
+        if instance.tipoUsuario != None:
+            tipoUsuario = str(instance.tipoUsuario.nombre)
+            data.update({"tipoUsuario": tipoUsuario})
+        return data
+
+class UsuarioEmpresaSerializer(serializers.ModelSerializer):
+    roles = RolFiltroSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Usuarios
+        exclude = ('password',)
+
+    def to_representation(self, instance):
+        data = super(UsuarioEmpresaSerializer, self).to_representation(instance)
+        usuarioEmpresa = UsuariosEmpresas.objects.filter(usuario=instance._id).first()
+        rolesUsuarios = RolesUsuarios.objects.filter(usuario=instance._id)
+        if rolesUsuarios != None:
+            for rolUsuario in rolesUsuarios:
+                data.update({"rol"+rolUsuario.rol.nombre: ListRolSerializer(rolUsuario.rol).data})
+        if usuarioEmpresa != None:
+            empresa = Empresas.objects.filter(pk=ObjectId(usuarioEmpresa.empresa_id),state=1).first()
+            data.update({"empresa": EmpresasSerializer(empresa).data})
+        if instance.tipoUsuario != None:
+            tipoUsuario = str(instance.tipoUsuario.nombre)
+            data.update({"tipoUsuario": tipoUsuario})
         return data
 
 

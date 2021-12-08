@@ -8,7 +8,7 @@ from apps.CORP.corp_empresas.models import Empresas
 from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
 from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
 from apps.CENTRAL.central_roles.serializers import ListRolesSerializer
-from apps.CENTRAL.central_usuarios.serializers import UsuarioSerializer,UsuarioImagenSerializer,UsuarioRolSerializer,UsuarioCrearSerializer,UsuarioFiltroSerializer
+from apps.CENTRAL.central_usuarios.serializers import UsuarioSerializer,UsuarioImagenSerializer,UsuarioRolSerializer,UsuarioCrearSerializer,UsuarioFiltroSerializer, UsuarioEmpresaSerializer
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend 
 from django.utils import timezone
@@ -64,12 +64,15 @@ def usuario_list(request):
             limit = offset + page_size
             #Filtros
             filters={"state":"1"}
-            if 'roles' in request.data:
-                if request.data['roles']!=0:
-                    filters['roles'] = int(request.data['roles'])
+            # if 'roles' in request.data:
+            #     if request.data['roles']!=0:
+            #         filters['roles'] = int(request.data['roles'])
             if 'estado' in request.data:
                 if request.data['estado']!='':
                     filters['estado'] = str(request.data['estado'])
+            if 'tipoUsuario' in request.data:
+                if request.data['tipoUsuario']!='':
+                    filters['tipoUsuario'] = TipoUsuario.objects.filter(nombre=request.data['tipoUsuario'],state=1).first()._id
             #toma de datos
             usuario= Usuarios.objects.filter(**filters).order_by('-created_at')
             serializer = UsuarioRolSerializer(usuario[offset:limit],many=True)
@@ -84,6 +87,55 @@ def usuario_list(request):
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
+#USUARIO LISTAR
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def usuario_list_corp(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/corp/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    try:
+        if request.method == 'POST':
+            logModel['dataEnviada'] = str(request.data)
+            if 'page_size' not in request.data or 'page' not in request.data:
+                #error no existen los datos
+                errorPaginacion={'error':'No existe el/los parámetros de páginacion'}
+                createLog(logModel,errorPaginacion,logExcepcion)
+                return Response(errorPaginacion, status=status.HTTP_400_BAD_REQUEST)
+            #paginacion
+            page_size=int(request.data['page_size'])
+            page=int(request.data['page'])
+            offset = page_size* page
+            limit = offset + page_size
+            #Filtros
+            filters={"state":"1"}
+            if 'tipoUsuario' in request.data:
+                if request.data['tipoUsuario']!='':
+                    filters['tipoUsuario'] = TipoUsuario.objects.filter(nombre='corp',state=1).first()._id
+            #toma de datos
+            usuario= Usuarios.objects.filter(**filters).order_by('-created_at')
+            serializer = UsuarioEmpresaSerializer(usuario[offset:limit],many=True)
+            new_serializer_data={'cont': usuario.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        #envio de errores
+        createLog(logModel,serializer.errors, logExcepcion)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e: 
+        err={"error":'Un error ha ocurrido: {}'.format(e)}  
+        createLog(logModel,err,logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
 #USUARIO LISTAR EXPORTAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

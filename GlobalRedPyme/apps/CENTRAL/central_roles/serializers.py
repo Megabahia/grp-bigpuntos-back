@@ -30,7 +30,7 @@ class RolCreateSerializer(serializers.ModelSerializer):
 class RolFiltroSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roles
-        fields = ['_id','codigo','nombre']
+        fields = ['_id','codigo','nombre','config']
 
 class ListRolSerializer(serializers.ModelSerializer):
     class Meta:

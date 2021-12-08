@@ -9,12 +9,14 @@ from apps.CENTRAL.central_usuarios.views import(
 	usuarioImagen_update,
 	vendedor_list,
 	usuarios_list_rol,
-	usuario_core_create
+	usuario_core_create,
+	usuario_list_corp
 )
 app_name = 'usuarios'
 
 urlpatterns = [
 	path('list/', usuario_list, name="usuario_list"),
+	path('list/corp/', usuario_list_corp, name="usuario_list_corp"),
 	path('list/export/', usuario_listExport, name="usuario_export"),
 	path('create/', usuario_create, name="usuario_create"),
 	path('corp/create/', usuario_core_create, name="usuario_core_create"),
