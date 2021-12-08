@@ -11,7 +11,7 @@ class Roles(models.Model):
     codigo = models.CharField(max_length=150,null=True)
     nombre = models.CharField(unique=True,max_length=150,null=False)
     descripcion = models.CharField(max_length=250, null=True, blank= True)
-    config = models.TextField(default='{}')
+    config = models.TextField(default='{}', null=True, blank= True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
