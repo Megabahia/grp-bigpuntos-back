@@ -26,14 +26,14 @@ from drf_yasg import openapi
 # Configuracion de swagger (En produccion colocar public=False)
 schema_view = get_schema_view(
    openapi.Info(
-      title="Snippets API",
+      title="Global Red Pyme API",
       default_version='v1',
-      description="Test description",
+      description="Enpoints de global red pyme",
       terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@snippets.local"),
+      contact=openapi.Contact(email="jimmy.yar@papagayo.dev"),
       license=openapi.License(name="BSD License"),
    ),
-   public=True,
+   public=False,
    permission_classes=[permissions.AllowAny],
 )
 

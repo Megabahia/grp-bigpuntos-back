@@ -18,6 +18,9 @@ from apps.CENTRAL.central_autenticacion.models import Token
 from apps.CENTRAL.central_autenticacion.auth import token_expire_handler,expires_in, deleteExpiredTokens
 # ObjectId
 from bson import ObjectId
+# Swagger
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 #contraeña
 from django.utils.crypto import get_random_string
 #logs
@@ -35,6 +38,18 @@ logApi=datosAux['api']
 logTransaccion=datosTipoLogAux['transaccion']
 logExcepcion=datosTipoLogAux['excepcion']
 #USUARIO LISTAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'],
+                         request_body=openapi.Schema(
+                             type=openapi.TYPE_OBJECT,
+                             required=['page_size','page'],
+                             properties={
+                                 'page_size': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'page': openapi.Schema(type=openapi.TYPE_NUMBER),
+                             },
+                         ),
+                         operation_description='Uninstall a version of Site',
+                         responses={200: UsuarioRolSerializer(many=True)})
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def usuario_list(request):
@@ -89,6 +104,18 @@ def usuario_list(request):
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
 #USUARIO LISTAR
+# 'methods' can be used to apply the same modification to multiple methods
+@swagger_auto_schema(methods=['post'],
+                         request_body=openapi.Schema(
+                             type=openapi.TYPE_OBJECT,
+                             required=['page_size','page'],
+                             properties={
+                                 'page_size': openapi.Schema(type=openapi.TYPE_NUMBER),
+                                 'page': openapi.Schema(type=openapi.TYPE_NUMBER),
+                             },
+                         ),
+                         operation_description='Uninstall a version of Site',
+                         responses={200: UsuarioEmpresaSerializer(many=True)})
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def usuario_list_corp(request):
