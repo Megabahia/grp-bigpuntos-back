@@ -225,7 +225,7 @@ def usuario_findOne(request, pk):
             return Response(errorNoExiste,status=status.HTTP_404_NOT_FOUND)
         #tomar el dato
         if request.method == 'GET':
-            serializer = UsuarioSerializer(usuario)
+            serializer = UsuarioEmpresaSerializer(usuario)
             createLog(logModel,serializer.data,logTransaccion)
             return Response(serializer.data,status=status.HTTP_200_OK)
     except Exception as e: 
@@ -271,8 +271,9 @@ def usuario_update(request, pk):
                         empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
                         UsuariosEmpresas.objects.create(empresa_id=empresa_id._id,usuario=usuario)
 
-            if 'empresa' in request.data and request.data['empresa'] != '':
-                print(request.data['empresa'])
+            if 'empresa' in request.data:
+                if request.data['empresa'] != '':
+                    print(request.data['empresa'])
 
             serializer = UsuarioSerializer(usuario, data=request.data,partial=True)
             if serializer.is_valid():
