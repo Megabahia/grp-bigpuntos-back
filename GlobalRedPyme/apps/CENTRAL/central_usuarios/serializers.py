@@ -53,6 +53,7 @@ class UsuarioEmpresaSerializer(serializers.ModelSerializer):
         if rolesUsuarios != None:
             roles = []
             for rolUsuario in rolesUsuarios:
+                print(rolUsuario.rol)
                 roles.append(ListRolSerializer(rolUsuario.rol).data)
             data.update({"roles": roles})
         if usuarioEmpresa != None:
