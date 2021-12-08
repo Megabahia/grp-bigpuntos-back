@@ -44,6 +44,7 @@ class UsuarioEmpresaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuarios
         exclude = ('password',)
+        read_only_fields = ['_id']
 
     def to_representation(self, instance):
         data = super(UsuarioEmpresaSerializer, self).to_representation(instance)

@@ -267,15 +267,20 @@ def usuario_update(request, pk):
                 request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
             
             if 'empresa' in request.data:
-                    if request.data['empresa'] != '':
-                        empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
-                        UsuariosEmpresas.objects.create(empresa_id=empresa_id._id,usuario=usuario)
+                    if len(request.data['empresa']) != 0:
+                        empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']['_id']),state=1).first()
+                        UsuariosEmpresas.objects.filter(usuario=usuario).update(empresa_id=empresa_id._id,usuario=usuario)
+                    else:
+                        UsuariosEmpresas.objects.filter(usuario=usuario).update(state=0)
 
-            if 'empresa' in request.data:
-                if request.data['empresa'] != '':
-                    print(request.data['empresa'])
+            if 'roles' in request.data:
+                if len(request.data['roles']) != 0:
+                    for rol in request.data['roles']:
+                        RolesUsuarios.objects.filter(usuario=ObjectId(request.data['_id']),rol=ObjectId(rol['_id'])).update(rol=rol['_id'],usuario=ObjectId(request.data['_id']))
+                else:
+                    RolesUsuarios.objects.filter(usuario=usuario).update(state=0)
 
-            serializer = UsuarioSerializer(usuario, data=request.data,partial=True)
+            serializer = UsuarioEmpresaSerializer(usuario, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
