@@ -49,11 +49,10 @@ class UsuarioEmpresaSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super(UsuarioEmpresaSerializer, self).to_representation(instance)
         usuarioEmpresa = UsuariosEmpresas.objects.filter(usuario=instance._id).first()
-        rolesUsuarios = RolesUsuarios.objects.filter(usuario=instance._id)
+        rolesUsuarios = RolesUsuarios.objects.filter(usuario=instance._id,state=1)
         if rolesUsuarios != None:
             roles = []
             for rolUsuario in rolesUsuarios:
-                print(rolUsuario.rol)
                 roles.append(ListRolSerializer(rolUsuario.rol).data)
             data.update({"roles": roles})
         if usuarioEmpresa != None:
