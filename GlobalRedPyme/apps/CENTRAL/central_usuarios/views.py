@@ -145,9 +145,9 @@ def usuario_list_corp(request):
             limit = offset + page_size
             #Filtros
             filters={"state":"1"}
-            if 'tipoUsuario' in request.data:
-                if request.data['tipoUsuario']!='':
-                    filters['tipoUsuario'] = TipoUsuario.objects.filter(nombre='corp',state=1).first()._id
+            # if 'tipoUsuario' in request.data:
+            #     if request.data['tipoUsuario']!='':
+            filters['tipoUsuario'] = TipoUsuario.objects.filter(nombre='corp',state=1).first()._id
             #toma de datos
             usuario= Usuarios.objects.filter(**filters).order_by('-created_at')
             serializer = UsuarioEmpresaSerializer(usuario[offset:limit],many=True)

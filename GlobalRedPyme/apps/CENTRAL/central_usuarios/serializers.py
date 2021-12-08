@@ -50,8 +50,10 @@ class UsuarioEmpresaSerializer(serializers.ModelSerializer):
         usuarioEmpresa = UsuariosEmpresas.objects.filter(usuario=instance._id).first()
         rolesUsuarios = RolesUsuarios.objects.filter(usuario=instance._id)
         if rolesUsuarios != None:
+            roles = []
             for rolUsuario in rolesUsuarios:
-                data.update({"rol"+rolUsuario.rol.nombre: ListRolSerializer(rolUsuario.rol).data})
+                roles.append(ListRolSerializer(rolUsuario.rol).data)
+            data.update({"roles": roles})
         if usuarioEmpresa != None:
             empresa = Empresas.objects.filter(pk=ObjectId(usuarioEmpresa.empresa_id),state=1).first()
             data.update({"empresa": EmpresasSerializer(empresa).data})
