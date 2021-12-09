@@ -277,7 +277,7 @@ def usuario_update(request, pk):
 
             if 'roles' in request.data:
                 if request.data['roles'] != '':
-                    RolesUsuarios.objects.filter(usuario=ObjectId(request.data['_id']),rol=ObjectId(request.data['roles'])).update(rol=ObjectId(request.data['roles']),usuario=ObjectId(request.data['_id']),state=1)
+                    RolesUsuarios.objects.filter(usuario=ObjectId(request.data['_id'])).update(rol=ObjectId(request.data['roles']),usuario=ObjectId(request.data['_id']),state=1)
                 else:
                     RolesUsuarios.objects.filter(usuario=usuario).update(state=0)
 
