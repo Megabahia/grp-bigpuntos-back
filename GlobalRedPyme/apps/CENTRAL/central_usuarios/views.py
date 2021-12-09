@@ -430,8 +430,9 @@ def usuario_create(request):
 
                 if 'roles' in request.data:
                     if request.data['roles'] != '':
+                        rol = Roles.objects.filter(_id=ObjectId(request.data['roles']),state=1).first()
                         RolesUsuarios.objects.create(
-                            rol= ObjectId(request.data['roles']),
+                            rol= rol,
                             usuario= account
                         )
 
