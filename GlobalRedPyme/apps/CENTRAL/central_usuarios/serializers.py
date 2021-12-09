@@ -30,9 +30,12 @@ class UsuarioRolSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(UsuarioRolSerializer, self).to_representation(instance)
-        # rol = data.pop('roles')
-        # for key, val in rol.items():
-        #     data.update({"rol"+key.lower().capitalize(): val})
+        rolesUsuarios = RolesUsuarios.objects.filter(usuario=instance._id,state=1)
+        if rolesUsuarios != None:
+            roles = []
+            for rolUsuario in rolesUsuarios:
+                roles.append(ListRolSerializer(rolUsuario.rol).data)
+            data.update({"roles": roles})
         if instance.tipoUsuario != None:
             tipoUsuario = str(instance.tipoUsuario.nombre)
             data.update({"tipoUsuario": tipoUsuario})
