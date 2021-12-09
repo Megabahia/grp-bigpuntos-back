@@ -422,7 +422,6 @@ def usuario_create(request):
             request.data['tipoUsuario'] = tipoUsuario._id
             #AGREGA CONTRASEÑA
             if 'password' not in request.data:
-                if request.data['password'] != '':
                     request.data['password']=get_random_string(length=32)
             serializer = UsuarioCrearSerializer(data=request.data)
             data = {}
