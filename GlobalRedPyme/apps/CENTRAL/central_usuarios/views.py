@@ -424,14 +424,13 @@ def usuario_create(request):
             data = {}
             if serializer.is_valid():
                 account = serializer.save()
-                rol = Roles.objects.filter(nombre=str(request.data['roles']), state=1).first()
-                rolUsuario = RolesUsuarios.objects.filter(usuario=account,rol=rol, state=1).first()
-                
-                if rolUsuario is None:
-                    RolesUsuarios.objects.create(
-                        rol= rol,
-                        usuario= account
-                    )
+
+                if 'roles' in request.data:
+                    if request.data['roles'] != '':
+                        RolesUsuarios.objects.create(
+                            rol= ObjectId(request.data['roles']),
+                            usuario= account
+                        )
 
                 if 'empresa' in request.data:
                     if request.data['empresa'] != '':
