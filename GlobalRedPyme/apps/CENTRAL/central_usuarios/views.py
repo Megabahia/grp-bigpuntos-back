@@ -268,15 +268,14 @@ def usuario_update(request, pk):
             
             if 'empresa' in request.data:
                     if len(request.data['empresa']) != 0:
-                        empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']['_id']),state=1).first()
+                        empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
                         UsuariosEmpresas.objects.filter(usuario=usuario).update(empresa_id=empresa_id._id,usuario=usuario,state=1)
                     else:
                         UsuariosEmpresas.objects.filter(usuario=usuario).update(state=0)
 
             if 'roles' in request.data:
-                if len(request.data['roles']) != 0:
-                    for rol in request.data['roles']:
-                        RolesUsuarios.objects.filter(usuario=ObjectId(request.data['_id']),rol=ObjectId(rol['_id'])).update(rol=ObjectId(rol['_id']),usuario=ObjectId(request.data['_id']),state=1)
+                if request.data['roles'] != '':
+                    RolesUsuarios.objects.filter(usuario=ObjectId(request.data['_id']),rol=ObjectId(request.data['roles'])).update(rol=ObjectId(request.data['roles']),usuario=ObjectId(request.data['_id']),state=1)
                 else:
                     RolesUsuarios.objects.filter(usuario=usuario).update(state=0)
 
