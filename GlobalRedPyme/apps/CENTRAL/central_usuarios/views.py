@@ -264,6 +264,8 @@ def usuario_update(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+            
+            if 'tipoUsuario' in request.data:
                 request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
             
             if 'empresa' in request.data:
