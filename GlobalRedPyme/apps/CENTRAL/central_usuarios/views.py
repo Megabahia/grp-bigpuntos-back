@@ -309,6 +309,7 @@ def usuario_delete(request, pk):
     try:
         try:
             logModel['dataEnviada'] = str(request.data)
+            pk = ObjectId(pk)
             usuario = Usuarios.objects.get(pk=pk, state=1)
         except Usuarios.DoesNotExist:
             errorNoExiste={'error':'No existe'}
