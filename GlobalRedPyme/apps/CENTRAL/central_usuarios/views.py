@@ -267,7 +267,7 @@ def usuario_update(request, pk):
                 request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
             
             if 'empresa' in request.data:
-                    if len(request.data['empresa']) != 0:
+                    if request.data['empresa'] != '':
                         empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
                         UsuariosEmpresas.objects.filter(usuario=usuario).update(empresa_id=empresa_id._id,usuario=usuario,state=1)
                     else:
