@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from apps.CENTRAL.central_usuarios.models import Usuarios, UsuariosEmpresas
 from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
+from apps.CENTRAL.central_infoUsuarios.serializers import InfoUsuarioSerializer
 from apps.PERSONAS.personas_personas.models import Personas
 from apps.CORP.corp_empresas.models import Empresas
 from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
@@ -437,11 +438,15 @@ def usuario_create(request):
                             rol= rol,
                             usuario= account
                         )
-
+                infoUsuario={}
                 if 'empresa' in request.data:
                     if request.data['empresa'] != '':
                         empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
                         UsuariosEmpresas.objects.create(empresa_id=empresa_id._id,usuario=account)
+                        request.data['usuario']=account._id
+                        infoUsuario = InfoUsuarioSerializer(data=request.data)
+                        if infoUsuario.is_valid():
+                            infoUsuario.save()
 
                 # Consultar roles de usuario
                 rolesUsuario = RolesUsuarios.objects.filter(usuario=account, state=1)
@@ -451,23 +456,26 @@ def usuario_create(request):
                 dataPeronsa['user_id']=str(account.pk)
                 dataPeronsa['email']=str(account.email)
                 persona = Personas.objects.create(**dataPeronsa)
-                personaSerializer = PersonasSerializer(persona).data
-
+                
                 # data['response'] = 'Usuario creado correctamente'
                 # data['email'] = account.email
                 token = Token.objects.get(user=account)
                 # data['token'] = token
+                createLog(logModel,data,logTransaccion)
+                # data['tokenEmail']=str(resetPasswordNewUser(data['email']))
                 data={
                     'token': token.key,
                     'id': str(account.pk),
-                    'persona': personaSerializer,
                     'email': account.email,
                     'tokenExpiracion': expires_in(token),
                     'roles': roles,
                     'estado': account.estado
                 }
-                createLog(logModel,data,logTransaccion)
-                # data['tokenEmail']=str(resetPasswordNewUser(data['email']))
+                if 'empresa' not in request.data:
+                    personaSerializer = PersonasSerializer(persona).data
+                else:
+                    data['infoUsuario']=infoUsuario.data
+
             else:
                 data = serializer.errors
                 createLog(logModel,data,logExcepcion)

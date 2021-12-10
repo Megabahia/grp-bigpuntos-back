@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'apps.CENTRAL.central_acciones',
     'apps.CENTRAL.central_catalogo',
     'apps.CENTRAL.central_facturas',
+    'apps.CENTRAL.central_infoUsuarios',
     'apps.CENTRAL.central_productos',
     'apps.CENTRAL.central_publicaciones',
     'apps.CENTRAL.central_tipoUsuarios',
