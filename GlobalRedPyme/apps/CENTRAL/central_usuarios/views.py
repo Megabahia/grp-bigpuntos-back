@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from apps.CENTRAL.central_usuarios.models import Usuarios, UsuariosEmpresas
 from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
+from apps.CENTRAL.central_infoUsuarios.models import InfoUsuarios
 from apps.CENTRAL.central_infoUsuarios.serializers import InfoUsuarioSerializer
 from apps.PERSONAS.personas_personas.models import Personas
 from apps.CORP.corp_empresas.models import Empresas
@@ -269,12 +270,18 @@ def usuario_update(request, pk):
             if 'tipoUsuario' in request.data:
                 request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
             
+            infoUsuario={}
             if 'empresa' in request.data:
-                    if request.data['empresa'] != '':
-                        empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
-                        UsuariosEmpresas.objects.filter(usuario=usuario).update(empresa_id=empresa_id._id,usuario=usuario,state=1)
-                    else:
-                        UsuariosEmpresas.objects.filter(usuario=usuario).update(state=0)
+                if request.data['empresa'] != '':
+                    empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
+                    UsuariosEmpresas.objects.filter(usuario=usuario).update(empresa_id=empresa_id._id,usuario=usuario,state=1)
+                else:
+                    UsuariosEmpresas.objects.filter(usuario=usuario).update(state=0)
+                
+                infoUsuario = InfoUsuarios.objects.filter(usuario=usuario,state=1).first()
+                infoUsuario = InfoUsuarioSerializer(infoUsuario,data=request.data,partial=True)
+                if infoUsuario.is_valid():
+                    infoUsuario.save()
 
             if 'roles' in request.data:
                 if request.data['roles'] != '':
@@ -286,6 +293,7 @@ def usuario_update(request, pk):
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
+                serializer.data['message']="holiiii"
                 return Response(serializer.data)
             createLog(logModel,serializer.errors,logExcepcion)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
