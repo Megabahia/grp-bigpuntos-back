@@ -149,6 +149,11 @@ def empresas_create(request):
             request.data['created_at'] = str(timezone_now)
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
+            empresa = Empresas.objects.filter(ruc=request.data['ruc'],state=1).first()
+            if empresa is not None:
+                data={'error':'El ruc ya esta registrado.'}
+                createLog(logModel,data,logExcepcion)
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
             serializer = EmpresasSerializer(data=request.data)
             if serializer.is_valid():
@@ -228,6 +233,11 @@ def empresas_update(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+            
+            if query.ruc != request.data['ruc']:
+                data={'error':'El ruc ya esta registrado.'}
+                createLog(logModel,data,logExcepcion)
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
             serializer = EmpresasSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
