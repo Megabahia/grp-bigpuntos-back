@@ -293,7 +293,6 @@ def usuario_update(request, pk):
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
-                serializer.data['message']="holiiii"
                 return Response(serializer.data)
             createLog(logModel,serializer.errors,logExcepcion)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -470,7 +469,6 @@ def usuario_create(request):
                 token = Token.objects.get(user=account)
                 # data['token'] = token
                 createLog(logModel,data,logTransaccion)
-                # data['tokenEmail']=str(resetPasswordNewUser(data['email']))
                 data={
                     'token': token.key,
                     'id': str(account.pk),
@@ -479,6 +477,7 @@ def usuario_create(request):
                     'roles': roles,
                     'estado': account.estado
                 }
+                data['tokenEmail']=str(resetPasswordNewUser(data['email']))
                 if 'empresa' not in request.data:
                     personaSerializer = PersonasSerializer(persona).data
                 else:
