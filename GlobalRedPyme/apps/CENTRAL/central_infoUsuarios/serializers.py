@@ -6,6 +6,7 @@ class InfoUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoUsuarios
         fields = '__all__'
+        read_only_fields = ['_id']
     
     def to_representation(self, instance):
         data = super(InfoUsuarioSerializer, self).to_representation(instance)

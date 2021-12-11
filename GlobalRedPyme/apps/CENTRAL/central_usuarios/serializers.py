@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from apps.CENTRAL.central_usuarios.models import Usuarios, UsuariosEmpresas
 from apps.CENTRAL.central_roles.models import RolesUsuarios
+from apps.CENTRAL.central_infoUsuarios.models import InfoUsuarios
+from apps.CENTRAL.central_infoUsuarios.serializers import InfoUsuarioSerializer
 from apps.CENTRAL.central_roles.serializers import RolFiltroSerializer, ListRolSerializer
 from apps.CORP.corp_empresas.models import Empresas
 from apps.CORP.corp_empresas.serializers import EmpresasSerializer
@@ -53,6 +55,7 @@ class UsuarioEmpresaSerializer(serializers.ModelSerializer):
         data = super(UsuarioEmpresaSerializer, self).to_representation(instance)
         usuarioEmpresa = UsuariosEmpresas.objects.filter(usuario=instance._id).first()
         rolesUsuarios = RolesUsuarios.objects.filter(usuario=instance._id,state=1)
+        infoUsuario = InfoUsuarios.objects.filter(usuario=instance._id,state=1).first()
         if rolesUsuarios != None:
             roles = []
             for rolUsuario in rolesUsuarios:
@@ -64,6 +67,8 @@ class UsuarioEmpresaSerializer(serializers.ModelSerializer):
         if instance.tipoUsuario != None:
             tipoUsuario = str(instance.tipoUsuario.nombre)
             data.update({"tipoUsuario": tipoUsuario})
+        if infoUsuario != None:
+            data.update({"infoUsuario": InfoUsuarioSerializer(infoUsuario).data})
         return data
 
 
