@@ -257,7 +257,7 @@ def pais_list(request):
 def tipo_list(request):
     if request.method == 'GET':
         try:
-            catalogo= Catalogo.objects.filter(state=1).distinct()
+            catalogo= Catalogo.objects.filter(state=1).values('tipo').distinct()
             serializer = CatalogoTipoSerializer(catalogo, many=True)
             return Response(serializer.data,status=status.HTTP_200_OK)
         except Exception as e:
