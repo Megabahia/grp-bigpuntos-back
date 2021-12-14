@@ -62,6 +62,7 @@ urlpatterns = [
     # CORP
     path('corp/cobrarSupermonedas/', include(('apps.CORP.corp_cobrarSupermonedas.urls', 'cobrarSupermonedas'), namespace='cobrarSupermonedas')),
     path('corp/autorizacion/', include(('apps.CORP.corp_autorizaciones.urls', 'autorizacion'), namespace='autorizacion')),
+    path('corp/movimientoCobros/', include(('apps.CORP.corp_movimientoCobros.urls', 'movimientoCobros'), namespace='movimientoCobros')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

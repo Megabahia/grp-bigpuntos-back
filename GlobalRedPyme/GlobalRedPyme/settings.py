@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # Corp
     'apps.CORP.corp_cobrarSupermonedas',
     'apps.CORP.corp_autorizaciones',
+    'apps.CORP.corp_movimientoCobros',
     # Pymes
     'apps.CORP.corp_empresas',
     # apps core
