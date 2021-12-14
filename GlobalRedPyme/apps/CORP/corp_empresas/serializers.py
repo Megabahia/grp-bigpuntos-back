@@ -13,4 +13,4 @@ class EmpresasSerializer(serializers.ModelSerializer):
 class EmpresasFiltroSerializer(serializers.ModelSerializer):
     class Meta:
         model = Empresas
-       	fields = ['_id','nombreEmpresa','ruc']
+       	fields = ['_id','nombreEmpresa','ruc','tipoEmpresa','tipoCategoria']

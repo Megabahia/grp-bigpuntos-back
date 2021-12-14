@@ -371,7 +371,9 @@ def catalogo_filter_name(request):
 
     if request.method == 'POST':
         try:
-            idpadre = Catalogo.objects.filter(nombre=request.data['nombre'],tipo=request.data['tipo'],state=1).first()  
+            idpadre = Catalogo.objects.filter(nombre=request.data['nombre'],tipo=request.data['tipo'],state=1).first()
+            if idpadre == None:
+                return Response([],status=status.HTTP_200_OK)
             query= Catalogo.objects.filter(state=1,idPadre=idpadre)
             serializer = CatalogoHijoSerializer(query, many=True)
             return Response(serializer.data,status=status.HTTP_200_OK)
