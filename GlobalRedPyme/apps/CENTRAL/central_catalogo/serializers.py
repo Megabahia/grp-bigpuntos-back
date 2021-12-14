@@ -8,6 +8,12 @@ class CatalogoSerializer(serializers.ModelSerializer):
         model = Catalogo
        	fields = '__all__'
         read_only_fields = ['_id']
+    
+    def to_representation(self, instance):
+        data = super(CatalogoSerializer, self).to_representation(instance)
+        idPadre = str(data['idPadre'])
+        data.update({"idPadre": idPadre})
+        return data
 
 class CatalogoHijoSerializer(serializers.ModelSerializer):
     class Meta:
