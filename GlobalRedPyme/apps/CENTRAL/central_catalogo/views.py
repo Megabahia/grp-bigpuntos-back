@@ -84,6 +84,7 @@ def catalogo_create(request):
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
             #controlo si es idPadre es null
+            request.data['idPadre'] = ObjectId(request.data['idPadre'])
             if 'idPadre' in request.data:
                 if request.data['idPadre']=='' or request.data['idPadre']==0:
                     request.data.pop('idPadre')
