@@ -87,7 +87,8 @@ def catalogo_create(request):
             if 'idPadre' in request.data:
                 if request.data['idPadre']=='' or request.data['idPadre']==0:
                     request.data.pop('idPadre')
-                request.data['idPadre'] = ObjectId(request.data['idPadre'])
+                else:
+                    request.data['idPadre'] = ObjectId(request.data['idPadre'])
         
             serializer = CatalogoSerializer(data=request.data)
             if serializer.is_valid():
@@ -172,7 +173,8 @@ def catalogo_update(request, pk):
             if 'idPadre' in request.data:
                 if request.data['idPadre']=='' or request.data['idPadre']==0:
                     request.data['idPadre']=''
-                request.data['idPadre'] = ObjectId(request.data['idPadre'])
+                else:
+                    request.data['idPadre'] = ObjectId(request.data['idPadre'])
             serializer = CatalogoSerializer(catalogo, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
