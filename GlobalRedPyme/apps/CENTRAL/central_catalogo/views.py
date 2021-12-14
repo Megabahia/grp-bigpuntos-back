@@ -171,7 +171,7 @@ def catalogo_update(request, pk):
             #controlo si es idPadre es null
             if 'idPadre' in request.data:
                 if request.data['idPadre']=='' or request.data['idPadre']==0:
-                    request.data['idPadre']=None
+                    request.data['idPadre']=''
                 request.data['idPadre'] = ObjectId(request.data['idPadre'])
             serializer = CatalogoSerializer(catalogo, data=request.data,partial=True)
             if serializer.is_valid():

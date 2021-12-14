@@ -6,9 +6,6 @@ class CobrarSupermonedas(models.Model):
     identificacion = models.CharField(max_length=13,null=False)
     codigoCobro = models.CharField(max_length=200,null=False)
     monto = models.FloatField(null=True)
-    fechaCobro = models.DateField(null=True)
-    montoTotalFactura = models.FloatField(null=True)
-    montoSuperMonedas = models.FloatField(null=True)
     correo = models.EmailField(max_length=200,null=False)
     estado = models.CharField(max_length=200,null=False)
     user_id = models.CharField(max_length=250,blank=False, null=False)  # Relacion usuario
