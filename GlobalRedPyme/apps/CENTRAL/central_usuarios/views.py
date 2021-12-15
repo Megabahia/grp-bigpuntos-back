@@ -451,10 +451,12 @@ def usuario_create(request):
                     if request.data['empresa'] != '':
                         empresa_id = Empresas.objects.filter(_id=ObjectId(request.data['empresa']),state=1).first()
                         UsuariosEmpresas.objects.create(empresa_id=empresa_id._id,usuario=account)
-                        request.data['usuario']=account._id
-                        infoUsuario = InfoUsuarioSerializer(data=request.data)
-                        if infoUsuario.is_valid():
-                            infoUsuario.save()
+                
+                request.data['usuario']=account._id
+                infoUsuario = InfoUsuarioSerializer(data=request.data)
+                if infoUsuario.is_valid():
+                    print("entro")
+                    infoUsuario.save()
 
                 # Consultar roles de usuario
                 rolesUsuario = RolesUsuarios.objects.filter(usuario=account, state=1)
@@ -481,8 +483,8 @@ def usuario_create(request):
                 data['tokenEmail']=str(resetPasswordNewUser(data['email']))
                 if 'empresa' not in request.data:
                     personaSerializer = PersonasSerializer(persona).data
-                else:
-                    data['infoUsuario']=infoUsuario.data
+                
+                data['infoUsuario']=infoUsuario.data
 
             else:
                 data = serializer.errors
