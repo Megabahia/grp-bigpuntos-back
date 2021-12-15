@@ -1,5 +1,7 @@
 from apps.CORP.corp_cobrarSupermonedas.models import  CobrarSupermonedas
 from apps.CORP.corp_autorizaciones.models import  Autorizaciones
+from apps.PERSONAS.personas_personas.models import  Personas
+from apps.PERSONAS.personas_personas.serializers import  PersonasSearchSerializer
 from apps.CORE.core_monedas.models import  Monedas
 from apps.CORP.corp_cobrarSupermonedas.serializers import (
     CobrarSupermonedasSerializer
@@ -258,5 +260,41 @@ def cobrarSupermonedas_delete(request, pk):
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def cobrarSupermonedas_search(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #Filtros
+            filters={"state":"1"}
+
+            if 'codigoCobro' in request.data:
+                if request.data['codigoCobro']!='':
+                    filters['codigoCobro__icontains'] = str(request.data['codigoCobro'])
+
+            #Serializar los datos
+            query = CobrarSupermonedas.objects.filter(**filters).first()
+            persona = Personas.objects.filter(user_id=query.user_id).first()
+            serializer = PersonasSearchSerializer(persona)
+            #envio de datos
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -28,3 +28,8 @@ class ValidarCuentaSerializer(serializers.ModelSerializer):
         read_only_fields = ['_id']
 
 
+class PersonasSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Personas
+        fields = ['_id','identificacion','nombres','apellidos','user_id']
+
