@@ -61,6 +61,10 @@ def empresas_list(request):
             limit = offset + page_size
             #Filtros
             filters={"state":"1"}
+        
+            if "nombreComercial" in request.data:
+                if request.data["nombreComercial"] != '':
+                    filters['nombreComercial__icontains'] = str(request.data["nombreComercial"])
 
             #Serializar los datos
             query = Empresas.objects.filter(**filters).order_by('-created_at')
