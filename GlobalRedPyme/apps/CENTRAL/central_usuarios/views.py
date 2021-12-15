@@ -269,7 +269,7 @@ def usuario_update(request, pk):
             
             if 'tipoUsuario' in request.data:
                 if request.data['tipoUsuario']!='':
-                    filters['tipoUsuario'] = TipoUsuario.objects.filter(nombre=request.data['tipoUsuario'],state=1).first()._id
+                    request.data['tipoUsuario'] = TipoUsuario.objects.filter(nombre=request.data['tipoUsuario'],state=1).first()._id
             
             infoUsuario={}
             if 'empresa' in request.data:
