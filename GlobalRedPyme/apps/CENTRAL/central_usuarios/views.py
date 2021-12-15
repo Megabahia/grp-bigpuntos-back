@@ -268,7 +268,8 @@ def usuario_update(request, pk):
                 request.data.pop('created_at')
             
             if 'tipoUsuario' in request.data:
-                request.data['tipoUsuario'] = ObjectId(str(request.data['tipoUsuario']))
+                if request.data['tipoUsuario']!='':
+                    filters['tipoUsuario'] = TipoUsuario.objects.filter(nombre=request.data['tipoUsuario'],state=1).first()._id
             
             infoUsuario={}
             if 'empresa' in request.data:
