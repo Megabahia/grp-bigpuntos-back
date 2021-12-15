@@ -37,6 +37,8 @@ GlobalRedPyme/apps/CORP/corp_autorizaciones/__pycache__/
 GlobalRedPyme/apps/CORP/corp_autorizaciones/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_movimientoCobros/__pycache__/
 GlobalRedPyme/apps/CORP/corp_movimientoCobros/migrations/__pycache__/
+GlobalRedPyme/apps/CORP/corp_pagos/__pycache__/
+GlobalRedPyme/apps/CORP/corp_pagos/migrations/__pycache__/
 GlobalRedPyme/apps/config/__pycache__/
 /GlobalRedPyme/GlobalRedPyme/.env
 /GlobalRedPyme/GlobalRedPyme/.env.example
