@@ -1,5 +1,7 @@
 from apps.CENTRAL.central_catalogo.models import  Catalogo
 from apps.CORP.corp_pagos.models import  Pagos
+from apps.PERSONAS.personas_personas.models import  Personas
+from apps.PERSONAS.personas_personas.serializers import  PersonasSearchSerializer
 from apps.CORP.corp_pagos.serializers import (
     PagosSerializer
 )
@@ -88,8 +90,8 @@ def pagos_listOne(request, pk):
     }
     try:
         try:
-            query = Personas.objects.filter(user_id=pk, state=1).first()
-        except Personas.DoesNotExist:
+            query = Pagos.objects.filter(user_id=pk, state=1).first()
+        except Pagos.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
             return Response(err,status=status.HTTP_404_NOT_FOUND)
@@ -123,8 +125,8 @@ def pagos_update(request, pk):
     try:
         try:
             logModel['dataEnviada'] = str(request.data)
-            query = Personas.objects.filter(user_id=pk, state=1).first()
-        except Personas.DoesNotExist:
+            query = Pagos.objects.filter(user_id=pk, state=1).first()
+        except Pagos.DoesNotExist:
             errorNoExiste={'error':'No existe'}
             createLog(logModel,errorNoExiste,logExcepcion)
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -162,8 +164,8 @@ def pagos_delete(request, pk):
     }
     try:
         try:
-            query = Personas.objects.filter(user_id=pk, state=1).first()
-        except Personas.DoesNotExist:
+            query = Pagos.objects.filter(user_id=pk, state=1).first()
+        except Pagos.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
             return Response(err,status=status.HTTP_404_NOT_FOUND)
@@ -183,3 +185,41 @@ def pagos_delete(request, pk):
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def pagos_list(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #Filtros
+            filters={"state":"1"}
+        
+            if "codigoCobro" in request.data:
+                if request.data["codigoCobro"] != '':
+                    filters['codigoCobro'] = str(request.data["codigoCobro"])
+
+            #Serializar los datos
+            query = Pagos.objects.filter(**filters).order_by('-created_at').first()
+            if query.duracion >= timezone_now:
+                persona = Personas.objects.filter(user_id=query.user_id).first()
+                serializer = PersonasSearchSerializer(persona)
+                new_serializer_data=serializer.data
+            else:
+                new_serializer_data={'tiempo':'Se le termino el tiempo','estado':'Inactivo'}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
