@@ -480,7 +480,7 @@ def usuario_create(request):
                     'roles': roles,
                     'estado': account.estado
                 }
-                data['tokenEmail']=str(resetPasswordNewUser(data['email']))
+                # data['tokenEmail']=str(resetPasswordNewUser(data['email']))
                 if 'empresa' not in request.data:
                     personaSerializer = PersonasSerializer(persona).data
                 
