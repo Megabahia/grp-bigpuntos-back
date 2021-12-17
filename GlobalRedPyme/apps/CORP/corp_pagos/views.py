@@ -208,6 +208,10 @@ def pagos_list(request):
             if "codigoCobro" in request.data:
                 if request.data["codigoCobro"] != '':
                     filters['codigoCobro'] = str(request.data["codigoCobro"])
+            
+            if "empresa_id" in request.data:
+                if request.data["empresa_id"] != '':
+                    filters['empresa_id'] = str(request.data["empresa_id"])
 
             #Serializar los datos
             query = Pagos.objects.filter(**filters).order_by('-created_at').first()
