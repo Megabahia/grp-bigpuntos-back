@@ -125,6 +125,8 @@ def movimientoCobros_create(request):
             serializer = MovimientoCobrosSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                saldo = monedasUsuario.saldo - float(request.data['montoSupermonedas'])
+                Monedas.objects.create(user_id=request.data['user_id'],empresa_id=request.data['empresa_id'],tipo='Debito',debito=request.data['montoSupermonedas'],saldo=saldo)
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             createLog(logModel,serializer.errors,logExcepcion)
