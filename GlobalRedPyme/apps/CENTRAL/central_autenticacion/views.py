@@ -1,9 +1,12 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
-from apps.CENTRAL.central_usuarios.models import Usuarios
+from apps.CENTRAL.central_usuarios.models import Usuarios, UsuariosEmpresas
 # Importar base de datos personas
 from apps.PERSONAS.personas_personas.models import  Personas
+# Importar serializers empresa y base de datos empresa
+from apps.CORP.corp_empresas.models import  Empresas
+from apps.CORP.corp_empresas.serializers import  EmpresasSerializer
 # Importar serializer de personas
 from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
 from apps.CENTRAL.central_usuarios.serializers import UsuarioSerializer
@@ -69,11 +72,18 @@ class login(ObtainAuthToken):
                         personaSerializer = PersonasSerializer(persona).data
                     except Exception as e:
                         personaSerializer = {}
+
+                    try:
+                        empresa = UsuariosEmpresas.objects.filter(usuario=user).first()
+                        empresaSerializer = EmpresasSerializer(Empresas.objects.filter(_id=ObjectId(empresa.empresa_id)).first()).data
+                    except Exception as e:
+                        empresaSerializer = {}                    
                         
                     data={
                         'token': token.key,
                         'id': str(user.pk),
                         'persona': personaSerializer,
+                        'empresa': empresaSerializer,
                         'email': user.email,
                         'tokenExpiracion': expires_in(token),
                         'roles': roles,
