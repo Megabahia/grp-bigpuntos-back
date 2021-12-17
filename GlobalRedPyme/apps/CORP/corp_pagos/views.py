@@ -216,7 +216,7 @@ def pagos_list(request):
                 serializer = PersonasSearchSerializer(persona)
                 new_serializer_data=serializer.data
             else:
-                new_serializer_data={'tiempo':'Se le termino el tiempo','estado':'Inactivo'}
+                new_serializer_data={'error':{'tiempo':'Se le termino el tiempo','estado':'Inactivo'}}
             #envio de datos
             return Response(new_serializer_data,status=status.HTTP_200_OK)
         except Exception as e: 
