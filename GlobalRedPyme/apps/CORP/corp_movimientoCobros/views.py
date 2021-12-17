@@ -112,7 +112,7 @@ def movimientoCobros_create(request):
     }
     if request.method == 'POST':
         try:
-            monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id'],tipo='Credito', state=1).order_by('-created_at').first()
+            monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id'], state=1).order_by('-created_at').first()
             if float(monedasUsuario.credito) < float(request.data['montoSupermonedas']):
                 data={'error':'Supera las monedas de su cuenta.'}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
