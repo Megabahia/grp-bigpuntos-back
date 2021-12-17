@@ -9,9 +9,3 @@ class MovimientoCobrosSerializer(serializers.ModelSerializer):
         model = MovimientoCobros
        	fields = '__all__'
         read_only_fields = ['_id']
-
-    def create(self, validated_data):
-        movimientoCobros = MovimientoCobros.objects.create(**validated_data)
-        movimientoCobros.autorizacion += 1
-        movimientoCobros.save()
-        return movimientoCobros
