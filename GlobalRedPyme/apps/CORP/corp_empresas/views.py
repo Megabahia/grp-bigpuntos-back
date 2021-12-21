@@ -1,6 +1,6 @@
 from apps.CORP.corp_empresas.models import  Empresas
 from apps.CORP.corp_empresas.serializers import (
-    EmpresasSerializer, EmpresasFiltroSerializer
+    EmpresasSerializer, EmpresasFiltroSerializer, EmpresasFiltroIfisSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -332,7 +332,7 @@ def empresas_list_ifis(request):
 
             #Serializar los datos
             query = Empresas.objects.filter(**filters).order_by('-created_at')
-            serializer = EmpresasSerializer(query[offset:limit], many=True)
+            serializer = EmpresasFiltroIfisSerializer(query[offset:limit], many=True)
             new_serializer_data={'cont': query.count(),
             'info':serializer.data}
             #envio de datos
