@@ -297,7 +297,7 @@ def empresas_delete(request, pk):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def empresas_list_ifis(request):
+def empresas_list_comercial(request):
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'list/ifis',
@@ -320,7 +320,7 @@ def empresas_list_ifis(request):
             #Filtros
             filters={"state":"1"}
 
-            filters['tipoEmpresa'] = 'ifis'
+            filters['tipoEmpresa'] = 'comercial'
         
             if "ciudad" in request.data:
                 if request.data["ciudad"] != '':
