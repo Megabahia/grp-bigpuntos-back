@@ -3,6 +3,7 @@ from djongo import models
 # Create your models here.
 class CreditoPersonas(models.Model):
     _id = models.ObjectIdField()
+    numero = models.IntegerField(blank=True, null=True)
     monto = models.FloatField(blank=True, null=True)
     plazo = models.PositiveIntegerField(blank=True, null=True)
     aceptaTerminos = models.SmallIntegerField(default=1)
