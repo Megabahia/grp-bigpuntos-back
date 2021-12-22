@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'apps.CORP.corp_autorizaciones',
     'apps.CORP.corp_movimientoCobros',
     'apps.CORP.corp_pagos',
+    'apps.CORP.corp_creditoPersonas',
     # Pymes
     'apps.CORP.corp_empresas',
     # apps core
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     # apps personas
     'apps.PERSONAS.personas_personas',
     'apps.PERSONAS.personas_historialLaboral',
+    'apps.PERSONAS.personas_rucPersonas',
     #apps central CENTRAL
     'apps.CENTRAL.central_logs',
     'apps.CENTRAL.central_roles',

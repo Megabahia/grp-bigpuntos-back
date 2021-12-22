@@ -27,6 +27,8 @@ GlobalRedPyme/apps/PERSONAS/personas_historialLaboral/__pycache__/
 GlobalRedPyme/apps/PERSONAS/personas_historialLaboral/migrations/__pycache__/
 GlobalRedPyme/apps/PERSONAS/personas_personas/__pycache__/
 GlobalRedPyme/apps/PERSONAS/personas_personas/migrations/__pycache__/
+GlobalRedPyme/apps/PERSONAS/personas_rucPersonas/__pycache__/
+GlobalRedPyme/apps/PERSONAS/personas_rucPersonas/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_empresas/__pycache__/
 GlobalRedPyme/apps/CORP/corp_empresas/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_cobrarSupermonedas/__pycache__/
@@ -39,6 +41,8 @@ GlobalRedPyme/apps/CORP/corp_movimientoCobros/__pycache__/
 GlobalRedPyme/apps/CORP/corp_movimientoCobros/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_pagos/__pycache__/
 GlobalRedPyme/apps/CORP/corp_pagos/migrations/__pycache__/
+GlobalRedPyme/apps/CORP/corp_creditoPersonas/__pycache__/
+GlobalRedPyme/apps/CORP/corp_creditoPersonas/migrations/__pycache__/
 GlobalRedPyme/apps/config/__pycache__/
 /GlobalRedPyme/GlobalRedPyme/.env
 /GlobalRedPyme/GlobalRedPyme/.env.example

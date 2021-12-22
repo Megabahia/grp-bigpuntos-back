@@ -59,11 +59,13 @@ urlpatterns = [
     # PERSONAS
     path('personas/personas/', include(('apps.PERSONAS.personas_personas.urls', 'personas'), namespace='personas')),
     path('personas/historialLaboral/', include(('apps.PERSONAS.personas_historialLaboral.urls', 'historialLaboral'), namespace='historialLaboral')),
+    path('personas/rucPersonas/', include(('apps.PERSONAS.personas_rucPersonas.urls', 'rucPersonas'), namespace='rucPersonas')),
     # CORP
     path('corp/cobrarSupermonedas/', include(('apps.CORP.corp_cobrarSupermonedas.urls', 'cobrarSupermonedas'), namespace='cobrarSupermonedas')),
     path('corp/autorizacion/', include(('apps.CORP.corp_autorizaciones.urls', 'autorizacion'), namespace='autorizacion')),
     path('corp/movimientoCobros/', include(('apps.CORP.corp_movimientoCobros.urls', 'movimientoCobros'), namespace='movimientoCobros')),
     path('corp/pagos/', include(('apps.CORP.corp_pagos.urls', 'pagos'), namespace='pagos')),
+    path('corp/creditoPersonas/', include(('apps.CORP.corp_creditoPersonas.urls', 'creditoPersonas'), namespace='creditoPersonas')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
