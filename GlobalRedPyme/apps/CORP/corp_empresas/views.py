@@ -320,7 +320,7 @@ def empresas_list_comercial(request):
             #Filtros
             filters={"state":"1"}
 
-            filters['tipoEmpresa'] = 'comercial'
+            filters['tipoEmpresa'] = 'corp'
         
             if "ciudad" in request.data:
                 if request.data["ciudad"] != '':
