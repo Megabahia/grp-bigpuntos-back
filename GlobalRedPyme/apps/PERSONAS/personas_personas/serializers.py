@@ -16,6 +16,11 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['user_id']
 
+class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Personas
+        exclude = ['imagen']
+
 class PersonasImagenSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Personas
