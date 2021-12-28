@@ -4,6 +4,8 @@ from apps.CORP.corp_creditoPreaprobados.models import (
     CreditoPreaprobados
 )
 
+from apps.CORP.corp_empresas.models import Empresas
+
 class CreditoPreaprobadosSerializer(serializers.ModelSerializer):
     class Meta:
         model = CreditoPreaprobados
@@ -13,6 +15,8 @@ class CreditoPreaprobadosSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super(CreditoPreaprobadosSerializer, self).to_representation(instance)
         # tomo el campo persona y convierto de OBJECTID a string
-        empresa = str(data.pop('empresa'))
-        data.update({"empresa": empresa})
+        empresa = data.pop('empresa')
+        entidadFinanciera = Empresas.objects.filter(_id=empresa, state=1).first()
+        data.update({"entidadFinanciera": entidadFinanciera.nombreComercial})
+        # data['imagen'] = entidadFinanciera.imagen
         return data
