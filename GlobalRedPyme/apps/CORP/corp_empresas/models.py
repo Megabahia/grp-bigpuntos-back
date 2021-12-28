@@ -21,3 +21,16 @@ class Empresas(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
+
+
+
+class EmpresasConvenio(models.Model):
+    _id = models.ObjectIdField()
+    empresa = models.CharField(max_length=200,null=True, blank=True)  # Relacion Empresa
+    convenio = models.ForeignKey(Empresas, null=False, on_delete=models.CASCADE)  # Relacion Empresas convenio
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    state = models.SmallIntegerField(default=1)
+
+
