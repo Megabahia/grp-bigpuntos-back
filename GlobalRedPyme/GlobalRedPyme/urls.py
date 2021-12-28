@@ -66,6 +66,7 @@ urlpatterns = [
     path('corp/movimientoCobros/', include(('apps.CORP.corp_movimientoCobros.urls', 'movimientoCobros'), namespace='movimientoCobros')),
     path('corp/pagos/', include(('apps.CORP.corp_pagos.urls', 'pagos'), namespace='pagos')),
     path('corp/creditoPersonas/', include(('apps.CORP.corp_creditoPersonas.urls', 'creditoPersonas'), namespace='creditoPersonas')),
+    path('corp/creditoPreaprobados/', include(('apps.CORP.corp_creditoPreaprobados.urls', 'creditoPreaprobados'), namespace='creditoPreaprobados')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

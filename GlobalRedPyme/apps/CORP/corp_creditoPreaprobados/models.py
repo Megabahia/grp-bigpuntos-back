@@ -1,0 +1,20 @@
+from djongo import models
+from apps.CORP.corp_empresas.models import Empresas
+
+# Create your models here.
+class CreditoPreaprobados(models.Model):
+    _id = models.ObjectIdField()
+    fechaAprobado = models.DateField(null=True, blank=True)
+    vigencia = models.DateField(null=True, blank=True)
+    concepto = models.CharField(max_length=255,null=True, blank=True)
+    monto = models.FloatField(null=True, blank=True)
+    plazo = models.SmallIntegerField(null=True, blank=True)
+    interes = models.FloatField(null=True, blank=True)
+    estado = models.CharField(default="Pre aprobado",max_length=255,null=True, blank=True)
+    tipoPersona = models.CharField(max_length=255,null=True, blank=True)
+    user_id = models.CharField(max_length=255,null=True, blank=True)
+    empresa = models.ForeignKey(Empresas, null=False, on_delete=models.DO_NOTHING)  # Empresa
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    state = models.SmallIntegerField(default=1)

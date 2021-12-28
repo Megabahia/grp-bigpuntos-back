@@ -43,6 +43,8 @@ GlobalRedPyme/apps/CORP/corp_pagos/__pycache__/
 GlobalRedPyme/apps/CORP/corp_pagos/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_creditoPersonas/__pycache__/
 GlobalRedPyme/apps/CORP/corp_creditoPersonas/migrations/__pycache__/
+GlobalRedPyme/apps/CORP/corp_creditoPreaprobados/__pycache__/
+GlobalRedPyme/apps/CORP/corp_creditoPreaprobados/migrations/__pycache__/
 GlobalRedPyme/apps/config/__pycache__/
 /GlobalRedPyme/GlobalRedPyme/.env
 /GlobalRedPyme/GlobalRedPyme/.env.example
