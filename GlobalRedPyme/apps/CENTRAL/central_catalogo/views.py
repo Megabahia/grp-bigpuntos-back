@@ -382,3 +382,18 @@ def catalogo_filter_name(request):
         except Exception as e: 
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+#POST FILTRO Y NOMBRE
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def catalogo_filter_listOne_name_tipo(request):
+
+    if request.method == 'POST':
+        try:
+            query= Catalogo.objects.get(state=1,nombre=request.data['nombre'],tipo=request.data['tipo'])
+            serializer = CatalogoSerializer(query)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
