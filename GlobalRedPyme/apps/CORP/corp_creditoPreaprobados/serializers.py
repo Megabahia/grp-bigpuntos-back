@@ -1,4 +1,6 @@
 from rest_framework import serializers
+# ObjectId
+from bson import ObjectId
 
 from apps.CORP.corp_creditoPreaprobados.models import (
     CreditoPreaprobados
@@ -18,5 +20,6 @@ class CreditoPreaprobadosSerializer(serializers.ModelSerializer):
         empresa = data.pop('empresa')
         entidadFinanciera = Empresas.objects.filter(_id=empresa, state=1).first()
         data.update({"entidadFinanciera": entidadFinanciera.nombreComercial})
+        data['empresa'] = str(empresa)
         # data['imagen'] = entidadFinanciera.imagen
         return data
