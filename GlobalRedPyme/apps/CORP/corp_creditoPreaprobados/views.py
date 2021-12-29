@@ -184,7 +184,7 @@ def creditoPreaprobados_update(request, pk):
             if 'created_at' in request.data:
                 request.data.pop('created_at')
 
-            request.data['empresa'] = ObjectId(request.data['empresa'])
+            request.data['empresa_financiera'] = ObjectId(request.data['empresa_financiera'])
             
             if query.estado == 'Aprobado':
                 serializer = CreditoPreaprobadosSerializer(query)
