@@ -54,6 +54,8 @@ def personas_create(request):
             request.data['created_at'] = str(timezone_now)
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
+            
+            request.data['nombresCompleto'] = request.data['nombres'] +' '+request.data['apellidos']
         
             serializer = PersonasSerializer(data=request.data)
             if serializer.is_valid():
@@ -147,6 +149,7 @@ def personas_update(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+            request.data['nombresCompleto'] = request.data['nombres'] +' '+request.data['apellidos']
             serializer = PersonasUpdateSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()

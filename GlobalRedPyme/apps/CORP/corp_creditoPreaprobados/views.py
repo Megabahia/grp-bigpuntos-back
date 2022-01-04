@@ -1,4 +1,6 @@
 from apps.CORP.corp_creditoPreaprobados.models import  CreditoPreaprobados
+from apps.PERSONAS.personas_personas.models import  Personas
+from django.db.models import Q
 from apps.CORP.corp_creditoPreaprobados.serializers import (
     CreditoPreaprobadosSerializer
 )
@@ -244,5 +246,69 @@ def creditoPreaprobados_delete(request, pk):
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST) 
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def creditoPreaprobados_list_corp(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/corp/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #paginacion
+            page_size=int(request.data['page_size'])
+            page=int(request.data['page'])
+            offset = page_size* page
+            limit = offset + page_size
+            #Filtros
+            filters={"state":"1"}
+        
+            if "empresa_financiera" in request.data:
+                if request.data["empresa_financiera"] != '':
+                    filters['empresa_financiera'] = ObjectId(request.data["empresa_financiera"])
+            if "tipoPersona" in request.data:
+                if request.data["tipoPersona"] != '':
+                    filters['tipoPersona'] = str(request.data["tipoPersona"])
+            
+            if "cedula" in request.data:
+                if request.data["cedula"] != '':
+                    cedulas = Personas.objects.filter(identificacion__icontains=str(request.data["cedula"]),state=1).values_list('user_id',flat=True)
+                    arr = []
+                    for id in cedulas:
+                        arr.append(str(id))
+                    filters['user_id__in'] = arr
+                    
+            if "nombresCompleto" in request.data:
+                if request.data["nombresCompleto"] != '':
+                    cedulas = Personas.objects.filter(Q(nombresCompleto__icontains=str(request.data["nombresCompleto"])),state=1).values_list('user_id',flat=True).distinct()
+                    arr = []
+                    print('holiiii')
+                    for id in cedulas:
+                        arr.append(str(id))
+                    filters['user_id__in'] = arr
+
+            #Serializar los datos
+            query = CreditoPreaprobados.objects.filter(**filters).order_by('-created_at')
+            serializer = CreditoPreaprobadosSerializer(query[offset:limit], many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
 
 

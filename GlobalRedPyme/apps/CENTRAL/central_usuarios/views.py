@@ -381,6 +381,8 @@ def usuario_core_create(request):
                 dataPeronsa = {}
                 dataPeronsa['user_id']=str(account.pk)
                 dataPeronsa['email']=str(account.email)
+                if 'nombres' in request and 'apellidos' in request:
+                    dataPeronsa['nombresCompleto']=request.data['nombres'] + ' ' + request.data['apellidos']
                 persona = Personas.objects.create(**dataPeronsa)
                 personaSerializer = PersonasSerializer(persona).data
 
@@ -465,6 +467,8 @@ def usuario_create(request):
                 dataPeronsa = {}
                 dataPeronsa['user_id']=str(account.pk)
                 dataPeronsa['email']=str(account.email)
+                if 'nombres' in request and 'apellidos' in request:
+                    dataPeronsa['nombresCompleto']=request.data['nombres'] + ' ' + request.data['apellidos']
                 persona = Personas.objects.create(**dataPeronsa)
                 
                 # data['response'] = 'Usuario creado correctamente'

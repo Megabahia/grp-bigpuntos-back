@@ -9,6 +9,7 @@ class Personas(models.Model):
     identificacion = models.CharField(max_length=200,null=True)
     nombres = models.CharField(max_length=200,null=True)
     apellidos = models.CharField(max_length=200,null=True)
+    nombresCompleto = models.CharField(max_length=255,null=True,blank=True)
     genero = models.CharField(max_length=200,null=True)
     fechaNacimiento = models.DateField(null=True)
     edad = models.SmallIntegerField(null=True)

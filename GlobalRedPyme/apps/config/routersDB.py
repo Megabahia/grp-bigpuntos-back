@@ -93,7 +93,8 @@ class GRPCORPRouter:
     A router to control all database operations on models in the
     auth and contenttypes applications.
     """
-    route_app_labels = {'corp_cobrarSupermonedas','corp_autorizaciones','corp_empresas','corp_movimientoCobros','corp_pagos','corp_creditoPersonas','corp_creditoPreaprobados'}
+    route_app_labels = {'corp_cobrarSupermonedas','corp_autorizaciones','corp_empresas','corp_movimientoCobros',
+    'corp_pagos','corp_creditoPersonas','corp_creditoPreaprobados','corp_notasPedidos'}
 
 
     def db_for_read(self, model, **hints):
