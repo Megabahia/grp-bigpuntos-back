@@ -7,6 +7,7 @@ from apps.CORP.corp_creditoPreaprobados.models import (
 )
 
 from apps.CORP.corp_empresas.models import Empresas
+from apps.PERSONAS.personas_personas.models import Personas
 
 class CreditoPreaprobadosSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,4 +23,9 @@ class CreditoPreaprobadosSerializer(serializers.ModelSerializer):
         data.update({"entidadFinanciera": entidadFinanciera.nombreComercial})
         data['empresa_financiera'] = str(empresa_financiera)
         # data['imagen'] = entidadFinanciera.imagen
+        # Informacion persona
+        persona = Personas.objects.filter(user_id=str(instance.user_id),state=1).first()
+        if persona is not None:
+            data.update({"nombres": persona.nombres})
+            data.update({"apellidos": persona.apellidos})
         return data

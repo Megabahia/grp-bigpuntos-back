@@ -293,7 +293,6 @@ def creditoPreaprobados_list_corp(request):
                 if request.data["nombresCompleto"] != '':
                     cedulas = Personas.objects.filter(Q(nombresCompleto__icontains=str(request.data["nombresCompleto"])),state=1).values_list('user_id',flat=True).distinct()
                     arr = []
-                    print('holiiii')
                     for id in cedulas:
                         arr.append(str(id))
                     filters['user_id__in'] = arr
