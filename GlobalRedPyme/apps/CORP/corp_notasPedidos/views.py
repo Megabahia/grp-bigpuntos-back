@@ -45,21 +45,7 @@ def factura_list(request):
             offset = page_size* page
             limit = offset + page_size
             #Filtros
-            filters={"state":"1"}            
-            if 'negocio' in request.data:
-                if request.data['negocio']!='':
-                    filters['negocio'] = request.data['negocio']
-            if 'cliente' in request.data:
-                if request.data['cliente']!='':
-                    filters['cliente'] = request.data['cliente']
-            # if 'cedula' in request.data:
-            #     if request.data['cedula']!='':
-            #         filters['cedula'] = str(request.data['cedula'])
-            # if 'inicio' and 'fin' in request.data:                
-            #     # if request.data['inicio'] !='':
-            #     #     filters['created_at__startswith'] = str(request.data['inicio'])
-            #     if request.data['inicio'] and request.data['fin'] !='':
-            #         filters['created_at__range'] = [str(request.data['inicio']),str(request.data['fin'])]            
+            filters={"state":"1"}
           
             #Serializar los datos
             query = FacturasEncabezados.objects.filter(**filters).order_by('-created_at')
