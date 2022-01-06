@@ -274,9 +274,9 @@ def creditoPreaprobados_list_corp(request):
             #Filtros
             filters={"state":"1"}
         
-            if "empresa_financiera" in request.data:
-                if request.data["empresa_financiera"] != '':
-                    filters['empresa_financiera'] = ObjectId(request.data["empresa_financiera"])
+            if "empresa_comercial" in request.data:
+                if request.data["empresa_comercial"] != '':
+                    filters['empresa_comercial'] = request.data["empresa_comercial"]
             if "tipoPersona" in request.data:
                 if request.data["tipoPersona"] != '':
                     filters['tipoPersona'] = str(request.data["tipoPersona"])
