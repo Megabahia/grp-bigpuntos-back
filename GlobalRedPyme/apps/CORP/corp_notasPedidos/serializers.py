@@ -47,9 +47,20 @@ class FacturasSerializer(serializers.ModelSerializer):
 
 # Listar las facturas cabecera
 class FacturasListarSerializer(serializers.ModelSerializer):
+    detalles = FacturasDetallesSerializer(many=True,allow_empty=False)
     class Meta:
         model = FacturasEncabezados
        	fields = '__all__'
+
+    def to_representation(self, instance):
+            data = super(FacturasListarSerializer, self).to_representation(instance)
+            # Quitar los detalles de la factura
+            detalles = data.pop('detalles')
+            articulos = ''
+            for detalle in detalles:
+                articulos += detalle['articulo'] + ','
+            data.update({"detalles": articulos})
+            return data
 
 # Listar las facturas cabecera tabla
 class FacturasListarTablaSerializer(serializers.ModelSerializer):
