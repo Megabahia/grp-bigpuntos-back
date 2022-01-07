@@ -46,6 +46,14 @@ def factura_list(request):
             limit = offset + page_size
             #Filtros
             filters={"state":"1"}
+
+            if 'identificacion' in request.data:
+                if 'identificacion' != '':
+                    filters['identificacion'] = request.data['identificacion']
+            
+            if 'razonSocial' in request.data:
+                if 'razonSocial' != '':
+                    filters['razonSocial'] = request.data['razonSocial']
           
             #Serializar los datos
             query = FacturasEncabezados.objects.filter(**filters).order_by('-created_at')
