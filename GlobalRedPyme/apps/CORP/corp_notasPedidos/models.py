@@ -1,5 +1,8 @@
 from djongo import models
 
+from apps.CORP.corp_empresas.models import Empresas
+from apps.CORP.corp_creditoPreaprobados.models import CreditoPreaprobados
+
 # Create your models here.
 class FacturasEncabezados(models.Model):
     numeroFactura = models.CharField(max_length=150,null=True, blank=True)
@@ -18,6 +21,8 @@ class FacturasEncabezados(models.Model):
     canal = models.CharField(max_length=150,null=True)
     numeroProductosComprados = models.IntegerField(null=True)
     user_id = models.CharField(max_length=255,null=True,blank=True) # Relacion de usuario
+    empresaComercial = models.ForeignKey(Empresas, null=True, on_delete=models.DO_NOTHING)  # Relacion Con la categoria
+    credito = models.ForeignKey(CreditoPreaprobados, null=True, on_delete=models.DO_NOTHING)  # Relacion Con la categoria
         
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)

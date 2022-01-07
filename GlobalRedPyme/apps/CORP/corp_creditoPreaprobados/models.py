@@ -13,6 +13,8 @@ class CreditoPreaprobados(models.Model):
     estado = models.CharField(default="Pre aprobado",max_length=255,null=True, blank=True)
     tipoPersona = models.CharField(max_length=255,null=True, blank=True)
     user_id = models.CharField(max_length=255,null=True, blank=True)
+    observaciones = models.TextField(null=True, blank=True)
+    descripcion = models.TextField(null=True, blank=True)
     empresa_financiera = models.ForeignKey(Empresas, null=False, on_delete=models.DO_NOTHING)  # Empresa
     empresa_comercial = models.CharField(max_length=255,null=True, blank=True)  # Empresa
 
