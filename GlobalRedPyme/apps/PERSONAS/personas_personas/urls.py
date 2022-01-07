@@ -7,6 +7,7 @@ from apps.PERSONAS.personas_personas.views import(
 	personas_imagenUpdate,
 	personas_validarCodigo,
 	personas_update_sin_imagen,
+	personas_listOne_cedula,
 )
 app_name = 'personas_personas'
 
@@ -18,5 +19,6 @@ urlpatterns = [
 	path('delete/<str:pk>', personas_delete, name="personas_delete"),
 	path('update/imagen/<str:pk>', personas_imagenUpdate, name="personas_imagenUpdate"),
 	path('validarCodigo/', personas_validarCodigo, name="personas_validarCodigo"),
+	path('listOne/cedula/', personas_listOne_cedula, name="personas_listOne_cedula"),
 ]
 
