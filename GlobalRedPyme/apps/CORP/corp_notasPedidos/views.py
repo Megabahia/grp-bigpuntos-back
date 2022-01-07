@@ -49,11 +49,11 @@ def factura_list(request):
 
             if 'identificacion' in request.data:
                 if 'identificacion' != '':
-                    filters['identificacion'] = request.data['identificacion']
+                    filters['identificacion__icontains'] = request.data['identificacion']
             
             if 'razonSocial' in request.data:
                 if 'razonSocial' != '':
-                    filters['razonSocial'] = request.data['razonSocial']
+                    filters['razonSocial__icontains'] = request.data['razonSocial']
           
             #Serializar los datos
             query = FacturasEncabezados.objects.filter(**filters).order_by('-created_at')
