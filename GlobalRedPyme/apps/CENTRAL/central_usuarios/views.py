@@ -457,7 +457,7 @@ def usuario_create(request):
                 request.data['usuario']=account._id
                 infoUsuario = InfoUsuarioSerializer(data=request.data)
                 if infoUsuario.is_valid():
-                    print("entro")
+                    # print("entro")
                     infoUsuario.save()
 
                 # Consultar roles de usuario
