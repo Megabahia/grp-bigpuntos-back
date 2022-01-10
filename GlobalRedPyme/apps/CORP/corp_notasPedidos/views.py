@@ -166,6 +166,7 @@ def factura_create(request):
                 request.data.pop('updated_at')
 
             request.data['empresaComercial'] = ObjectId(request.data['empresaComercial'])
+            request.data['credito'] = ObjectId(request.data['credito'])
         
             serializer = FacturaSerializer(data=request.data)
             if serializer.is_valid():                
@@ -209,6 +210,7 @@ def factura_update(request, pk):
                 request.data.pop('created_at')
 
             request.data['empresaComercial'] = ObjectId(request.data['empresaComercial'])
+            request.data['credito'] = ObjectId(request.data['credito'])
 
             serializer = FacturasSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
