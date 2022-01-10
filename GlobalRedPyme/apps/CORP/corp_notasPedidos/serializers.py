@@ -54,6 +54,9 @@ class FacturasListarSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
             data = super(FacturasListarSerializer, self).to_representation(instance)
+            # Quitar los credito de la factura
+            credito = str(data.pop('credito'))
+            data.update({"credito": credito})
             # Quitar los empresaComercial de la factura
             empresaComercial = str(data.pop('empresaComercial'))
             data.update({"empresaComercial": empresaComercial})
@@ -97,11 +100,14 @@ class FacturaSerializer(serializers.ModelSerializer):
         return facturaEncabezado
 
     def to_representation(self, instance):
-            data = super(FacturaSerializer, self).to_representation(instance)
-            # Quitar los empresaComercial de la factura
-            empresaComercial = str(data.pop('empresaComercial'))
-            data.update({"empresaComercial": empresaComercial})
-            return data
+        data = super(FacturaSerializer, self).to_representation(instance)
+        # Quitar los credito de la factura
+        credito = str(data.pop('credito'))
+        data.update({"credito": credito})
+        # Quitar los empresaComercial de la factura
+        empresaComercial = str(data.pop('empresaComercial'))
+        data.update({"empresaComercial": empresaComercial})
+        return data
 
 
 # Actualizar factura
@@ -146,6 +152,9 @@ class FacturasSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(FacturasSerializer, self).to_representation(instance)
+        # Quitar los credito de la factura
+        credito = str(data.pop('credito'))
+        data.update({"credito": credito})
         # Quitar los empresaComercial de la factura
         empresaComercial = str(data.pop('empresaComercial'))
         data.update({"empresaComercial": empresaComercial})
