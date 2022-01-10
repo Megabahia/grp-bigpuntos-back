@@ -35,16 +35,16 @@ class FacturasEncabezados(models.Model):
 class FacturasDetalles(models.Model):
     # NOMBRAMOS A LA RELACION DETALLATES
     facturaEncabezado= models.ForeignKey(FacturasEncabezados, related_name='detalles', null=True, blank=True, on_delete=models.DO_NOTHING)  # Relacion Factura
-    articulo = models.CharField(max_length=150,null=True)
-    valorUnitario = models.FloatField(null=True)
-    cantidad = models.PositiveIntegerField(null=True)
-    precio = models.FloatField(null=True)
-    codigo = models.CharField(max_length=250,null=True)
-    informacionAdicional = models.CharField(max_length=250,null=True)
-    descuento = models.FloatField(null=True)
-    impuesto = models.FloatField(null=True)
-    valorDescuento = models.FloatField(null=True)
-    total = models.FloatField(null=True)
+    articulo = models.CharField(max_length=150,null=True, blank=True)
+    valorUnitario = models.FloatField(null=True, blank=True)
+    cantidad = models.PositiveIntegerField(null=True, blank=True)
+    precio = models.FloatField(null=True, blank=True)
+    codigo = models.CharField(max_length=250,null=True, blank=True)
+    informacionAdicional = models.CharField(max_length=250,null=True, blank=True)
+    descuento = models.FloatField(null=True, blank=True)
+    impuesto = models.FloatField(null=True, blank=True)
+    valorDescuento = models.FloatField(null=True, blank=True)
+    total = models.FloatField(null=True, blank=True)
         
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
