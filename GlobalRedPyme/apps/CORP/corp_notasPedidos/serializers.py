@@ -54,6 +54,9 @@ class FacturasListarSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
             data = super(FacturasListarSerializer, self).to_representation(instance)
+            # Quitar los empresaComercial de la factura
+            empresaComercial = str(data.pop('empresaComercial'))
+            data.update({"empresaComercial": empresaComercial})
             # Quitar los detalles de la factura
             detalles = data.pop('detalles')
             articulos = ''
