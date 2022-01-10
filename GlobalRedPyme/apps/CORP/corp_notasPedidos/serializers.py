@@ -92,3 +92,58 @@ class FacturaSerializer(serializers.ModelSerializer):
         for detalle_data in detalles_data:
             FacturasDetalles.objects.create(facturaEncabezado=facturaEncabezado, **detalle_data)
         return facturaEncabezado
+
+    def to_representation(self, instance):
+            data = super(FacturaSerializer, self).to_representation(instance)
+            # Quitar los empresaComercial de la factura
+            empresaComercial = str(data.pop('empresaComercial'))
+            data.update({"empresaComercial": empresaComercial})
+            return data
+
+
+# Actualizar factura
+class FacturasDetallesSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    class Meta:
+        model = FacturasDetalles
+       	fields = '__all__'
+
+class FacturasSerializer(serializers.ModelSerializer):
+    # id = serializers.IntegerField()
+    detalles = FacturasDetallesSerializer(many=True,allow_empty=False)
+    class Meta:
+        model = FacturasEncabezados
+       	fields = '__all__'
+    
+    def update(self, instance, validated_data):
+        detalles_database = {detalle.id: detalle for detalle in instance.detalles.all()}
+        detalles_actualizar = {item['id']: item for item in validated_data['detalles']}
+
+        # Actualiza la factura cabecera
+        instance.__dict__.update(validated_data) 
+        instance.save()
+
+        # Eliminar los detalles que no esté incluida en la solicitud de la factura detalles
+        for detalle in instance.detalles.all():
+            if detalle.id not in detalles_actualizar:
+                detalle.delete()
+
+        # Crear o actualizar instancias de detalles que se encuentran en la solicitud de factura detalles
+        for detalle_id, data in detalles_actualizar.items():
+            detalle = detalles_database.get(detalle_id, None)
+            if detalle is None:
+                data.pop('id')
+                FacturasDetalles.objects.create(**data)
+            else:
+                now = timezone.localtime(timezone.now())
+                data['updated_at'] = str(now)
+                FacturasDetalles.objects.filter(id=detalle.id).update(**data)
+
+        return instance
+
+    def to_representation(self, instance):
+        data = super(FacturasSerializer, self).to_representation(instance)
+        # Quitar los empresaComercial de la factura
+        empresaComercial = str(data.pop('empresaComercial'))
+        data.update({"empresaComercial": empresaComercial})
+        return data

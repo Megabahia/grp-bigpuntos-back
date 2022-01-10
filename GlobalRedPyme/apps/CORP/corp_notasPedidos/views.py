@@ -9,6 +9,8 @@ from datetime import datetime
 from django.core import serializers
 #excel
 import openpyxl
+# ObjectId
+from bson import ObjectId
 #logs
 from apps.CENTRAL.central_logs.methods import createLog,datosTipoLog, datosFacturas
 #declaracion variables log
@@ -162,6 +164,8 @@ def factura_create(request):
             request.data['created_at'] = str(timezone_now)
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
+
+            request.data['empresaComercial'] = ObjectId(request.data['empresaComercial'])
         
             serializer = FacturaSerializer(data=request.data)
             if serializer.is_valid():                
@@ -194,7 +198,6 @@ def factura_update(request, pk):
         try:
             logModel['dataEnviada'] = str(request.data)
             query = FacturasEncabezados.objects.get(pk=pk, state=1)
-            # print(query.detalles.count())
         except FacturasEncabezados.DoesNotExist:
             errorNoExiste={'error':'No existe'}
             createLog(logModel,errorNoExiste,logExcepcion)
@@ -204,6 +207,9 @@ def factura_update(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+
+            request.data['empresaComercial'] = ObjectId(request.data['empresaComercial'])
+
             serializer = FacturasSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
