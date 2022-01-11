@@ -1,5 +1,6 @@
 from apps.CORP.corp_creditoPreaprobados.models import  CreditoPreaprobados
 from apps.PERSONAS.personas_personas.models import  Personas
+from apps.CORP.corp_empresas.models import  Empresas
 from django.db.models import Q
 from apps.CORP.corp_creditoPreaprobados.serializers import (
     CreditoPreaprobadosSerializer, CreditoPreaprobadosIfisSerializer
@@ -14,6 +15,8 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 # ObjectId
 from bson import ObjectId
+#excel
+import openpyxl
 #logs
 from apps.CENTRAL.central_logs.methods import createLog,datosTipoLog, datosProductosMDP
 #declaracion variables log
@@ -357,4 +360,80 @@ def creditoPreaprobados_list_ifis(request):
             createLog(logModel,err,logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
+# METODO SUBIR ARCHIVOS EXCEL
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def uploadEXCEL_creditosPreaprobados(request):
+    contValidos=0
+    contInvalidos=0
+    contTotal=0
+    errores=[]
+    try:
+        if request.method == 'POST':
+            first = True    #si tiene encabezado
+            uploaded_file = request.FILES['documento']
+            # you may put validations here to check extension or file size
+            wb = openpyxl.load_workbook(uploaded_file)
+            # getting a particular sheet by name out of many sheets
+            worksheet = wb["Clientes"]
+            lines = list()
+        for row in worksheet.iter_rows():
+            row_data = list()
+            for cell in row:
+                row_data.append(str(cell.value))
+            lines.append(row_data)
+
+        for dato in lines:
+            contTotal+=1
+            if first:
+                first = False
+                continue
+            else:
+                if len(dato)==7:
+                    resultadoInsertar=insertarDato_creditoPreaprobado(dato,request.data['empresa_financiera'])
+                    if resultadoInsertar!='Dato insertado correctamente':
+                        contInvalidos+=1 
+                        errores.append({"error":"Error en la línea "+str(contTotal)+": "+str(resultadoInsertar)})
+                    else:
+                        contValidos+=1
+                else:
+                    contInvalidos+=1    
+                    errores.append({"error":"Error en la línea "+str(contTotal)+": la fila tiene un tamaño incorrecto ("+str(len(dato))+")"}) 
+
+        result={"mensaje":"La Importación se Realizo Correctamente",
+        "correctos":contValidos,
+        "incorrectos":contInvalidos,
+        "errores":errores
+        }
+        return Response(result, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        err={"error":'Error verifique el archivo, un error ha ocurrido: {}'.format(e)}  
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+# INSERTAR DATOS EN LA BASE INDIVIDUAL
+def insertarDato_creditoPreaprobado(dato, empresa_financiera):
+    try:
+        timezone_now = timezone.localtime(timezone.now())
+        data={}
+        data['vigencia'] = dato[0].replace('"', "")[0:10] if dato[0] != "NULL" else None
+        data['concepto'] = dato[1].replace('"', "") if dato[1] != "NULL" else None
+        data['monto'] = dato[2].replace('"', "") if dato[2] != "NULL" else None
+        data['plazo'] = dato[3].replace('"', "") if dato[3] != "NULL" else None
+        data['interes'] = dato[4].replace('"', "") if dato[4] != "NULL" else None
+        data['estado'] = 'Pre aprobado'
+        data['tipoPersona'] = 'Supermonedas'
+        persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
+        data['user_id'] = persona.user_id
+        # data['observaciones'] = dato[8].replace('"', "") if dato[8] != "NULL" else None
+        # data['descripcion'] = dato[9].replace('"', "") if dato[9] != "NULL" else None
+        data['empresa_financiera'] = Empresas.objects.get(_id=ObjectId(empresa_financiera))
+        empresa = Empresas.objects.filter(ruc=dato[6],state=1).first()
+        data['empresa_comercial'] = empresa._id
+        data['created_at'] = str(timezone_now)
+        #inserto el dato con los campos requeridos
+        CreditoPreaprobados.objects.create(**data)
+        return 'Dato insertado correctamente'
+    except Exception as e:
+        return str(e)
 
