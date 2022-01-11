@@ -10,6 +10,11 @@ class EmpresasSerializer(serializers.ModelSerializer):
        	fields = '__all__'
         read_only_fields = ['_id']
 
+class EmpresasInfoBasicaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Empresas
+       	fields = ['_id','nombreEmpresa','imagen','nombreComercial']
+
 class EmpresasFiltroSerializer(serializers.ModelSerializer):
     class Meta:
         model = Empresas

@@ -1,5 +1,7 @@
 from djongo import models
 
+def upload_path(instance, filname):
+    return '/'.join(['CORP/imgEmpresas', str(instance._id) + "_" + filname])
 
 # Create your models here.
 class Empresas(models.Model):
@@ -17,6 +19,7 @@ class Empresas(models.Model):
     telefono2 = models.CharField(max_length=20,null=True, blank=True)
     correo = models.EmailField(max_length=255,null=True, blank=True)
     estado = models.CharField(default="Activo",max_length=200,null=True, blank=True)
+    imagen = models.FileField(blank=True,null=True,upload_to=upload_path)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
