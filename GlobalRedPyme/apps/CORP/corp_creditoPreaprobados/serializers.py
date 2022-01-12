@@ -47,7 +47,7 @@ class CreditoPreaprobadosIfisSerializer(serializers.ModelSerializer):
         empresa_comercial = Empresas.objects.filter(_id=ObjectId(empresa_comercial), state=1).first()
         empresaSerializer = EmpresasInfoBasicaSerializer(empresa_comercial).data
         data.update({"empresa_comercial": empresaSerializer['nombreComercial']})
-        data['empresa_comercial'] = empresaSerializer['_id']
+        data['empresa_comercial_id'] = empresaSerializer['_id']
         data['imagen'] = empresaSerializer['imagen']
         # Informacion persona
         persona = Personas.objects.filter(user_id=str(instance.user_id),state=1).first()
@@ -63,10 +63,7 @@ class CreditoPreaprobadosIfisSerializer(serializers.ModelSerializer):
         # Info de la empresa que trabaja
         usuarioEmpresa = UsuariosEmpresas.objects.filter(usuario=ObjectId(instance.user_id),state=1).first()
         if usuarioEmpresa is not None:
-            print(usuarioEmpresa._id)
-            print(usuarioEmpresa.empresa_id)
             empresaTrabaja = Empresas.objects.filter(_id=ObjectId(usuarioEmpresa.empresa_id),state=1).first()
-            print(empresaTrabaja)
             data.update({"ruc": empresaTrabaja.ruc})
             data.update({"empresa_id": str(empresaTrabaja._id)})
         return data
