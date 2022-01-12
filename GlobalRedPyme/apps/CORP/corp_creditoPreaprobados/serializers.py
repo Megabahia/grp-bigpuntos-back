@@ -8,6 +8,7 @@ from apps.CORP.corp_creditoPreaprobados.models import (
 
 from apps.CORP.corp_empresas.models import Empresas
 from apps.PERSONAS.personas_personas.models import Personas
+from apps.PERSONAS.personas_rucPersonas.models import RucPersonas
 from apps.CORP.corp_notasPedidos.models import FacturasEncabezados
 from apps.CENTRAL.central_usuarios.models import UsuariosEmpresas
 from apps.CORP.corp_empresas.serializers import EmpresasInfoBasicaSerializer
@@ -56,6 +57,10 @@ class CreditoPreaprobadosIfisSerializer(serializers.ModelSerializer):
             data.update({"apellidos": persona.apellidos})
             data.update({"identificacion": persona.identificacion})
             data.update({"telefono": persona.telefono})
+        # Ruc de la persona
+        rucPersona = RucPersonas.objects.filter(user_id=str(instance.user_id),state=1).first()
+        if rucPersona is not None:
+            data.update({"ruc_persona": rucPersona.ruc})
         # Info de nota pedido
         factura = FacturasEncabezados.objects.filter(credito=instance._id,state=1).first()
         if factura is not None:
