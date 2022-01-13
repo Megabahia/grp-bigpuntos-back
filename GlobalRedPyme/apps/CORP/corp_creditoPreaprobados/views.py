@@ -351,6 +351,10 @@ def creditoPreaprobados_list_ifis(request):
             if "estado" in request.data:
                 if request.data["estado"] != '':
                     filters['estado'] = str(request.data["estado"])
+            
+            if "tipoCredito" in request.data:
+                if request.data["tipoCredito"] != '':
+                    filters['tipoCredito'] = str(request.data["tipoCredito"])
 
             #Serializar los datos
             query = CreditoPreaprobados.objects.filter(**filters).order_by('-created_at')

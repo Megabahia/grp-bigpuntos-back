@@ -18,6 +18,7 @@ class CreditoPreaprobados(models.Model):
     empresa_financiera = models.ForeignKey(Empresas, null=False, on_delete=models.DO_NOTHING)  # Empresa
     empresa_comercial = models.CharField(max_length=255,null=True, blank=True)  # Empresa
     tomarSolicitud = models.CharField(max_length=255,null=True, blank=True)
+    tipoCredito = models.CharField(max_length=255,null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
