@@ -38,7 +38,7 @@ class CreditoPreaprobadosSerializer(serializers.ModelSerializer):
 class CreditoPreaprobadosIfisSerializer(serializers.ModelSerializer):
     class Meta:
         model = CreditoPreaprobados
-       	fields = ['_id','fechaAprobado','estado','empresa_comercial','monto','plazo','interes','vigencia']
+       	fields = ['_id','fechaAprobado','estado','empresa_comercial','monto','plazo','interes','vigencia','concepto']
         read_only_fields = ['_id']
 
     def to_representation(self, instance):
