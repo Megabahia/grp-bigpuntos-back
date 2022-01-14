@@ -71,4 +71,5 @@ class CreditoPreaprobadosIfisSerializer(serializers.ModelSerializer):
             empresaTrabaja = Empresas.objects.filter(_id=ObjectId(usuarioEmpresa.empresa_id),state=1).first()
             data.update({"ruc": empresaTrabaja.ruc})
             data.update({"empresa_id": str(empresaTrabaja._id)})
+            data.update({"empresa_trabaja": str(empresaTrabaja.nombreComercial)})
         return data
