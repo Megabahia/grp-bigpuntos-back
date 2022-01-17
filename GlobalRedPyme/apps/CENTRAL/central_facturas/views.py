@@ -50,6 +50,10 @@ def facturas_list(request):
             if 'inicio' and 'fin' in request.data:
                 if request.data['inicio'] and request.data['fin'] !='':
                     filters['created_at__range'] = [str(request.data['inicio']),str(request.data['fin'])]
+            
+            if 'user_id' in request.data:
+                if request.data['user_id'] !='':
+                    filters['user_id'] = str(request.data['user_id'])
 
             #Serializar los datos
             query = Facturas.objects.filter(**filters).order_by('-created_at')

@@ -153,6 +153,24 @@ def personas_update(request, pk):
             serializer = PersonasUpdateSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
+                # Genera el codigo
+                account_sid = settings.TWILIO_ACCOUNT_SID
+                auth_token = settings.TWILIO_AUTH_TOKEN
+                client = Client(account_sid, auth_token)
+                longitud_codigo = Catalogo.objects.filter(tipo='CONFIG_TWILIO',nombre='LONGITUD_CODIGO',state=1).first().valor
+                mensaje = Catalogo.objects.filter(tipo='CONFIG_TWILIO',nombre='MENSAJE',state=1).first().valor
+                numeroTwilio = Catalogo.objects.filter(tipo='CONFIG_TWILIO',nombre='NUMERO_TWILIO',state=1).first().valor
+                # Genera el codigo
+                codigo = (''.join(random.choice(string.digits) for _ in range(int(longitud_codigo))))
+                # Guardar codigo en base
+                ValidarCuenta.objects.create(codigo=codigo,user_id=request.data['user_id'])
+                # Enviar codigo
+                message = client.messages.create(
+                    from_='whatsapp:'+numeroTwilio,
+                    body=mensaje+' '+codigo,
+                    to='whatsapp:'+serializer.data['whatsapp']
+                )
+
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data)
             createLog(logModel,serializer.errors,logExcepcion)
