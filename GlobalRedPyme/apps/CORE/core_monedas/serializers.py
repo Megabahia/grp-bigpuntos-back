@@ -40,5 +40,5 @@ class ListMonedasSerializer(serializers.ModelSerializer):
         empresa_id = data.pop('empresa_id')
         empresa = Empresas.objects.get(pk=ObjectId(empresa_id))
         if empresa:
-            data['empresa'] = empresa.nombre
+            data['empresa'] = empresa.nombreEmpresa
         return data
