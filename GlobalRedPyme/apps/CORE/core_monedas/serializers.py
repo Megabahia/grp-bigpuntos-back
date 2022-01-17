@@ -14,6 +14,16 @@ class MonedasSerializer(serializers.ModelSerializer):
        	fields = '__all__'
         read_only_fields = ['_id']
 
+    def create(self, validated_data):
+        monedasUsuario = Monedas.objects.filter(user_id=validated_data['user_id'],state=1).order_by('-created_at').first()
+        if monedasUsuario is not None:
+            validated_data['saldo'] = validated_data['credito'] + monedasUsuario.saldo
+        else:
+            validated_data['saldo'] = validated_data['credito']
+
+        monedas = Monedas.objects.create(**validated_data)
+        return monedas
+
 class MonedasUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Monedas
