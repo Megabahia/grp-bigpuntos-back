@@ -141,3 +141,31 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         err={"error":'Un error ha ocurrido: {}'.format(e)}  
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
         
+
+def enviarEmailCreacionPersona(email):
+    try:
+        #enviar por email
+        subject, from_email, to = 'Creación de usuario Global Red Pymes Personas', "08d77fe1da-d09822@inbox.mailtrap.io",email
+        txt_content="""
+                Registro de usuario Global Red Pymes Personas
+                Felicidades usted se acaba de registrar a la plataforma de Global Red Pymes Personas.
+                
+                Atentamente,
+                Equipo Global Red Pymes Personas.
+        """
+        html_content = """
+        <html>
+            <body>
+                <h1>Registro de usuario Global Red Pymes Personas</h1>
+                Felicidades usted se acaba de registrar a la plataforma de Global Red Pymes Personas.
+                <br>
+                Atentamente,<br>
+                Equipo Global Red Pymes Personas.<br>
+            </body>
+        </html>
+        """
+        if sendEmail(subject, txt_content, from_email,to,html_content):
+            return True
+        return False
+    except:
+        return False

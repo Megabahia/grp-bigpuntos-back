@@ -29,7 +29,7 @@ from django.utils.crypto import get_random_string
 from apps.CENTRAL.central_logs.methods import createLog,datosUsuarios,datosTipoLog
 from django_rest_passwordreset.views import ResetPasswordRequestToken
 #enviar email usuario creado
-from apps.CENTRAL.central_autenticacion.password_reset import resetPasswordNewUser
+from apps.CENTRAL.central_autenticacion.password_reset import resetPasswordNewUser, enviarEmailCreacionPersona
 #declaracion variables log
 datosAux=datosUsuarios()
 datosTipoLogAux=datosTipoLog()
@@ -483,7 +483,12 @@ def usuario_create(request):
                     'roles': roles,
                     'estado': account.estado
                 }
-                data['tokenEmail']=str(resetPasswordNewUser(data['email']))
+                if 'roles' in request.data:
+                    if 'SuperMonedas' == request.data['roles']:
+                        enviarEmailCreacionPersona(data['email'])
+                    else:
+                        data['tokenEmail']=str(resetPasswordNewUser(data['email']))
+
                 if 'empresa' not in request.data:
                     personaSerializer = PersonasSerializer(persona).data
                 
