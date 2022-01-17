@@ -443,7 +443,7 @@ def usuario_create(request):
 
                 if 'roles' in request.data:
                     if request.data['roles'] != '':
-                        rol = Roles.objects.filter(_id=ObjectId(request.data['roles']),state=1).first()
+                        rol = Roles.objects.filter(nombre=request.data['roles'],state=1).first()
                         RolesUsuarios.objects.create(
                             rol= rol,
                             usuario= account
@@ -457,7 +457,6 @@ def usuario_create(request):
                 request.data['usuario']=account._id
                 infoUsuario = InfoUsuarioSerializer(data=request.data)
                 if infoUsuario.is_valid():
-                    # print("entro")
                     infoUsuario.save()
 
                 # Consultar roles de usuario
@@ -467,7 +466,7 @@ def usuario_create(request):
                 dataPeronsa = {}
                 dataPeronsa['user_id']=str(account.pk)
                 dataPeronsa['email']=str(account.email)
-                if 'nombres' in request and 'apellidos' in request:
+                if 'nombres' in request.data and 'apellidos' in request.data:
                     dataPeronsa['nombresCompleto']=request.data['nombres'] + ' ' + request.data['apellidos']
                 persona = Personas.objects.create(**dataPeronsa)
                 
