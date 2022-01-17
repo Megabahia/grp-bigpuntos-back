@@ -71,24 +71,24 @@ def enviarEmailAsignacionPassword(reset_password_token):
         url=config.API_FRONT_END+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
         subject, from_email, to = 'Solicitud de Reinicio de contraseña Global Red Pyme', "08d77fe1da-d09822@inbox.mailtrap.io",reset_password_token.user.email
         txt_content="""
-                Registro de Contraseña Vittoria
-                Para poder ingresar a la plataforma de Vittoria usted  debe registrar la contraseña,
+                Registro de Contraseña Global Red Pymes Personas
+                Para poder ingresar a la plataforma de Global Red Pymes Personas usted  debe registrar la contraseña,
                 Haga clic en el siguiente enlace para registrar su contraseña:
                 """+url+"""
                 Si al hacer click en el enlace anterior no funciona, copie y pegue la URL en una nueva ventana del navegador
                 Atentamente,
-                Equipo Vittoria.
+                Equipo Global Red Pymes Personas.
         """
         html_content = """
         <html>
             <body>
-                <h1>Registro de Contraseña Vittoria</h1>
-                Para poder ingresar a la plataforma de Vittoria usted  debe registrar la contraseña<br>
+                <h1>Registro de Contraseña Global Red Pymes Personas</h1>
+                Para poder ingresar a la plataforma de Global Red Pymes Personas usted  debe registrar la contraseña<br>
                 Haga clic en el siguiente enlace para registrar su contraseña:<br>
                 <a href='"""+url+"""'>Clic Aquí!</a><br>
                 Si al hacer click en el enlace anterior no funciona, copie y pegue la URL en una nueva ventana del navegador<br>
                 Atentamente,<br>
-                Equipo Vittoria.<br>
+                Equipo Global Red Pymes Personas.<br>
             </body>
         </html>
         """
@@ -113,7 +113,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
                 """+url+"""
                 Si al hacer click en el enlace anterior no funciona, copie y pegue la URL en una nueva ventana del navegador
                 Atentamente,
-                Equipo Vittoria.
+                Equipo Global Red Pymes Personas.
         """
         html_content = """
         <html>
@@ -124,7 +124,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
                 <a href='"""+url+"""'>Clic Aquí!</a><br>
                 Si al hacer click en el enlace anterior no funciona, copie y pegue la URL en una nueva ventana del navegador<br>
                 Atentamente,<br>
-                Equipo Vittoria.<br>
+                Equipo Global Red Pymes Personas.<br>
             </body>
         </html>
         """
