@@ -35,28 +35,28 @@ class SubirFacturasSerializer(serializers.ModelSerializer):
         model = Facturas
         fields = ['urlArchivo']
 
-    def create(self, validated_data):
-        extension = str(validated_data['urlArchivo'])
-        if '.xml' in extension:
-            archivoXML = dict(xmltodict.parse(validated_data['urlArchivo']))
-            if 'RespuestaAutorizacionComprobante' in archivoXML.keys():
-                archivoXML = archivoXML['RespuestaAutorizacionComprobante']['autorizaciones']
+    # def create(self, validated_data):
+    #     extension = str(validated_data['urlArchivo'])
+    #     if '.xml' in extension:
+    #         archivoXML = dict(xmltodict.parse(validated_data['urlArchivo']))
+    #         if 'RespuestaAutorizacionComprobante' in archivoXML.keys():
+    #             archivoXML = archivoXML['RespuestaAutorizacionComprobante']['autorizaciones']
             
-            if 'autorizacion' in archivoXML.keys():
-                contentido = archivoXML['autorizacion']
-            else:
-                contentido = archivoXML['Autorizacion']
+    #         if 'autorizacion' in archivoXML.keys():
+    #             contentido = archivoXML['autorizacion']
+    #         else:
+    #             contentido = archivoXML['Autorizacion']
 
             
-            comprobante = xmltodict.parse(contentido['comprobante'])
+    #         comprobante = xmltodict.parse(contentido['comprobante'])
             
-            validated_data['razonSocial'] = comprobante['factura']['infoTributaria']['razonSocial']
-            validated_data['fechaEmision'] = datetime.strptime(comprobante['factura']['infoFactura']['fechaEmision'],'%d/%m/%Y')
-            validated_data['importeTotal'] = comprobante['factura']['infoFactura']['importeTotal']
-            validated_data['numeroFactura'] = contentido['numeroAutorizacion'][24:39]
+    #         validated_data['razonSocial'] = comprobante['factura']['infoTributaria']['razonSocial']
+    #         validated_data['fechaEmision'] = datetime.strptime(comprobante['factura']['infoFactura']['fechaEmision'],'%d/%m/%Y')
+    #         validated_data['importeTotal'] = comprobante['factura']['infoFactura']['importeTotal']
+    #         validated_data['numeroFactura'] = contentido['numeroAutorizacion'][24:39]
 
-        factura = Facturas.objects.create(**validated_data)
-        return factura
+    #     factura = Facturas.objects.create(**validated_data)
+    #     return factura
 
 # Listar factura
 class ListFacturasSerializer(serializers.ModelSerializer):
