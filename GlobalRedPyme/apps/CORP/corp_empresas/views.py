@@ -465,3 +465,46 @@ def empresas_create_convenio(request):
             createLog(logModel,err,logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def empresas_listOne_filtros(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #Filtros
+            filters={"state":"1"}
+        
+            if "nombreComercial" in request.data:
+                if request.data["nombreComercial"] != '':
+                    filters['nombreComercial__icontains'] = str(request.data["nombreComercial"])
+            
+            if "nombreEmpresa" in request.data:
+                if request.data["nombreEmpresa"] != '':
+                    filters['nombreEmpresa__icontains'] = str(request.data["nombreEmpresa"])
+            
+            if "ruc" in request.data:
+                if request.data["ruc"] != '':
+                    filters['ruc__icontains'] = str(request.data["ruc"])
+
+            #Serializar los datos
+            query = Empresas.objects.filter(**filters).order_by('-created_at').first()
+            serializer = EmpresasSerializer(query)
+            #envio de datos
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
