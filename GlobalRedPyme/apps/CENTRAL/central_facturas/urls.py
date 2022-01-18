@@ -5,8 +5,7 @@ from apps.CENTRAL.central_facturas.views import(
 	facturas_listOne,
 	facturas_update,
 	facturas_delete,
-	facturas_calificacionCreate,
-	facturas_subirArchivo
+	facturas_subirArchivo,
 )
 app_name = 'central_facturas'
 
@@ -17,6 +16,5 @@ urlpatterns = [
 	path('listOne/<str:pk>', facturas_listOne, name="facturas_listOne"),
 	path('update/<str:pk>', facturas_update, name="facturas_update"),
 	path('delete/<str:pk>', facturas_delete, name="facturas_delete"),
-	path('calificacion/create/', facturas_calificacionCreate, name="facturas_calificacionCreate"),
 ]
 

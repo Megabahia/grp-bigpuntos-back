@@ -1,6 +1,6 @@
-from apps.CENTRAL.central_facturas.models import  Facturas, CalificarCompras
+from apps.CENTRAL.central_facturas.models import  Facturas
 from apps.CENTRAL.central_facturas.serializers import (
-    FacturasSerializer, ListFacturasSerializer, CalificacionesSerializer, SubirFacturasSerializer
+    FacturasSerializer, ListFacturasSerializer, SubirFacturasSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -197,7 +197,7 @@ def facturas_delete(request, pk):
         try:
             # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
             pk = ObjectId(pk)
-            persona = Facturas.objects.get(pk=pk, state=1)
+            query = Facturas.objects.get(pk=pk, state=1)
         except Facturas.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
@@ -205,7 +205,7 @@ def facturas_delete(request, pk):
             return Response(status=status.HTTP_404_NOT_FOUND)
         #tomar el dato
         if request.method == 'DELETE':
-            serializer = FacturasSerializer(persona, data={'state': '0','updated_at':str(nowDate)},partial=True)
+            serializer = FacturasSerializer(query, data={'state': '0','updated_at':str(nowDate)},partial=True)
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
@@ -217,41 +217,6 @@ def facturas_delete(request, pk):
         createLog(logModel,err,logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
-#CREAR CALIFICACION
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def facturas_calificacionCreate(request):
-    timezone_now = timezone.localtime(timezone.now())
-    logModel = {
-        'endPoint': logApi+'calificacion/create/',
-        'modulo':logModulo,
-        'tipo' : logExcepcion,
-        'accion' : 'CREAR',
-        'fechaInicio' : str(timezone_now),
-        'dataEnviada' : '{}',
-        'fechaFin': str(timezone_now),
-        'dataRecibida' : '{}'
-    }
-    if request.method == 'POST':
-        try:
-            logModel['dataEnviada'] = str(request.data)
-            request.data['created_at'] = str(timezone_now)
-            if 'updated_at' in request.data:
-                request.data.pop('updated_at')
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            request.data['factura'] = ObjectId(request.data['factura'])
-
-            serializer = CalificacionesSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                createLog(logModel,serializer.data,logTransaccion)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            createLog(logModel,serializer.errors,logExcepcion)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e: 
-            err={"error":'Un error ha ocurrido: {}'.format(e)}  
-            createLog(logModel,err,logExcepcion)
-            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 # SUBIR FACTURA
 @api_view(['POST'])

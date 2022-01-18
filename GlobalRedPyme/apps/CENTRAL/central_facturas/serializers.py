@@ -5,27 +5,10 @@ from rest_framework import serializers
 
 
 from apps.CENTRAL.central_facturas.models import (
-    Facturas, CalificarCompras
+    Facturas
 )
 
-# Crear factura
-class CalificacionesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CalificarCompras
-        fields = '__all__'
-
-    def to_representation(self, instance):
-        data = super(CalificacionesSerializer,
-                     self).to_representation(instance)
-        # tomo el campo factura y convierto de OBJECTID a string
-        factura = str(data.pop('factura'))
-        data.update({"factura": factura})
-        return data
-
-
 class FacturasSerializer(serializers.ModelSerializer):
-    calificaciones = CalificacionesSerializer(read_only=True, many=True)
-
     class Meta:
         model = Facturas
         fields = '__all__'
@@ -63,4 +46,4 @@ class ListFacturasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Facturas
         fields = ['_id', 'created_at', 'numeroFactura',
-                  'urlFoto', 'urlArchivo', 'estado']
+                  'urlFoto', 'urlArchivo', 'estado', 'razonSocial','pais','provincia','ciudad','importeTotal']

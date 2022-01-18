@@ -239,6 +239,8 @@ def productos_imagenUpdate(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+
+            print(query)
             serializer = ProductosImagenSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
