@@ -333,6 +333,8 @@ def personas_validarCodigo(request):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+            if query is None:
+                return Response({"error":"error 400"}, status=status.HTTP_400_BAD_REQUEST)
             serializer = ValidarCuentaSerializer(query, data={'state': '0','updated_at':str(nowDate)},partial=True)
             if serializer.is_valid():
                 serializer.save()
