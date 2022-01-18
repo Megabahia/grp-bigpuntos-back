@@ -33,7 +33,7 @@ class FacturasSerializer(serializers.ModelSerializer):
 class SubirFacturasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Facturas
-        fields = ['urlArchivo']
+        fields = ['urlArchivo','user_id']
 
     # def create(self, validated_data):
     #     extension = str(validated_data['urlArchivo'])
