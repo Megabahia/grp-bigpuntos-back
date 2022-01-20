@@ -166,6 +166,14 @@ def facturas_update(request, pk):
             if 'created_at' in request.data:
                 request.data.pop('created_at')
             
+            if 'urlFoto' in request.data:
+                if request.data['urlFoto'] == '':
+                    request.data.pop('urlFoto')
+            
+            if 'urlArchivo' in request.data:
+                if request.data['urlArchivo'] == '':
+                    request.data.pop('urlArchivo')
+            
             serializer = FacturasSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
