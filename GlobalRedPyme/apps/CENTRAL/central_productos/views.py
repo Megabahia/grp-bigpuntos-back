@@ -132,6 +132,7 @@ def productos_listOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def productos_update(request, pk):
+    request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'update/',
@@ -158,6 +159,10 @@ def productos_update(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+
+            if 'imagen' in request.data:
+                if request.data['imagen'] == None:
+                    request.data.pop('imagen')
             
             serializer = ProductosSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
