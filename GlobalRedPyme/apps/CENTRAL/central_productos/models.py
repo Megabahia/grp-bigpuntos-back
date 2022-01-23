@@ -13,7 +13,7 @@ class Productos(models.Model):
     precioSupermonedas = models.CharField(max_length=200,null=False, blank=False)
     efectivo = models.FloatField(null=False, blank=False)
     codigoQR = models.CharField(max_length=200,null=True, blank=True)
-    cantidad = models.IntegerField(null=False, blank=False)
+    cantidad = models.IntegerField(null=True, blank=True)
     empresa_id = models.CharField(max_length=200, null=False, blank=False)
     tipo = models.CharField(default="presentacion",max_length=255,null=False, blank=False)
     vigencia = models.DateField(null=True, blank=True)

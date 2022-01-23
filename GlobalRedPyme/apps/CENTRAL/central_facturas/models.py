@@ -9,7 +9,7 @@ def upload_path2(instance, filname):
 # Create your models here.
 class Facturas(models.Model):
     _id = models.ObjectIdField()
-    numeroFactura = models.CharField(max_length=200,null=False, blank=False)
+    numeroFactura = models.CharField(max_length=200,null=True, blank=True)
     razonSocial = models.TextField(max_length=200,null=False, blank=False)
     pais = models.CharField(max_length=255,null=True, blank=True)
     provincia = models.CharField(max_length=255,null=True, blank=True)
