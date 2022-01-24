@@ -14,7 +14,7 @@ class Facturas(models.Model):
     pais = models.CharField(max_length=255,null=True, blank=True)
     provincia = models.CharField(max_length=255,null=True, blank=True)
     ciudad = models.CharField(max_length=255,null=True, blank=True)
-    fechaEmision = models.DateField(null=False, blank=False)
+    fechaEmision = models.DateField(null=True, blank=True)
     importeTotal = models.FloatField(null=False, blank=False)
     categoria = models.CharField(max_length=200,null=True, blank=True)
     urlFoto = models.FileField(blank=True,null=True,upload_to=upload_path)
