@@ -50,3 +50,9 @@ class EmpresasConvenioSerializer(serializers.ModelSerializer):
             empresa = Empresas.objects.filter(_id=convenio, state=1).first()
             data.update(EmpresasSerializer(empresa).data)
             return data
+
+
+class EmpresasLogosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Empresas
+       	fields = ['imagen']

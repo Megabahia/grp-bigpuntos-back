@@ -1,6 +1,7 @@
 from apps.CORP.corp_empresas.models import  Empresas, EmpresasConvenio
 from apps.CORP.corp_empresas.serializers import (
-    EmpresasSerializer, EmpresasFiltroSerializer, EmpresasFiltroIfisSerializer, EmpresasConvenioSerializer, EmpresasConvenioCreateSerializer
+    EmpresasSerializer, EmpresasFiltroSerializer, EmpresasFiltroIfisSerializer, EmpresasConvenioSerializer, EmpresasConvenioCreateSerializer,
+    EmpresasLogosSerializer,
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -507,4 +508,39 @@ def empresas_listOne_filtros(request):
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             createLog(logModel,err,logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def empresas_list_logos(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/convenio/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #Filtros
+            filters={"state":"1"}
+        
+            #Serializar los datos
+            query = Empresas.objects.filter(**filters).order_by('-created_at')
+            serializer = EmpresasLogosSerializer(query, many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
 
