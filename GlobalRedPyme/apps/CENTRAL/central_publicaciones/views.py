@@ -88,6 +88,7 @@ def publicaciones_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_create(request):
+    request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'create/',
@@ -105,6 +106,10 @@ def publicaciones_create(request):
             request.data['created_at'] = str(timezone_now)
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
+
+            if 'imagen' in request.data:
+                if request.data['imagen'] == '':
+                    request.data.pop('imagen')
         
             serializer = PublicacionesSerializer(data=request.data)
             if serializer.is_valid():
@@ -158,6 +163,7 @@ def publicaciones_listOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_update(request, pk):
+    request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'update/',
@@ -184,6 +190,11 @@ def publicaciones_update(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+
+            if 'imagen' in request.data:
+                if request.data['imagen'] == '':
+                    request.data.pop('imagen')
+
             serializer = PublicacionesSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
