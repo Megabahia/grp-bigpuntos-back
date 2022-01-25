@@ -427,6 +427,7 @@ def list_monedas_regaladas_empresa(request):
             #Filtros
             filters={"state":"1"}
             filters['fechaVigencia__isnull']= False
+            filters['fechaVigencia__gte'] = str(timezone_now)[0:10]
             
             if 'user_id' in request.data:
                 if request.data['user_id'] != '':
