@@ -2,7 +2,7 @@ from apps.CORE.core_monedas.models import  Monedas
 from apps.PERSONAS.personas_personas.models import  Personas
 from apps.CORP.corp_empresas.models import  Empresas
 from apps.CORE.core_monedas.serializers import (
-    MonedasSerializer, MonedasUsuarioSerializer, ListMonedasSerializer
+    MonedasSerializer, MonedasUsuarioSerializer, ListMonedasSerializer, ListMonedasRegaladasSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -392,6 +392,7 @@ def insertarDato_creditoPreaprobado(dato):
         monedasUsuario = Monedas.objects.filter(user_id=persona.user_id,state=1).order_by('-created_at').first()
         data['saldo'] = monedasUsuario.saldo + float(dato[5])
         data['descripcion'] = dato[8].replace('"', "") if dato[8] != "NULL" else None
+        data['fechaVigencia'] = dato[7].replace('"', "")[0:10] if dato[7] != "NULL" else None
         data['created_at'] = str(timezone_now)
         #inserto el dato con los campos requeridos
         Monedas.objects.create(**data)
@@ -400,6 +401,48 @@ def insertarDato_creditoPreaprobado(dato):
         return str(e)
 
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def list_monedas_regaladas_empresa(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/otorgadas/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #paginacion
+            page_size=int(request.data['page_size'])
+            page=int(request.data['page'])
+            offset = page_size* page
+            limit = offset + page_size
+            #Filtros
+            filters={"state":"1"}
+            filters['fechaVigencia__isnull']= False
+            
+            if 'user_id' in request.data:
+                if request.data['user_id'] != '':
+                    filters['user_id']=request.data['user_id']
+
+            #Serializar los datos
+            query = Monedas.objects.filter(**filters).order_by('-created_at')
+            serializer = ListMonedasRegaladasSerializer(query[offset:limit], many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
 

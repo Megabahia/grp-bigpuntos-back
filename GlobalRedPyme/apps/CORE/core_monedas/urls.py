@@ -8,6 +8,7 @@ from apps.CORE.core_monedas.views import(
 	monedas_usuario,
 	monedas_listOtorgadas,
 	uploadEXCEL_monedasRegaladas,
+	list_monedas_regaladas_empresa,
 )
 app_name = 'core_monedas'
 
@@ -20,5 +21,6 @@ urlpatterns = [
 	path('usuario/<str:pk>', monedas_usuario, name="monedas_usuario"),
 	path('list/otorgadas/', monedas_listOtorgadas, name="monedas_listOtorgadas"),
 	path('upload/monedas', uploadEXCEL_monedasRegaladas, name="uploadEXCEL_monedasRegaladas"),
+	path('list/monedas/empresas', list_monedas_regaladas_empresa, name="list_monedas_regaladas_empresa"),
 ]
 

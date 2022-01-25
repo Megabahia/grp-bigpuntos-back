@@ -30,6 +30,7 @@ class Monedas(models.Model):
     debito = models.IntegerField(default=0)
     saldo = models.IntegerField(default=0)
     descripcion = models.CharField(max_length=255, null=True, blank=True)
+    fechaVigencia = models.DateField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
