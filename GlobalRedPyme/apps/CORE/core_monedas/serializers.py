@@ -3,6 +3,7 @@ from rest_framework import serializers
 from bson import ObjectId
 
 from apps.CORP.corp_empresas.models import Empresas
+from apps.PERSONAS.personas_personas.models import  Personas
 
 from apps.CORE.core_monedas.models import (
     Monedas
@@ -42,3 +43,27 @@ class ListMonedasSerializer(serializers.ModelSerializer):
         if empresa:
             data['empresa'] = empresa.nombreEmpresa
         return data
+
+class ListMonedasRegaladasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Monedas
+       	fields = '__all__'
+        read_only_fields = ['_id']
+
+    def to_representation(self, instance):
+        data = super(ListMonedasRegaladasSerializer, self).to_representation(instance)
+        empresa_id = data.pop('empresa_id')
+        empresa = Empresas.objects.get(pk=ObjectId(empresa_id))
+        if empresa:
+            data['empresa'] = empresa.nombreEmpresa
+            data['ruc'] = empresa.ruc
+
+        persona = Personas.objects.filter(user_id=instance.user_id,state=1).first()
+        if persona:
+            data['nombres'] = persona.nombres
+            data['apellidos'] = persona.apellidos
+            data['identificacion'] = persona.identificacion
+        
+        return data
+
+
