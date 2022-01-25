@@ -6,7 +6,8 @@ from apps.CORE.core_monedas.views import(
 	monedas_update,
 	monedas_delete,
 	monedas_usuario,
-	monedas_listOtorgadas
+	monedas_listOtorgadas,
+	uploadEXCEL_monedasRegaladas,
 )
 app_name = 'core_monedas'
 
@@ -18,5 +19,6 @@ urlpatterns = [
 	path('delete/<str:pk>', monedas_delete, name="monedas_delete"),
 	path('usuario/<str:pk>', monedas_usuario, name="monedas_usuario"),
 	path('list/otorgadas/', monedas_listOtorgadas, name="monedas_listOtorgadas"),
+	path('upload/monedas', uploadEXCEL_monedasRegaladas, name="uploadEXCEL_monedasRegaladas"),
 ]
 
