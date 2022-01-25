@@ -137,6 +137,7 @@ def empresas_list_filtro(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_create(request):
+    request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'create/',
@@ -212,6 +213,7 @@ def empresas_listOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_update(request, pk):
+    request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'update/',
