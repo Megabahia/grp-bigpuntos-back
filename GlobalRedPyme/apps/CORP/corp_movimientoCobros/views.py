@@ -1,6 +1,7 @@
 from apps.CORP.corp_movimientoCobros.models import  MovimientoCobros
 from apps.CORP.corp_autorizaciones.models import Autorizaciones
 from apps.CORE.core_monedas.models import  Monedas
+from apps.CORP.corp_pagos.models import Pagos
 from apps.CORP.corp_movimientoCobros.serializers import (
     MovimientoCobrosSerializer
 )
@@ -113,7 +114,7 @@ def movimientoCobros_create(request):
     if request.method == 'POST':
         try:
             monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id'], state=1).order_by('-created_at').first()
-            if float(monedasUsuario.credito) < float(request.data['montoSupermonedas']):
+            if float(monedasUsuario.saldo) < float(request.data['montoSupermonedas']):
                 data={'error':'Supera las monedas de su cuenta.'}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
@@ -125,8 +126,9 @@ def movimientoCobros_create(request):
             serializer = MovimientoCobrosSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                saldo = monedasUsuario.saldo - float(request.data['montoSupermonedas'])
-                Monedas.objects.create(user_id=request.data['user_id'],empresa_id=request.data['empresa_id'],tipo='Debito',debito=request.data['montoSupermonedas'],saldo=saldo)
+                Pagos.objects.filter(codigoCobro=request.data['codigoCobro']).update(state=0)
+                # saldo = monedasUsuario.saldo - float(request.data['montoSupermonedas'])
+                # Monedas.objects.create(user_id=request.data['user_id'],empresa_id=request.data['empresa_id'],tipo='Debito',debito=request.data['montoSupermonedas'],saldo=saldo)
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             createLog(logModel,serializer.errors,logExcepcion)

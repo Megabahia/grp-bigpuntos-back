@@ -227,12 +227,16 @@ def pagos_list(request):
 
             #Serializar los datos
             query = Pagos.objects.filter(**filters).order_by('-created_at').first()
-            if query.duracion >= timezone_now:
-                persona = Personas.objects.filter(user_id=query.user_id).first()
-                serializer = PersonasSearchSerializer(persona)
-                new_serializer_data=serializer.data
+            if query is None:
+                new_serializer_data={'error':{'message':'No existe el codigo'}}
             else:
-                new_serializer_data={'error':{'tiempo':'Se le termino el tiempo','estado':'Inactivo'}}
+                if query.duracion >= timezone_now:
+                    persona = Personas.objects.filter(user_id=query.user_id).first()
+                    serializer = PersonasSearchSerializer(persona)
+                    new_serializer_data=serializer.data
+                    new_serializer_data['monto'] = query.monto
+                else:
+                    new_serializer_data={'error':{'tiempo':'Se le termino el tiempo','estado':'Inactivo'}}
             #envio de datos
             return Response(new_serializer_data,status=status.HTTP_200_OK)
         except Exception as e: 
