@@ -66,4 +66,8 @@ class ListMonedasRegaladasSerializer(serializers.ModelSerializer):
         
         return data
 
-
+class MonedasGuardarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Monedas
+       	fields = '__all__'
+        read_only_fields = ['_id']

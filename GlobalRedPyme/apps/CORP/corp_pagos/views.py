@@ -1,6 +1,8 @@
 from apps.CENTRAL.central_catalogo.models import  Catalogo
 from apps.CORP.corp_pagos.models import  Pagos
 from apps.PERSONAS.personas_personas.models import  Personas
+from apps.CORE.core_monedas.models import Monedas
+from apps.CORE.core_monedas.serializers import MonedasGuardarSerializer
 from apps.PERSONAS.personas_personas.serializers import  PersonasSearchSerializer
 from apps.CORP.corp_pagos.serializers import (
     PagosSerializer
@@ -64,6 +66,16 @@ def pagos_create(request):
             serializer = PagosSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id']).order_by('-created_at').first()
+                request.data['tipo'] = 'Pagos'
+                request.data['estado'] = 'aprobado'
+                request.data['debito'] = request.data['monto']
+                request.data['saldo'] = monedasUsuario.saldo - float(request.data['monto'])
+                request.data['descripcion'] = 'Generar comprobante de pago con supermonedas.'
+                monedasSerializer = MonedasGuardarSerializer(data=request.data)
+                if monedasSerializer.is_valid():
+                    monedasSerializer.save()
+
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             createLog(logModel,serializer.errors,logExcepcion)
