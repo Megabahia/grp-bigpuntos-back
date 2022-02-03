@@ -2,6 +2,7 @@ from apps.CORP.corp_movimientoCobros.models import  MovimientoCobros
 from apps.CORP.corp_autorizaciones.models import Autorizaciones
 from apps.CORE.core_monedas.models import  Monedas
 from apps.CORP.corp_pagos.models import Pagos
+from apps.CORP.corp_monedasEmpresa.models import MonedasEmpresa
 from apps.CORP.corp_movimientoCobros.serializers import (
     MovimientoCobrosSerializer
 )
@@ -127,6 +128,28 @@ def movimientoCobros_create(request):
             if serializer.is_valid():
                 serializer.save()
                 Pagos.objects.filter(codigoCobro=request.data['codigoCobro']).update(state=0)
+                request.data['nombreCompleto'] = request.data['nombres'] + ' ' + request.data['apellidos']
+                datos = {
+                    'montoSupermonedas': request.data['montoSupermonedas'],
+                    'montoTotalFactura': request.data['montoTotalFactura'],
+                    'nombreCompleto': request.data['nombreCompleto'],
+                    'nombres': request.data['nombres'],
+                    'apellidos': request.data['apellidos'],
+                    'identificacion': request.data['identificacion'],
+                    'whatsapp': request.data['whatsapp'],
+                    'empresa_id': request.data['empresa_id']
+                }
+                MonedasEmpresa.objects.create(**datos)
+                monedasEmpresa = Monedas.objects.filter(empresa_id=str(request.data['empresa_id']),user_id=None,autorizador_id=None).order_by('-created_at').first()
+                dataEmpresa = {
+                    'empresa_id': str(request.data['empresa_id']),
+                    'tipo': 'Credito',
+                    'estado': 'aprobado',
+                    'credito': float(request.data['montoSupermonedas']),
+                    'saldo': float(request.data['montoSupermonedas']) if monedasEmpresa is None else monedasEmpresa.saldo + float(request.data['montoSupermonedas']),
+                    'descripcion': 'Cobro de monedas generado por comprobante de compra.'
+                }
+                Monedas.objects.create(**dataEmpresa)
                 # saldo = monedasUsuario.saldo - float(request.data['montoSupermonedas'])
                 # Monedas.objects.create(user_id=request.data['user_id'],empresa_id=request.data['empresa_id'],tipo='Debito',debito=request.data['montoSupermonedas'],saldo=saldo)
                 createLog(logModel,serializer.data,logTransaccion)

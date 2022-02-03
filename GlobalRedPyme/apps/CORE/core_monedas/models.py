@@ -21,7 +21,7 @@ class Monedas(models.Model):
         PENDIENTE = 'pendiente'
 
     _id = models.ObjectIdField()
-    user_id = models.CharField(max_length=200,null=False)
+    user_id = models.CharField(max_length=200,null=True, blank=True)
     autorizador_id = models.CharField(max_length=200, null=True, blank=True)
     empresa_id = models.CharField(max_length=255, null=True, blank=True)
     tipo = models.CharField(max_length=255, choices=TipoEnum.choices, default=TipoEnum.OTRO)

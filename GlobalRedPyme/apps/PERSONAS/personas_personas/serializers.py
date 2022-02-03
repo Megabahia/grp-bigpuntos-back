@@ -36,5 +36,5 @@ class ValidarCuentaSerializer(serializers.ModelSerializer):
 class PersonasSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Personas
-        fields = ['_id','identificacion','nombres','apellidos','user_id']
+        fields = ['_id','identificacion','nombres','apellidos','user_id','whatsapp']
 

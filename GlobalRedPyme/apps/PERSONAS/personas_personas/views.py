@@ -366,7 +366,6 @@ def personas_listOne_cedula(request):
     try:
         try:
             query = Personas.objects.filter(identificacion=str(request.data['identificacion']), state=1).first()
-            # print(query)
         except Personas.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
