@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'import_export',
     'drf_yasg',
+    'django_crontab',
 ]
 
 SWAGGER_SETTINGS = {
@@ -213,3 +214,9 @@ AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env.str('AWS_STORAGE_BUCKET_NAME')
 AWS_QUERYSTRING_AUTH = False 
+
+
+CRONJOBS = [
+    # La función temporizada se ejecuta cada minuto
+    ('*/1 * * * *', "GlobalRedPyme.cron.hi"),
+]
