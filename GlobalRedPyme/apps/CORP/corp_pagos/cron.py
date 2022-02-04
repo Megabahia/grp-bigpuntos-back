@@ -8,17 +8,18 @@ def hi():
 
     f = open('/home/sysadmin/prueba.txt','a')
     for pago in pagos:
-        monedasUsuario = Monedas.objects.filter(user_id=pago.user_id,state=1).order_by('-created_at').first()
-        data = {
-            'user_id': pago.user_id,
-            'tipo': 'Credito',
-            'estado': 'aprobado',
-            'credito': pago.monto,
-            'saldo': monedasUsuario.saldo + pago.monto,
-            'descripcion': 'Devolución de monedas al no usar el comprobante de pago.'
-        }
-        Monedas.objects.create(**data)
-        f.write("machacando tras tres tris :)\n")
+        # monedasUsuario = Monedas.objects.filter(user_id=pago.user_id,state=1).order_by('-created_at').first()
+        # data = {
+        #     'user_id': pago.user_id,
+        #     'tipo': 'Credito',
+        #     'estado': 'aprobado',
+        #     'credito': pago.monto,
+        #     'saldo': monedasUsuario.saldo + pago.monto,
+        #     'descripcion': 'Devolución de monedas al no usar el comprobante de pago.'
+        # }
+        # Monedas.objects.create(**data)
+        f.write(pago)
+        f.write("\n")
         f.close()
 
 
