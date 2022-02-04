@@ -5,9 +5,9 @@ from django.utils import timezone
 def hi():
     f = open('/home/sysadmin/prueba.txt','a')
     timezone_now = timezone.localtime(timezone.now())
-    f.write(str(timezone_now))
     # f.write("\n ********* \n")
-    # pagos = Pagos.objects.filter(duracion__lte=timezone_now,state=1)
+    pagos = Pagos.objects.filter(duracion__lte=str(timezone_now),state=1).first()
+    f.write(pagos.user_id)
 
     # for pago in pagos:
     #     # monedasUsuario = Monedas.objects.filter(user_id=pago.user_id,state=1).order_by('-created_at').first()
