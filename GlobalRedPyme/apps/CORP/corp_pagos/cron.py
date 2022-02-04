@@ -8,7 +8,8 @@ def hi():
     pagos = Pagos.objects.filter(duracion__lte=str(timezone_now),state=1)
 
     for pago in pagos:
-        f.write(pago['user_id'])
+        print(pago)
+        f.write(str(pago['user_id']))
         # monedasUsuario = Monedas.objects.filter(user_id=pago.user_id,state=1).order_by('-created_at').first()
         # data = {
         #     'user_id': pago.user_id,
