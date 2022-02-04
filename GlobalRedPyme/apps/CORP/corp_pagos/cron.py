@@ -4,8 +4,8 @@ from django.utils import timezone
 
 def hi():
     f = open('/home/sysadmin/prueba.txt','a')
-    timezone_now = timezone.localtime(timezone.now())
-    f.write(timezone_now + "\n")
+    # timezone_now = timezone.localtime(timezone.now())
+    f.write("holiii\n")
     # f.write("\n ********* \n")
     # pagos = Pagos.objects.filter(duracion__lte=timezone_now,state=1)
 
