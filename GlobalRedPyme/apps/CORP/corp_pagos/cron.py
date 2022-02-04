@@ -19,8 +19,8 @@ def hi():
         # }
         # Monedas.objects.create(**data)
         f.write(pago)
-        f.write("\n")
-        f.close()
+        f.write("\n ********* \n")
+    f.close()
 
 
     
