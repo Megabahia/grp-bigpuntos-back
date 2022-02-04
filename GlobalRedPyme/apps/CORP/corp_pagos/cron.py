@@ -8,20 +8,21 @@ def hi():
     pagos = Pagos.objects.filter(duracion__lte=str(timezone_now),state=1)
 
     for pago in pagos:
-        print(pago)
-        f.write(str(pago['user_id']))
-        # monedasUsuario = Monedas.objects.filter(user_id=pago.user_id,state=1).order_by('-created_at').first()
-        # data = {
-        #     'user_id': pago.user_id,
-        #     'tipo': 'Credito',
-        #     'estado': 'aprobado',
-        #     'credito': pago.monto,
-        #     'saldo': monedasUsuario.saldo + pago.monto,
-        #     'descripcion': 'Devolución de monedas al no usar el comprobante de pago.'
-        # }
-        # Monedas.objects.create(**data)
+        monedasUsuario = Monedas.objects.filter(user_id=pago.user_id,state=1).order_by('-created_at').first()
+        data = {
+            'user_id': pago.user_id,
+            'tipo': 'Credito',
+            'estado': 'aprobado',
+            'credito': pago.monto,
+            'saldo': monedasUsuario.saldo + pago.monto,
+            'descripcion': 'Devolución de monedas al no usar el comprobante de pago.'
+        }
+        Monedas.objects.create(**data)
+        pago.state = 0
+        pago.save()
         # f.write(pago)
-    #     f.write("\n ********* \n")
+        f.write("se ejecuto \n")
+
     f.close()
 
 
