@@ -86,7 +86,7 @@ def creditoPersonas_listOne(request, pk):
     }
     try:
         try:
-            query = CreditoPersonas.objects.filter(user_id=pk, state=1).first()
+            query = CreditoPersonas.objects.filter(pk=ObjectId(pk), state=1).first()
         except CreditoPersonas.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
@@ -107,6 +107,7 @@ def creditoPersonas_listOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def creditoPersonas_update(request, pk):
+    request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'update/',
@@ -121,7 +122,7 @@ def creditoPersonas_update(request, pk):
     try:
         try:
             logModel['dataEnviada'] = str(request.data)
-            query = CreditoPersonas.objects.filter(user_id=pk, state=1).first()
+            query = CreditoPersonas.objects.filter(pk=ObjectId(pk), state=1).first()
         except CreditoPersonas.DoesNotExist:
             errorNoExiste={'error':'No existe'}
             createLog(logModel,errorNoExiste,logExcepcion)
@@ -198,25 +199,19 @@ def creditoPersonas_list(request):
     if request.method == 'POST':
         try:
             logModel['dataEnviada'] = str(request.data)
+            #paginacion
+            page_size=int(request.data['page_size'])
+            page=int(request.data['page'])
+            offset = page_size* page
+            limit = offset + page_size
             #Filtros
             filters={"state":"1"}
         
-            if "codigoCobro" in request.data:
-                if request.data["codigoCobro"] != '':
-                    filters['codigoCobro'] = str(request.data["codigoCobro"])
-            
-            if "empresa_id" in request.data:
-                if request.data["empresa_id"] != '':
-                    filters['empresa_id'] = str(request.data["empresa_id"])
-
             #Serializar los datos
-            query = CreditoPersonas.objects.filter(**filters).order_by('-created_at').first()
-            if query.duracion >= timezone_now:
-                persona = Personas.objects.filter(user_id=query.user_id).first()
-                serializer = PersonasSearchSerializer(persona)
-                new_serializer_data=serializer.data
-            else:
-                new_serializer_data={'error':{'tiempo':'Se le termino el tiempo','estado':'Inactivo'}}
+            query = CreditoPersonas.objects.filter(**filters).order_by('-created_at')
+            serializer = CreditoPersonasSerializer(query[offset:limit], many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
             #envio de datos
             return Response(new_serializer_data,status=status.HTTP_200_OK)
         except Exception as e: 

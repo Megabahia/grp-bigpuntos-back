@@ -1,5 +1,8 @@
 from djongo import models
 
+def upload_path(instance, filname):
+    return '/'.join(['CORP/documentosCreditosPersonas', str(instance._id) + "_" + filname])
+
 # Create your models here.
 class CreditoPersonas(models.Model):
     _id = models.ObjectIdField()
@@ -11,6 +14,18 @@ class CreditoPersonas(models.Model):
     user_id = models.CharField(max_length=255,blank=False, null=False)  # Relacion usuario
     empresaComercial_id = models.CharField(max_length=255,blank=False, null=False)  # Relacion empresa comercial
     empresaIfis_id = models.CharField(max_length=255,blank=False, null=False)  # Relacion empresa ifis
+    reporteBuro = models.FileField(blank=True,null=True,upload_to=upload_path)
+    calificacionBuro = models.CharField(max_length=255,blank=True, null=True)
+    buroValido = models.CharField(max_length=255,blank=True, null=True)
+    identificacion = models.FileField(blank=True,null=True,upload_to=upload_path)
+    ruc = models.FileField(blank=True,null=True,upload_to=upload_path)
+    rolesPago = models.FileField(blank=True,null=True,upload_to=upload_path)
+    panillaIESS = models.FileField(blank=True,null=True,upload_to=upload_path)
+    tomarSolicitud = models.CharField(max_length=255,null=True, blank=True)
+    fechaAprobacion = models.DateTimeField(null=True, blank=True)
+    tipoCredito = models.CharField(max_length=255,null=True, blank=True)
+    concepto = models.CharField(max_length=255,null=True, blank=True)
+    documentoAprobacion = models.FileField(blank=True,null=True,upload_to=upload_path)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
