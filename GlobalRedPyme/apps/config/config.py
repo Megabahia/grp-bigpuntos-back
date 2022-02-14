@@ -1,4 +1,4 @@
-PRODUCTION=True
+PRODUCTION=False
 
 #VARIABLES GLOBALES
 endpointEmailAsignacionPassword="/grp/asignacionPassword/"
@@ -38,6 +38,7 @@ if PRODUCTION:
         "http://127.0.0.1:4203",
         "http://209.145.61.41:4204",
         "http://127.0.0.1:4204",
+        "http://localhost:4200",
     ]
     #databases
     DATABASES = {
