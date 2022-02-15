@@ -129,9 +129,7 @@ def historialLaboral_listOne(request, pk):
     }
     try:
         try:
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            pk = ObjectId(pk)
-            query = HistorialLaboral.objects.get(pk=pk, state=1)
+            query = HistorialLaboral.objects.get(user_id=pk, state=1)
         except HistorialLaboral.DoesNotExist:
             err={"error":"No existe"}  
             createLog(logModel,err,logExcepcion)
@@ -166,9 +164,7 @@ def historialLaboral_update(request, pk):
     try:
         try:
             logModel['dataEnviada'] = str(request.data)
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            pk = ObjectId(pk)
-            query = HistorialLaboral.objects.get(pk=pk, state=1)
+            query = HistorialLaboral.objects.get(user_id=pk, state=1)
         except HistorialLaboral.DoesNotExist:
             errorNoExiste={'error':'No existe'}
             createLog(logModel,errorNoExiste,logExcepcion)
@@ -179,9 +175,6 @@ def historialLaboral_update(request, pk):
             if 'created_at' in request.data:
                 request.data.pop('created_at')
             
-            # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
-            request.data['persona'] = ObjectId(request.data['persona'])
-
             serializer = HistorialLaboralSerializer(query, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
