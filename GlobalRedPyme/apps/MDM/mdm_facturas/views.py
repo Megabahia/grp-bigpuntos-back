@@ -1,11 +1,11 @@
 from apps.MDM.mdm_facturas.models import FacturasEncabezados, FacturasDetalles
 from apps.MDM.mdm_facturas.serializers import FacturasSerializer, FacturasDetallesSerializer, FacturasListarSerializer, FacturaSerializer, FacturasListarTablaSerializer
-from apps.MDP.mdp_productos.models import Productos
+# from apps.MDP.mdp_productos.models import Productos
 from apps.MDM.mdm_clientes.models import Clientes
 from apps.MDM.mdm_negocios.models import Negocios
-from apps.MDO.mdo_prediccionCrosseling.serializers import PrediccionCrosselingSerializer
-from apps.MDO.mdo_prediccionProductosNuevos.serializers import PrediccionProductosSerializer
-from apps.MDO.mdo_prediccionRefil.serializers import PrediccionRefilSerializer
+# from apps.MDO.mdo_prediccionCrosseling.serializers import PrediccionCrosselingSerializer
+# from apps.MDO.mdo_prediccionProductosNuevos.serializers import PrediccionProductosSerializer
+# from apps.MDO.mdo_prediccionRefil.serializers import PrediccionRefilSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
@@ -505,13 +505,13 @@ def factura_create(request):
 
             detalles = request.data['detalles']
             productosSinStock = []
-            for detalle in detalles:
-                producto = Productos.objects.filter(codigoBarras=detalle['codigo'],state=1).values('stock').first()
-                if int(detalle['cantidad']) > int(producto['stock']):
-                    productoSinStock={}
-                    productoSinStock['codigo']=detalle['codigo']
-                    productoSinStock['stock']=producto['stock']
-                    productosSinStock.append(productoSinStock)
+            # for detalle in detalles:
+            #     producto = Productos.objects.filter(codigoBarras=detalle['codigo'],state=1).values('stock').first()
+            #     if int(detalle['cantidad']) > int(producto['stock']):
+            #         productoSinStock={}
+            #         productoSinStock['codigo']=detalle['codigo']
+            #         productoSinStock['stock']=producto['stock']
+            #         productosSinStock.append(productoSinStock)
 
             if len(productosSinStock) >0:
                 return Response(productosSinStock,status=status.HTTP_404_NOT_FOUND)
@@ -529,17 +529,17 @@ def factura_create(request):
                     request.data["nombres"]= negocio.razonSocial
                     request.data["apellidos"]= negocio.nombreComercial
 
-                prediccionCrosselingSerializer = PrediccionCrosselingSerializer(data=request.data)
-                prediccionProductosSerializer = PrediccionProductosSerializer(data=request.data)
-                prediccionRefilSerializer = PrediccionRefilSerializer(data=request.data)
-                if prediccionCrosselingSerializer.is_valid() and prediccionRefilSerializer.is_valid() and prediccionProductosSerializer.is_valid():
-                    prediccionCrosselingSerializer.save()
-                    prediccionProductosSerializer.save()
-                    prediccionRefilSerializer.save()
-                    createLog(logModel,serializer.data,logTransaccion)
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-                createLog(logModel,serializer.errors,logExcepcion)
-                return Response(prediccionCrosselingSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                # prediccionCrosselingSerializer = PrediccionCrosselingSerializer(data=request.data)
+                # prediccionProductosSerializer = PrediccionProductosSerializer(data=request.data)
+                # prediccionRefilSerializer = PrediccionRefilSerializer(data=request.data)
+                # if prediccionCrosselingSerializer.is_valid() and prediccionRefilSerializer.is_valid() and prediccionProductosSerializer.is_valid():
+                #     prediccionCrosselingSerializer.save()
+                #     prediccionProductosSerializer.save()
+                #     prediccionRefilSerializer.save()
+                #     createLog(logModel,serializer.data,logTransaccion)
+                #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+                # createLog(logModel,serializer.errors,logExcepcion)
+                # return Response(prediccionCrosselingSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
             createLog(logModel,serializer.errors,logExcepcion)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e: 

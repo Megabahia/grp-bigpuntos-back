@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.MDM.mdm_facturas.models import FacturasEncabezados, FacturasDetalles
 from apps.MDM.mdm_negocios.models import Negocios
 from apps.MDM.mdm_clientes.models import Clientes
-from apps.MDP.mdp_productos.models import Productos, HistorialAvisos
+# from apps.MDP.mdp_productos.models import Productos, HistorialAvisos
 
 from datetime import datetime
 from django.utils import timezone
@@ -102,5 +102,5 @@ class FacturaSerializer(serializers.ModelSerializer):
             facturaEncabezado.save()
         for detalle_data in detalles_data:
             FacturasDetalles.objects.create(facturaEncabezado=facturaEncabezado, **detalle_data)
-            HistorialAvisos.objects.create(codigoBarras=detalle_data['codigo'],fechaCompra=datetime.today().strftime('%Y-%m-%d'),productosVendidos=detalle_data['cantidad'],precioVenta=detalle_data['total'])
+            # HistorialAvisos.objects.create(codigoBarras=detalle_data['codigo'],fechaCompra=datetime.today().strftime('%Y-%m-%d'),productosVendidos=detalle_data['cantidad'],precioVenta=detalle_data['total'])
         return facturaEncabezado
