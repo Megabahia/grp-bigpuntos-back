@@ -84,6 +84,10 @@ urlpatterns = [
     path('mdo/prediccionRefil/', include(('apps.MDO.mdo_prediccionRefil.urls', 'prediccionRefil'), namespace='prediccionRefil')),
     path('mdo/prediccionProductosNuevos/', include(('apps.MDO.mdo_prediccionProductosNuevos.urls', 'prediccionProductosNuevos'), namespace='prediccionProductosNuevos')),
     path('mdo/generarOferta/', include(('apps.MDO.mdo_generarOferta.urls', 'generarOferta'), namespace='generarOferta')),
+    # Modulo GDO
+    path('gdo/gestionOferta/', include(('apps.GDO.gdo_gestionOferta.urls', 'gestionOferta'), namespace='gestionOferta')),
+    # Modulo GDE
+    path('gde/gestionEntrega/', include(('apps.GDE.gde_gestionEntrega.urls', 'gestionEntrega'), namespace='gestionEntrega')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
