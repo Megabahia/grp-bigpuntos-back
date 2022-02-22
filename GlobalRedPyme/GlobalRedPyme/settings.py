@@ -75,6 +75,20 @@ INSTALLED_APPS = [
     'apps.MDM.mdm_facturas',
     'apps.MDM.mdm_negocios',
     'apps.MDM.mdm_prospectosClientes',
+    #apps Vittoria MDP
+    'apps.MDP.mdp_categorias',
+    'apps.MDP.mdp_subCategorias',
+    'apps.MDP.mdp_productos',
+    'apps.MDP.mdp_fichaTecnicaProductos',    
+    # apps Vittoria MDO
+    'apps.MDO.mdo_prediccionCrosseling',
+    'apps.MDO.mdo_prediccionRefil',
+    'apps.MDO.mdo_prediccionProductosNuevos',
+    'apps.MDO.mdo_generarOferta',
+    # apss Vittoria GDO
+    'apps.GDO.gdo_gestionOferta',
+    # apps vittoria GDE
+    'apps.GDE.gde_gestionEntrega',
     #Django external apps
     'corsheaders',
     'rest_framework',
@@ -154,6 +168,10 @@ DATABASE_ROUTERS = [
     'apps.config.routersDB.GRPCORERouter',
     'apps.config.routersDB.GRPCORPRouter',
     'apps.config.routersDB.MDMRouter',
+    'apps.config.routersDB.MDPRouter',
+    'apps.config.routersDB.MDORouter',
+    'apps.config.routersDB.GDORouter',
+    'apps.config.routersDB.GDERouter',
 ]
 
 # Password validation

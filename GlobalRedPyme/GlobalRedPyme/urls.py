@@ -75,15 +75,15 @@ urlpatterns = [
     path('mdm/negocios/', include(('apps.MDM.mdm_negocios.urls', 'negocios'), namespace='negocios')),
     path('mdm/facturas/', include(('apps.MDM.mdm_facturas.urls', 'facturas'), namespace='facturas')),
     #Modulo MDP
-    # path('mdp/categorias/', include(('apps.MDP.mdp_categorias.urls', 'categorias'), namespace='categorias')),
-    # path('mdp/subCategorias/', include(('apps.MDP.mdp_subCategorias.urls', 'subCategorias'), namespace='subCategorias')),
-    # path('mdp/productos/', include(('apps.MDP.mdp_productos.urls', 'productos'), namespace='productos')),
-    # path('mdp/fichaTecnicaProductos/', include(('apps.MDP.mdp_fichaTecnicaProductos.urls', 'fichaTecnicaProductos'), namespace='fichaTecnicaProductos')),
+    path('mdp/categorias/', include(('apps.MDP.mdp_categorias.urls', 'categorias'), namespace='categorias')),
+    path('mdp/subCategorias/', include(('apps.MDP.mdp_subCategorias.urls', 'subCategorias'), namespace='subCategorias')),
+    path('mdp/productos/', include(('apps.MDP.mdp_productos.urls', 'productos'), namespace='productos')),
+    path('mdp/fichaTecnicaProductos/', include(('apps.MDP.mdp_fichaTecnicaProductos.urls', 'fichaTecnicaProductos'), namespace='fichaTecnicaProductos')),
     # Modulo MDO
-    # path('mdo/prediccionCrosseling/', include(('apps.MDO.mdo_prediccionCrosseling.urls', 'prediccionCrosseling'), namespace='prediccionCrosseling')),
-    # path('mdo/prediccionRefil/', include(('apps.MDO.mdo_prediccionRefil.urls', 'prediccionRefil'), namespace='prediccionRefil')),
-    # path('mdo/prediccionProductosNuevos/', include(('apps.MDO.mdo_prediccionProductosNuevos.urls', 'prediccionProductosNuevos'), namespace='prediccionProductosNuevos')),
-    # path('mdo/generarOferta/', include(('apps.MDO.mdo_generarOferta.urls', 'generarOferta'), namespace='generarOferta')),
+    path('mdo/prediccionCrosseling/', include(('apps.MDO.mdo_prediccionCrosseling.urls', 'prediccionCrosseling'), namespace='prediccionCrosseling')),
+    path('mdo/prediccionRefil/', include(('apps.MDO.mdo_prediccionRefil.urls', 'prediccionRefil'), namespace='prediccionRefil')),
+    path('mdo/prediccionProductosNuevos/', include(('apps.MDO.mdo_prediccionProductosNuevos.urls', 'prediccionProductosNuevos'), namespace='prediccionProductosNuevos')),
+    path('mdo/generarOferta/', include(('apps.MDO.mdo_generarOferta.urls', 'generarOferta'), namespace='generarOferta')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

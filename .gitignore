@@ -51,10 +51,12 @@ GlobalRedPyme/apps/CORP/corp_notasPedidos/__pycache__/
 GlobalRedPyme/apps/CORP/corp_notasPedidos/migrations/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_clientes/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_clientes/migrations/__pycache__/
+GlobalRedPyme/apps/MDM/mdm_clientes/views/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_facturas/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_facturas/migrations/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_negocios/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_negocios/migrations/__pycache__/
+GlobalRedPyme/apps/MDM/mdm_negocios/views/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_prospectosClientes/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_prospectosClientes/migrations/__pycache__/
 GlobalRedPyme/apps/MDO/mdo_generarOferta/__pycache__/
@@ -73,6 +75,14 @@ GlobalRedPyme/apps/MDP/mdp_productos/__pycache__/
 GlobalRedPyme/apps/MDP/mdp_productos/migrations/__pycache__/
 GlobalRedPyme/apps/MDP/mdp_subCategorias/__pycache__/
 GlobalRedPyme/apps/MDP/mdp_subCategorias/migrations/__pycache__/
+GlobalRedPyme/apps/GDO/gdo_parametrizaciones/__pycache__/
+GlobalRedPyme/apps/GDO/gdo_parametrizaciones/migrations/__pycache__/
+GlobalRedPyme/apps/GDO/gdo_gestionOferta/__pycache__/
+GlobalRedPyme/apps/GDO/gdo_gestionOferta/migrations/__pycache__/
+GlobalRedPyme/apps/GDE/gde_parametrizaciones/__pycache__/
+GlobalRedPyme/apps/GDE/gde_parametrizaciones/migrations/__pycache__/
+GlobalRedPyme/apps/GDE/gde_gestionEntrega/__pycache__/
+GlobalRedPyme/apps/GDE/gde_gestionEntrega/migrations/__pycache__/
 GlobalRedPyme/apps/config/__pycache__/
 /GlobalRedPyme/GlobalRedPyme/.env
 /GlobalRedPyme/GlobalRedPyme/.env.example

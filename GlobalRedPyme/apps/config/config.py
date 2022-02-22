@@ -218,6 +218,50 @@ if PRODUCTION:
                 },
             },
         },
+        'grp_gdo_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_gdo',
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': '209.145.61.41',
+                'port': 27017,
+                'username': 'usr_testing',
+                'password': 'FAiK&OgZpP8^',
+                'authSource': 'admin',
+                'authMechanism': 'SCRAM-SHA-1'
+            },
+            'LOGGING': {
+                'version': 1,
+                'loggers': {
+                    'djongo': {
+                        'level': 'DEBUG',
+                        'propagate': False,                        
+                    }
+                },
+            },
+        },
+        'grp_gde_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_gde',
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': '209.145.61.41',
+                'port': 27017,
+                'username': 'usr_testing',
+                'password': 'FAiK&OgZpP8^',
+                'authSource': 'admin',
+                'authMechanism': 'SCRAM-SHA-1'
+            },
+            'LOGGING': {
+                'version': 1,
+                'loggers': {
+                    'djongo': {
+                        'level': 'DEBUG',
+                        'propagate': False,                        
+                    }
+                },
+            },
+        },
     }
 else:
     # URL BACK END
@@ -287,6 +331,16 @@ else:
         'grp_mdo_db': {
             'ENGINE': 'djongo',
             'NAME': 'grp_mdo',
+            'ENFORCE_SCHEMA': False,
+        },
+        'grp_gdo_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_gdo',
+            'ENFORCE_SCHEMA': False,
+        },
+        'grp_gde_db': {
+            'ENGINE': 'djongo',
+            'NAME': 'grp_gde',
             'ENFORCE_SCHEMA': False,
         },
     }

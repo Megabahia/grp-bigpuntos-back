@@ -1,11 +1,11 @@
 from apps.MDM.mdm_facturas.models import FacturasEncabezados, FacturasDetalles
 from apps.MDM.mdm_facturas.serializers import FacturasSerializer, FacturasDetallesSerializer, FacturasListarSerializer, FacturaSerializer, FacturasListarTablaSerializer
-# from apps.MDP.mdp_productos.models import Productos
+from apps.MDP.mdp_productos.models import Productos
 from apps.MDM.mdm_clientes.models import Clientes
 from apps.MDM.mdm_negocios.models import Negocios
-# from apps.MDO.mdo_prediccionCrosseling.serializers import PrediccionCrosselingSerializer
-# from apps.MDO.mdo_prediccionProductosNuevos.serializers import PrediccionProductosSerializer
-# from apps.MDO.mdo_prediccionRefil.serializers import PrediccionRefilSerializer
+from apps.MDO.mdo_prediccionCrosseling.serializers import PrediccionCrosselingSerializer
+from apps.MDO.mdo_prediccionProductosNuevos.serializers import PrediccionProductosSerializer
+from apps.MDO.mdo_prediccionRefil.serializers import PrediccionRefilSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
