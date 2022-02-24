@@ -56,6 +56,9 @@ def productos_list(request):
             limit = offset + page_size
             #Filtros
             filters={"state":"1"}
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
 
             #Serializar los datos
             query = Productos.objects.filter(**filters).order_by('-created_at')
@@ -407,6 +410,9 @@ def abastecimiento_list(request):
             if 'subCategoria' in request.data:
                 if request.data['subCategoria']!='':
                     filters['producto__subCategoria__icontains'] = str(request.data['subCategoria'])                    
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
 
             #Serializar los datos
             query = ReporteAbastecimiento.objects.filter(**filters).order_by('-created_at')
@@ -455,6 +461,9 @@ def stock_list(request):
             if 'subCategoria' in request.data:
                 if request.data['subCategoria']!='':
                     filters['producto__subCategoria__icontains'] = str(request.data['subCategoria'])                    
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
 
             #Serializar los datos
             query = ReporteStock.objects.filter(**filters).order_by('-created_at')
@@ -503,6 +512,9 @@ def caducidad_list(request):
             if 'subCategoria' in request.data:
                 if request.data['subCategoria']!='':
                     filters['producto__subCategoria__icontains'] = str(request.data['subCategoria'])                    
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
 
             #Serializar los datos
             query = ReporteCaducidad.objects.filter(**filters).order_by('-created_at')
@@ -551,6 +563,9 @@ def rotacion_list(request):
             if 'subCategoria' in request.data:
                 if request.data['subCategoria']!='':
                     filters['producto__subCategoria__icontains'] = str(request.data['subCategoria'])                    
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
 
             #Serializar los datos
             query = ReporteRotacion.objects.filter(**filters).order_by('-created_at')
@@ -601,6 +616,9 @@ def refil_list(request):
             if 'subCategoria' in request.data:
                 if request.data['subCategoria']!='':
                     filters['subCategoria__icontains'] = str(request.data['subCategoria'])                    
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
 
             #Serializar los datos
             query = Productos.objects.filter(**filters).order_by('-created_at')

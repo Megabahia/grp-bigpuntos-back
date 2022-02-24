@@ -42,6 +42,9 @@ def categorias_list(request):
             limit = offset + page_size
             #Filtros
             filters={"state":"1"}
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
 
             #Serializar los datos
             query = Categorias.objects.filter(**filters).order_by('-created_at')

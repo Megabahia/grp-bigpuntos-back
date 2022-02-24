@@ -62,6 +62,9 @@ def cliente_list(request):
                 #     filters['created_at__startswith'] = str(request.data['inicio'])
                 if request.data['inicio'] and request.data['fin'] !='':
                     filters['created_at__range'] = [str(request.data['inicio']),str(request.data['fin'])]            
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
           
             #Serializar los datos
             query = Clientes.objects.filter(**filters).order_by('-created_at')

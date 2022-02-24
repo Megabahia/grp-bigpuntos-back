@@ -58,6 +58,9 @@ def factura_list(request):
             if 'cliente' in request.data:
                 if request.data['cliente']!='':
                     filters['cliente'] = request.data['cliente']
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
             # if 'cedula' in request.data:
             #     if request.data['cedula']!='':
             #         filters['cedula'] = str(request.data['cedula'])
@@ -107,6 +110,9 @@ def factura_list_negocio(request):
             if 'inicio' and 'fin' in request.data:
                 if request.data['inicio'] and request.data['fin'] !='':
                     filters['created_at__range'] = [str(request.data['inicio']),str(request.data['fin'])]   
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
           
             #Serializar los datos
             query = FacturasEncabezados.objects.filter(**filters).order_by('-created_at')
@@ -149,6 +155,9 @@ def factura_list_cliente(request):
             if 'inicio' and 'fin' in request.data:
                 if request.data['inicio'] and request.data['fin'] !='':
                     filters['created_at__range'] = [str(request.data['inicio']),str(request.data['fin'])]   
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
           
             #Serializar los datos
             query = FacturasEncabezados.objects.filter(**filters).order_by('-created_at')

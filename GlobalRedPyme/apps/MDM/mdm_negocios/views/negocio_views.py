@@ -52,6 +52,9 @@ def negocio_list(request):
             if 'ruc' in request.data:
                 if request.data['ruc']!='':
                     filters['ruc'] = str(request.data['ruc'])
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
             # if 'desde' in request.data:
             #     if request.data['desde']!='':
             #         filters['created_at__startswith'] = str(request.data['desde'])
