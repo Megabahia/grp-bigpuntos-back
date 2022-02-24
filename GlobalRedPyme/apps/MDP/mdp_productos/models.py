@@ -1,6 +1,8 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.db import models
+# ObjectId
+from bson import ObjectId
 
 from django.db.models import Avg, Min, Max, Count, Sum
 import datetime
@@ -152,8 +154,9 @@ class HistorialAvisos(models.Model):
         product.stock -= self.productosVendidos
         product.updated_at = str(timezone_now)
         product.save()
-        if product.parametrizacion.valor == 'stock':            
-            if product.parametrizacion.minimo < product.stock and product.stock < product.parametrizacion.maximo:
+        parametrizacion = Catalogo.objects.filter(pk=ObjectId(product.parametrizacion),state=1).first()
+        if parametrizacion.valor == 'stock':            
+            if parametrizacion.minimo < product.stock and product.stock < parametrizacion.maximo:
                 datos = HistorialAvisos.objects.filter(codigoBarras=self.codigoBarras,alerta=0).aggregate(promedioProductos=Avg('productosVendidos'),fechaMinima=Min('fechaCompra'),fechaMaxima=Max('fechaCompra'),totalRegistros=Count('alerta'))
                 if datos['totalRegistros'] != 0:
                     supplyReport = ReporteAbastecimiento.objects.filter(producto=product).order_by('-created_at')[:1].get()
@@ -170,7 +173,7 @@ class HistorialAvisos(models.Model):
                     enviarEmailAvisoAbastecimiento(product, maxDate)
         else:
             diasAlerta = (product.fechaCaducidad - datetime.datetime.now().date() ).days
-            if diasAlerta <= product.parametrizacion.maximo:
+            if diasAlerta <= parametrizacion.maximo:
                 datos = HistorialAvisos.objects.filter(codigoBarras=self.codigoBarras,alerta=0).aggregate(promedioProductos=Avg('productosVendidos'),fechaMinima=Min('fechaCompra'),fechaMaxima=Max('fechaCompra'),totalRegistros=Count('alerta'))
                 if datos['totalRegistros'] != 0:
                     supplyReport = ReporteAbastecimiento.objects.filter(producto=product).order_by('-created_at')[:1].get()

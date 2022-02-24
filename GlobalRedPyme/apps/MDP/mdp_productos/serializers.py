@@ -274,5 +274,5 @@ class ProductoSearchSerializer(serializers.ModelSerializer):
         data = super(ProductoSearchSerializer, self).to_representation(instance)
         imagen = ProductoImagen.objects.filter(producto=instance).first()
         if imagen is not None:
-            data['imagen'] = imagen['imagen']
+            data['imagen'] = ImagenSerializer(imagen).data['imagen']
         return data

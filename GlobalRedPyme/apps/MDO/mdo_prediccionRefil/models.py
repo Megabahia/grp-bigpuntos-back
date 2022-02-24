@@ -9,8 +9,8 @@ class PrediccionRefil(models.Model):
     identificacion = models.CharField(max_length=13,null=False)
     telefono = models.CharField(max_length=250,null=True)
     correo = models.EmailField(max_length=255,null=True)
-    cliente = models.SmallIntegerField(null=True)
-    negocio = models.SmallIntegerField(null=True)
+    cliente = models.SmallIntegerField(null=True, blank=True)
+    negocio = models.SmallIntegerField(null=True, blank=True)
     total = models.FloatField(null=True)
     # Id de la empresa que se inicia sesion
     empresa_id = models.CharField(max_length=255,null=False, blank=True)

@@ -1,4 +1,6 @@
 from rest_framework import serializers
+# ObjectId
+from bson import ObjectId
 
 from apps.MDM.mdm_facturas.models import FacturasEncabezados, FacturasDetalles
 from apps.MDM.mdm_negocios.models import Negocios
