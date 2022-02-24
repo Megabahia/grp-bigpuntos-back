@@ -67,6 +67,9 @@ def prediccionCrosseling_list(request):
             if 'identificacion' in request.data:
                 if request.data['identificacion']!='':
                     filters['identificacion__icontains'] = str(request.data['identificacion'])     
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
 
             #Serializar los datos
             query = PrediccionCrosseling.objects.filter(**filters).order_by('-created_at')

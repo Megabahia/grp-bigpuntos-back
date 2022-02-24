@@ -54,6 +54,9 @@ def generarOferta_list(request):
             if 'cliente' in request.data:
                 if request.data['cliente']!='':
                     filters['cliente__isnull'] = False   
+            if 'empresa_id' in request.data:
+                if request.data['empresa_id']!='':
+                    filters['empresa_id'] = request.data['empresa_id']
             # if 'cedula' in request.data:
             #     if request.data['cedula']!='':
             #         filters['cedula'] = str(request.data['cedula'])
