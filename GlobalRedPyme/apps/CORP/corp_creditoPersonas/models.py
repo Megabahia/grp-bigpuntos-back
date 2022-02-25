@@ -7,6 +7,7 @@ def upload_path(instance, filname):
 class CreditoPersonas(models.Model):
     _id = models.ObjectIdField()
     numero = models.IntegerField(blank=True, null=True)
+    canal = models.CharField(max_length=255,blank=True, null=True)
     monto = models.FloatField(blank=True, null=True)
     plazo = models.PositiveIntegerField(blank=True, null=True)
     aceptaTerminos = models.SmallIntegerField(default=1)
