@@ -484,12 +484,12 @@ def usuario_create(request):
                     'roles': roles,
                     'estado': account.estado
                 }
-                # if 'roles' in request.data:
-                # if 'SuperMonedas' == request.data['roles']:
-                #     enviarEmailCreacionPersona(data['email'])
-                # else:
-                
-                data['tokenEmail']=str(resetPasswordNewUser(data['email']))
+                if 'roles' in request.data:
+                    if 'SuperMonedas' == request.data['roles']:
+                        # enviarEmailCreacionPersona(data['email'])
+                        data['tokenEmail']=str(resetPasswordNewUserSuperMonedas(data['email']))
+                    else:
+                        data['tokenEmail']=str(resetPasswordNewUser(data['email']))
 
                 if 'empresa' not in request.data:
                     personaSerializer = PersonasSerializer(persona).data
