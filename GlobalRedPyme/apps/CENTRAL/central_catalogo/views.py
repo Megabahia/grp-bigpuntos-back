@@ -397,3 +397,17 @@ def catalogo_filter_listOne_name_tipo(request):
         except Exception as e: 
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+#POST FILTRO Y NOMBRE
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def catalogo_filter_listOne_tipo(request):
+
+    if request.method == 'POST':
+        try:
+            query= Catalogo.objects.filter(state=1,tipo=request.data['tipo']).first()
+            serializer = CatalogoSerializer(query)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
