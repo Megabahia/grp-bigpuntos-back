@@ -487,7 +487,7 @@ def usuario_create(request):
                 if 'roles' in request.data:
                     if 'SuperMonedas' == request.data['roles']:
                         # enviarEmailCreacionPersona(data['email'])
-                        data['tokenEmail']=str(resetPasswordNewUserSuperMonedas(data['email']))
+                        data['tokenEmail']=str(resetPasswordNewUser(data['email']))
                     else:
                         data['tokenEmail']=str(resetPasswordNewUser(data['email']))
 
