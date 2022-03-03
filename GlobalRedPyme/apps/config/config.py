@@ -268,7 +268,8 @@ else:
     # URL BACK END
     API_BACK_END = 'http://127.0.0.1:8000/'
     #URL FRONT END
-    API_FRONT_END="http://localhost:4201"
+    API_FRONT_END="http://localhost:4203"
+    API_FRONT_END_CENTRAL="http://localhost:4201"
     #TIEMPO DE EXPIRACION DE TOKEN (EN SEGUNDOS)
     TOKEN_EXPIRED_AFTER_SECONDS = 86400
     #NOMBRE KEYWORK TOKEN
