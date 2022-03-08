@@ -59,7 +59,7 @@ class login(ObtainAuthToken):
                 if user.state==1:
                     if user.estado=="1":
                         data={
-                            'code': 200,
+                            'code': 400,
                             'msg':'Por favor confirmar su correo electrónico, el Link fué enviado a la cuenta de correo electrónico registrado, si no recuerda usar por favor la Opción ¿Olvidaste tu contraseña?.'
                             }
                         return Response(data,status=status.HTTP_200_OK)
