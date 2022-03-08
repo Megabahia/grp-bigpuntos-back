@@ -58,8 +58,11 @@ class login(ObtainAuthToken):
                 user = serializer.validated_data['user']
                 if user.state==1:
                     if user.estado=="1":
-                        data={'msg':'Por favor confirmar su correo electrónico, el Link fué enviado a la cuenta de correo electrónico registrado, si no recuerda usar por favor la Opción ¿Olvidaste tu contraseña?.'}
-                        return Response(data,status=status.HTTP_400_BAD_REQUEST)
+                        data={
+                            'code': 200,
+                            'msg':'Por favor confirmar su correo electrónico, el Link fué enviado a la cuenta de correo electrónico registrado, si no recuerda usar por favor la Opción ¿Olvidaste tu contraseña?.'
+                            }
+                        return Response(data,status=status.HTTP_200_OK)
                     if user.tipoUsuario.nombre != request.data['tipoUsuario']:
                         data={'error':'Usted no tiene una cuenta.'}
                         return Response(data,status=status.HTTP_404_NOT_FOUND)
