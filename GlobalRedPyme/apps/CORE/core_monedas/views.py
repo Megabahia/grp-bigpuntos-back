@@ -307,7 +307,7 @@ def monedas_listOtorgadas(request):
             limit = offset + page_size
             #Filtros
             filters={"state":"1"}
-            filters['tipo__icontains']='credito'
+            filters['tipo__in']=['Credito','Otro']
             
             if 'user_id' in request.data:
                 if request.data['user_id'] != '':
