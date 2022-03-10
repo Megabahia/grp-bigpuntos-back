@@ -432,8 +432,7 @@ def usuario_create(request):
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
             logModel['dataEnviada'] = str(request.data)
-            empresa = Empresas.objects.filter(pk=ObjectId(request.data['empresa']),state=1).first()
-            tipoUsuario = TipoUsuario.objects.filter(nombre=empresa.tipoEmpresa,state=1).first()
+            tipoUsuario = TipoUsuario.objects.filter(nombre=request.data['tipoUsuario'],state=1).first()
             request.data['tipoUsuario'] = tipoUsuario._id
             #AGREGA CONTRASEÑA
             if 'password' not in request.data:
