@@ -576,7 +576,6 @@ def usuarios_list_rol(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def usuario_update_by_email(request):
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
