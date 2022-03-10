@@ -69,9 +69,10 @@ def enviarEmailAsignacionPassword(reset_password_token):
     try:
         #enviar por email
         if reset_password_token.user.tipoUsuario.nombre == 'core':
-            url=config.API_FRONT_END_CENTRAL+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
+            url=config.API_FRONT_END_CENTRAL+config.endpointEmailReseteoPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
         else:
-            url=config.API_FRONT_END+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
+            url=config.API_FRONT_END+config.endpointEmailReseteoPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
+        # url=config.API_FRONT_END+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
         subject, from_email, to = 'Solicitud de Reinicio de contraseña Global Red Pyme', "08d77fe1da-d09822@inbox.mailtrap.io",reset_password_token.user.email
         txt_content="""
                 Registro de Contraseña Global Red Pymes Personas
