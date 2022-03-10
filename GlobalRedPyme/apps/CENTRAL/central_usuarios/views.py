@@ -600,6 +600,9 @@ def usuario_update_by_email(request):
             now = timezone.localtime(timezone.now())
             request.data['updated_at'] = str(now)
 
+            if usuario.estado == "1":
+                request.data['estado'] = "2"
+
             serializer = UsuarioEmpresaSerializer(usuario, data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
