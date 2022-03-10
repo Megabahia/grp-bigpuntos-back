@@ -72,7 +72,7 @@ def creditoPreaprobados_list(request):
                     filters['user_id'] = str(request.data["user_id"])
             if "tipoPersona" in request.data:
                 if request.data["tipoPersona"] != '':
-                    filters['tipoPersona'] = str(request.data["tipoPersona"])
+                    filters['tipoPersona__icontains'] = str(request.data["tipoPersona"])
 
             #Serializar los datos
             query = CreditoPreaprobados.objects.filter(**filters).order_by('-created_at')
