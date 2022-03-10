@@ -10,7 +10,8 @@ from apps.CENTRAL.central_usuarios.views import(
 	vendedor_list,
 	usuarios_list_rol,
 	usuario_core_create,
-	usuario_list_corp
+	usuario_list_corp,
+	usuario_update_by_email,
 )
 app_name = 'usuarios'
 
@@ -26,5 +27,6 @@ urlpatterns = [
 	path('update/imagen/<str:pk>', usuarioImagen_update, name="usuarioImagen_update"),
 	path('list/vendedor/', vendedor_list, name="vendedor_list"),
 	path('list/rol/', usuarios_list_rol, name="usuarios_list_rol"),
+	path('update/by/email/', usuario_update_by_email, name="usuario_update_by_email"),
 ]
 
