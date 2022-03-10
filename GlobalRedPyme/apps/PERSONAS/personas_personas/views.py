@@ -145,6 +145,14 @@ def personas_update(request, pk):
             createLog(logModel,errorNoExiste,logExcepcion)
             return Response(status=status.HTTP_404_NOT_FOUND)
         if request.method == 'POST':
+            persona = Personas.objects.filter(identificacion=request.data['identificacion'],state=1).first()
+
+            if persona is not None:
+                if persona != query:
+                    errorNoExiste={'error':'Ya existe otro usuario con la identificacion.'}
+                    createLog(logModel,errorNoExiste,logExcepcion)
+                    return Response(errorNoExiste,status=status.HTTP_200_OK)
+
             now = timezone.localtime(timezone.now())
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
