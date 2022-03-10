@@ -546,3 +546,36 @@ def empresas_list_logos(request):
 
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def empresas_list_array(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/empresas/array/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #Filtros
+            filters={"state":"1"}
+            filters["ruc__in"]=request.data['empresas'].split(",")
+
+            #Serializar los datos
+            query = Empresas.objects.filter(**filters).order_by('-created_at')
+            serializer = EmpresasSerializer(query, many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+

@@ -436,8 +436,9 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         # data['observaciones'] = dato[8].replace('"', "") if dato[8] != "NULL" else None
         # data['descripcion'] = dato[9].replace('"', "") if dato[9] != "NULL" else None
         data['empresa_financiera'] = Empresas.objects.get(_id=ObjectId(empresa_financiera))
-        empresa = Empresas.objects.filter(ruc=dato[6],state=1).first()
-        data['empresa_comercial'] = empresa._id
+        # empresa = Empresas.objects.filter(ruc=dato[6],state=1).first()
+        # data['empresa_comercial'] = empresa._id
+        data['empresasAplican'] = dato[6]
         data['created_at'] = str(timezone_now)
         #inserto el dato con los campos requeridos
         CreditoPreaprobados.objects.create(**data)

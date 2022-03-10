@@ -12,6 +12,7 @@ from apps.CORP.corp_empresas.views import(
 	empresas_create_convenio,
 	empresas_listOne_filtros,
 	empresas_list_logos,
+	empresas_list_array,
 )
 app_name = 'corp_empresas'
 
@@ -28,5 +29,6 @@ urlpatterns = [
 	path('create/convenio', empresas_create_convenio, name="empresas_create_convenio"),
 	path('listOne/filtros/', empresas_listOne_filtros, name="empresas_listOne_filtros"),
 	path('list/logos', empresas_list_logos, name="empresas_list_logos"),
+	path('list/empresas/array/', empresas_list_array, name="empresas_list_array"),
 ]
 
