@@ -5,6 +5,7 @@ from apps.CORP.corp_creditoPersonas.views import(
 	creditoPersonas_update,
 	creditoPersonas_delete,
 	creditoPersonas_list,
+	uploadEXCEL_creditosPreaprobados,
 )
 app_name = 'corp_creditoPersonas'
 
@@ -14,5 +15,6 @@ urlpatterns = [
 	path('listOne/<str:pk>', creditoPersonas_listOne, name="creditoPersonas_listOne"),
 	path('update/<str:pk>', creditoPersonas_update, name="creditoPersonas_update"),
 	path('delete/<str:pk>', creditoPersonas_delete, name="creditoPersonas_delete"),
+	path('upload/creditos/preaprobados/', uploadEXCEL_creditosPreaprobados, name="uploadEXCEL_creditosPreaprobados"),
 ]
 

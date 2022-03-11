@@ -1,11 +1,33 @@
 from rest_framework import serializers
+# ObjectId
+from bson import ObjectId
 
 from apps.CORP.corp_creditoPersonas.models import (
     CreditoPersonas,
 )
+
+from apps.CORP.corp_empresas.models import Empresas
+from apps.PERSONAS.personas_personas.models import Personas
+from apps.CORP.corp_empresas.serializers import EmpresasInfoBasicaSerializer
 
 class CreditoPersonasSerializer(serializers.ModelSerializer):
     class Meta:
         model = CreditoPersonas
        	fields = '__all__'
         read_only_fields = ['_id']
+
+    def to_representation(self, instance):
+        data = super(CreditoPersonasSerializer, self).to_representation(instance)
+        # tomo el campo persona y convierto de OBJECTID a string
+        empresaIfis_id = data.pop('empresaIfis_id')
+        entidadFinanciera = Empresas.objects.filter(_id=ObjectId(empresaIfis_id), state=1).first()
+        data.update({"entidadFinanciera": entidadFinanciera.nombreComercial})
+        data['empresaIfis_id'] = str(empresaIfis_id)
+        empresaSerializer = EmpresasInfoBasicaSerializer(entidadFinanciera).data
+        data['imagen'] = empresaSerializer['imagen']
+        # Informacion persona
+        persona = Personas.objects.filter(user_id=str(instance.user_id),state=1).first()
+        if persona is not None:
+            data.update({"nombres": persona.nombres})
+            data.update({"apellidos": persona.apellidos})
+        return data
