@@ -230,6 +230,10 @@ def creditoPersonas_list(request):
                 if request.data["tipoCredito"] != '':
                     filters['tipoCredito'] = str(request.data["tipoCredito"])
             
+            if "user_id" in request.data:
+                if request.data["user_id"] != '':
+                    filters['user_id'] = str(request.data["user_id"])
+            
             if "canal" in request.data:
                 if request.data["canal"] != '':
                     filters['canal'] = str(request.data["canal"])
