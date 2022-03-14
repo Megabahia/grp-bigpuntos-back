@@ -59,6 +59,10 @@ def creditoPersonas_create(request):
             request.data['created_at'] = str(timezone_now)
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
+
+            if 'nombres' in request.data:
+                if request.data['nombres'] != "":
+                    request.data['nombresCompleto'] = request.data['nombres'] + ' ' + request.data['apellidos']
         
             serializer = CreditoPersonasSerializer(data=request.data)
             if serializer.is_valid():
