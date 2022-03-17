@@ -39,3 +39,32 @@ class CreditoPersonasSerializer(serializers.ModelSerializer):
             data.update({"nombres": persona.nombres})
             data.update({"apellidos": persona.apellidos})
         return data
+
+class CreditoPersonasPersonaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditoPersonas
+       	fields = ['_id','monto','plazo','user_id','empresaIfis_id']
+        read_only_fields = ['_id']
+
+    def to_representation(self, instance):
+        data = super(CreditoPersonasPersonaSerializer, self).to_representation(instance)
+        # tomo el campo persona y convierto de OBJECTID a string
+        empresaIfis_id = data.pop('empresaIfis_id')
+        entidadFinanciera = Empresas.objects.filter(_id=ObjectId(empresaIfis_id), state=1).first()
+        data.update({"entidadFinanciera": entidadFinanciera.nombreComercial})
+        data['empresaIfis_id'] = str(empresaIfis_id)
+        empresaSerializer = EmpresasInfoBasicaSerializer(entidadFinanciera).data
+        data['imagen'] = empresaSerializer['imagen']
+        # Informacion persona
+        persona = Personas.objects.filter(user_id=str(instance.user_id),state=1).first()
+        if persona is not None:
+            data.update({"identificacion": persona.identificacion})
+            data.update({"nombres": persona.nombres})
+            data.update({"apellidos": persona.apellidos})
+            data.update({"pais": persona.pais})
+            data.update({"provincia": persona.provincia})
+            data.update({"ciudad": persona.ciudad})
+            data.update({"telefono": persona.telefono})
+            data.update({"whatsapp": persona.whatsapp})
+            data.update({"email": persona.email})
+        return data

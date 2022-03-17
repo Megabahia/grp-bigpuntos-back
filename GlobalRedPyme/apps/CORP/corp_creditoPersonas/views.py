@@ -4,7 +4,7 @@ from apps.PERSONAS.personas_personas.models import  Personas
 from apps.CORP.corp_empresas.models import  Empresas
 from apps.PERSONAS.personas_personas.serializers import  PersonasSearchSerializer
 from apps.CORP.corp_creditoPersonas.serializers import (
-    CreditoPersonasSerializer
+    CreditoPersonasSerializer, CreditoPersonasPersonaSerializer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -411,6 +411,36 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera):
         return str(e)
 
 
-
+#ENCONTRAR UNO
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def creditoPersonas_listOne_persona(request, pk):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'listOne/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    try:
+        try:
+            query = CreditoPersonas.objects.filter(pk=ObjectId(pk), state=1).first()
+        except CreditoPersonas.DoesNotExist:
+            err={"error":"No existe"}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err,status=status.HTTP_404_NOT_FOUND)
+        #tomar el dato
+        if request.method == 'GET':
+            serializer = CreditoPersonasPersonaSerializer(query)
+            createLog(logModel,serializer.data,logTransaccion)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+    except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
