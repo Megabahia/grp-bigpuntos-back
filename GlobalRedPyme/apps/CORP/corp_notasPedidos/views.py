@@ -166,7 +166,7 @@ def factura_create(request):
                 request.data.pop('updated_at')
 
             request.data['empresaComercial'] = ObjectId(request.data['empresaComercial'])
-            request.data['credito'] = ObjectId(request.data['credito'])
+            request.data['credito'] = request.data['credito']
         
             serializer = FacturaSerializer(data=request.data)
             if serializer.is_valid():                
@@ -256,4 +256,5 @@ def factura_findOne_credito(request, pk):
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             createLog(logModel,err,logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
 
