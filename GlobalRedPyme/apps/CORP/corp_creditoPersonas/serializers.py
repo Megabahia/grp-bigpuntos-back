@@ -32,12 +32,16 @@ class CreditoPersonasSerializer(serializers.ModelSerializer):
             entidadComercial = Empresas.objects.filter(_id=ObjectId(empresaComercial_id), state=1).first()
             data['rucComercial'] = entidadComercial.ruc
             data['nombreComercial'] = entidadComercial.nombreComercial
+            data['correoCorp'] = entidadComercial.correo
+            data['telefono1'] = entidadComercial.telefono1
             data['imagenComercial'] = EmpresasInfoBasicaSerializer(entidadComercial).data['imagen']
         # Informacion persona
         persona = Personas.objects.filter(user_id=str(instance.user_id),state=1).first()
         if persona is not None:
             data.update({"nombres": persona.nombres})
             data.update({"apellidos": persona.apellidos})
+            data.update({"whatsappPersona": persona.whatsapp})
+            data.update({"emailPersona": persona.email})
         return data
 
 class CreditoPersonasPersonaSerializer(serializers.ModelSerializer):
