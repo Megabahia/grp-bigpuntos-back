@@ -355,7 +355,7 @@ def factura_generar_codigos_envios(request):
             AutorizacionCredito.objects.create(codigo=codigoCorp,credito=request.data['_id'],entidad=request.data['user_id'])
             AutorizacionCredito.objects.create(codigo=codigoUsuario,credito=request.data['_id'],entidad=request.data['empresaComercial_id'])
 
-            new_serializer_data={'estado': 'ok'}
+            new_serializer_data={'estado': 'ok','codigoUsuario':codigoUsuario,'codigoCorp':codigoCorp}
             #envio de datos
             return Response(new_serializer_data,status=status.HTTP_200_OK)
         except Exception as e: 
