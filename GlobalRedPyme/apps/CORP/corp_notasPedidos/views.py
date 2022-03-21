@@ -343,7 +343,7 @@ def factura_generar_codigos_envios(request):
             message = client.messages.create(
                 from_='whatsapp:'+numeroTwilio,
                 body="""Comuniquese con su asesor del credito, el codigo de autorización es """+codigoUsuario,
-                to='whatsapp:+593'+persona.telefono
+                to='whatsapp:'+persona.whatsapp
             )
             message = client.messages.create(
                 from_='whatsapp:'+numeroTwilio,
