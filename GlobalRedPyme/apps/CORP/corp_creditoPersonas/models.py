@@ -35,7 +35,25 @@ class CreditoPersonas(models.Model):
     nombresCompleto = models.CharField(max_length=255,blank=True, null=True)
     fechaAprobado = models.DateField(null=True, blank=True)
     numeroIdentificacion = models.CharField(max_length=255,blank=True, null=True)
+    codigoCliente = models.CharField(max_length=255,blank=True, null=True)
+    codigoCorp = models.CharField(max_length=255,blank=True, null=True)
+    numeroFactura = models.CharField(max_length=255,blank=True, null=True)
+    montoVenta = models.CharField(max_length=255,blank=True, null=True)
+    checkPagare = models.CharField(max_length=255,blank=True, null=True)
+    checkTablaAmortizacion = models.CharField(max_length=255,blank=True, null=True)
+    checkManualPago = models.CharField(max_length=255,blank=True, null=True)
+    checkCedula = models.CharField(max_length=255,blank=True, null=True)
     
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    state = models.SmallIntegerField(default=1)
+
+class AutorizacionCredito(models.Model):
+    _id = models.ObjectIdField()
+    codigo = models.CharField(max_length=200,null=False)
+    credito = models.CharField(max_length=250,blank=False, null=False)  # Relacion credito persona
+    entidad = models.CharField(max_length=250,blank=False, null=False)  # Entidad hace referencina a si es una persona o una empresa se guarda el id
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
