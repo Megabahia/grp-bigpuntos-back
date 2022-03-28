@@ -33,8 +33,6 @@ GlobalRedPyme/apps/CORP/corp_empresas/__pycache__/
 GlobalRedPyme/apps/CORP/corp_empresas/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_cobrarSupermonedas/__pycache__/
 GlobalRedPyme/apps/CORP/corp_cobrarSupermonedas/migrations/__pycache__/
-GlobalRedPyme/apps/CORP/corp_empresas/__pycache__/
-GlobalRedPyme/apps/CORP/corp_empresas/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_monedasEmpresa/__pycache__/
 GlobalRedPyme/apps/CORP/corp_monedasEmpresa/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_autorizaciones/__pycache__/
@@ -49,6 +47,8 @@ GlobalRedPyme/apps/CORP/corp_creditoPreaprobados/__pycache__/
 GlobalRedPyme/apps/CORP/corp_creditoPreaprobados/migrations/__pycache__/
 GlobalRedPyme/apps/CORP/corp_notasPedidos/__pycache__/
 GlobalRedPyme/apps/CORP/corp_notasPedidos/migrations/__pycache__/
+GlobalRedPyme/apps/CORP/corp_creditoArchivos/__pycache__/
+GlobalRedPyme/apps/CORP/corp_creditoArchivos/migrations/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_clientes/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_clientes/migrations/__pycache__/
 GlobalRedPyme/apps/MDM/mdm_clientes/views/__pycache__/
