@@ -176,7 +176,7 @@ def creditoArchivos_delete(request, pk):
 # METODO SUBIR ARCHIVOS EXCEL
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def creditoArchivos_subir(request,pk):
+def uploadEXCEL_creditosPreaprobados(request,pk):
     contValidos=0
     contInvalidos=0
     contTotal=0
@@ -217,10 +217,76 @@ def creditoArchivos_subir(request,pk):
                 continue
             else:
                 if len(dato)==7:
-                    if archivo.tipoCredito == 'PreAprobado':
-                        resultadoInsertar=insertarDato_creditoPreaprobado(dato,archivo.empresa_financiera)
+                    resultadoInsertar=insertarDato_creditoPreaprobado(dato,archivo.empresa_financiera)
+                    if resultadoInsertar!='Dato insertado correctamente':
+                        contInvalidos+=1
+                        errores.append({"error":"Error en la línea "+str(contTotal)+": "+str(resultadoInsertar)})
                     else:
-                        resultadoInsertar=insertarDato_creditoPreaprobado_empleado(dato,archivo.empresa_financiera)
+                        contValidos+=1
+                else:
+                    contInvalidos+=1
+                    errores.append({"error":"Error en la línea "+str(contTotal)+": la fila tiene un tamaño incorrecto ("+str(len(dato))+")"})
+
+        result={"mensaje":"La Importación se Realizo Correctamente",
+        "correctos":contValidos,
+        "incorrectos":contInvalidos,
+        "errores":errores
+        }
+        os.remove(ruta)
+        archivo.state = 0
+        archivo.save()
+        return Response(result, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        err={"error":'Error verifique el archivo, un error ha ocurrido: {}'.format(e)}
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+# METODO SUBIR ARCHIVOS EXCEL
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def uploadEXCEL_creditosPreaprobados_empleados(request,pk):
+    contValidos=0
+    contInvalidos=0
+    contTotal=0
+    errores=[]
+    try:
+        if request.method == 'POST':
+            archivo = PreAprobados.objects.filter(pk=pk, state=1).first()
+            # environ init
+            env = environ.Env()
+            environ.Env.read_env() # LEE ARCHIVO .ENV
+            client_s3 = boto3.client(
+               's3',
+               aws_access_key_id=env.str('AWS_ACCESS_KEY_ID'),
+               aws_secret_access_key=env.str('AWS_SECRET_ACCESS_KEY')
+            )
+            with tempfile.TemporaryDirectory() as d:
+                ruta = d+'creditosPreAprobados.xlsx'
+                s3 = boto3.resource('s3')
+                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+
+            first = True    #si tiene encabezado
+#             uploaded_file = request.FILES['documento']
+            # you may put validations here to check extension or file size
+            wb = openpyxl.load_workbook(ruta)
+            # getting a particular sheet by name out of many sheets
+            worksheet = wb["Clientes"]
+            lines = list()
+        for row in worksheet.iter_rows():
+            row_data = list()
+            for cell in row:
+                row_data.append(str(cell.value))
+            lines.append(row_data)
+
+        for dato in lines:
+            contTotal+=1
+            if first:
+                first = False
+                continue
+            else:
+                if len(dato)==11:
+                    resultadoInsertar=insertarDato_creditoPreaprobado_empleado(dato,archivo.empresa_financiera)
                     if resultadoInsertar!='Dato insertado correctamente':
                         contInvalidos+=1
                         errores.append({"error":"Error en la línea "+str(contTotal)+": "+str(resultadoInsertar)})
