@@ -233,7 +233,8 @@ def uploadEXCEL_creditosPreaprobados(request,pk):
         "errores":errores
         }
         os.remove(ruta)
-        archivo.state = 0
+        # archivo.state = 0
+        archivo.estado="Cargado"
         archivo.save()
         return Response(result, status=status.HTTP_201_CREATED)
 
@@ -302,7 +303,8 @@ def uploadEXCEL_creditosPreaprobados_empleados(request,pk):
         "errores":errores
         }
         os.remove(ruta)
-        archivo.state = 0
+        # archivo.state = 0
+        archivo.estado="Cargado"
         archivo.save()
         return Response(result, status=status.HTTP_201_CREATED)
 

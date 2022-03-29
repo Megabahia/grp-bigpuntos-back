@@ -15,6 +15,7 @@ class PreAprobados(models.Model):
     user_id = models.CharField(max_length=255,null=True,blank=True) # Relacion de usuario
     tipoCredito = models.CharField(max_length=255,null=True, blank=True)
     empresa_financiera = models.CharField(max_length=255,null=True, blank=True)
+    estado = models.CharField(max_length=255,null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
