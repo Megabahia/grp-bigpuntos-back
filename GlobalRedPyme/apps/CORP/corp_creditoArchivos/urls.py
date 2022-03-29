@@ -12,7 +12,7 @@ urlpatterns = [
 	path('create/', creditoArchivos_create, name="creditoArchivos_create"),
 	path('list/', creditoArchivos_list, name="creditoArchivos_list"),
 	path('delete/<int:pk>', creditoArchivos_delete, name="creditoArchivos_delete"),
-	path('upload/creditos/preaprobados/', uploadEXCEL_creditosPreaprobados, name="uploadEXCEL_creditosPreaprobados"),
-	path('upload/creditos/preaprobados/empleados/', uploadEXCEL_creditosPreaprobados_empleados, name="uploadEXCEL_creditosPreaprobados_empleados"),
+	path('upload/creditos/preaprobados/<int:pk>', uploadEXCEL_creditosPreaprobados, name="uploadEXCEL_creditosPreaprobados"),
+	path('upload/creditos/preaprobados/empleados/<int:pk>', uploadEXCEL_creditosPreaprobados_empleados, name="uploadEXCEL_creditosPreaprobados_empleados"),
 ]
 
