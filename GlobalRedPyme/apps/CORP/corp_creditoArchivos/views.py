@@ -118,8 +118,11 @@ def creditoArchivos_list(request):
             if "campania" in request.data:
                 if request.data["campania"] != '':
                     filters['campania'] = str(request.data["campania"])
+            
+            if "tipoCredito" in request.data:
+                if request.data["tipoCredito"] != '':
+                    filters['tipoCredito'] = str(request.data["tipoCredito"])
 
-            print(filters)
             #Serializar los datos
             query = PreAprobados.objects.filter(**filters).order_by('-created_at')
             serializer = CreditoArchivosSerializer(query[offset:limit], many=True)
@@ -214,7 +217,10 @@ def creditoArchivos_subir(request,pk):
                 continue
             else:
                 if len(dato)==7:
-                    resultadoInsertar=insertarDato_creditoPreaprobado(dato,archivo.empresa_financiera)
+                    if archivo.tipoCredito == 'PreAprobado':
+                        resultadoInsertar=insertarDato_creditoPreaprobado(dato,archivo.empresa_financiera)
+                    else:
+                        resultadoInsertar=insertarDato_creditoPreaprobado_empleado(dato,archivo.empresa_financiera)
                     if resultadoInsertar!='Dato insertado correctamente':
                         contInvalidos+=1
                         errores.append({"error":"Error en la línea "+str(contTotal)+": "+str(resultadoInsertar)})
@@ -260,6 +266,34 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         data['nombresCompleto'] = persona.nombres + ' ' + persona.apellidos
         data['empresaIfis_id'] = empresa_financiera
         data['empresasAplican'] = dato[6]
+        data['created_at'] = str(timezone_now)
+        #inserto el dato con los campos requeridos
+        CreditoPersonas.objects.create(**data)
+        return 'Dato insertado correctamente'
+    except Exception as e:
+        return str(e)
+
+# INSERTAR DATOS EN LA BASE INDIVIDUAL
+def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera):
+    try:
+        timezone_now = timezone.localtime(timezone.now())
+        data={}
+        data['vigencia'] = dato[0].replace('"', "")[0:10] if dato[0] != "NULL" else None
+        data['concepto'] = dato[1].replace('"', "") if dato[1] != "NULL" else None
+        data['monto'] = dato[2].replace('"', "") if dato[2] != "NULL" else None
+        data['plazo'] = dato[3].replace('"', "") if dato[3] != "NULL" else None
+        data['interes'] = dato[4].replace('"', "") if dato[4] != "NULL" else None
+        data['estado'] = 'PreAprobado'
+        data['tipoCredito'] = 'Empleado'
+        data['canal'] = 'Empleado'
+        persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
+        data['user_id'] = persona.user_id
+        data['numeroIdentificacion'] = dato[5]
+        data['nombres'] = persona.nombres
+        data['apellidos'] = persona.apellidos
+        data['nombresCompleto'] = persona.nombres + ' ' + persona.apellidos
+        data['empresaIfis_id'] = empresa_financiera
+        data['empresasAplican'] = dato[10]
         data['created_at'] = str(timezone_now)
         #inserto el dato con los campos requeridos
         CreditoPersonas.objects.create(**data)
