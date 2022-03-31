@@ -70,6 +70,8 @@ def enviarEmailAsignacionPassword(reset_password_token):
         #enviar por email
         if reset_password_token.user.tipoUsuario.nombre == 'core':
             url=config.API_FRONT_END_CENTRAL+config.endpointEmailReseteoPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
+        elif reset_password_token.user.tipoUsuario.nombre == 'credit':
+            url=config.API_FRONT_END_CREDIT+config.endpointEmailReseteoPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
         else:
             url=config.API_FRONT_END+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
         # url=config.API_FRONT_END+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
@@ -110,6 +112,8 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         # email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'), reset_password_token.key)
         if reset_password_token.user.tipoUsuario.nombre == 'core':
             url=config.API_FRONT_END_CENTRAL+config.endpointEmailReseteoPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
+        elif reset_password_token.user.tipoUsuario.nombre == 'credit':
+            url=config.API_FRONT_END_CREDIT+config.endpointEmailReseteoPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
         else:
             url=config.API_FRONT_END+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
         subject, from_email, to = 'Solicitud de Reinicio de contraseña Global Red Pyme', "08d77fe1da-d09822@inbox.mailtrap.io",reset_password_token.user.email

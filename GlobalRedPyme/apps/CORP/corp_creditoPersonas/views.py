@@ -224,7 +224,7 @@ def creditoPersonas_list(request):
             
             if "estado" in request.data:
                 if request.data["estado"] != '':
-                    filters['estado'] = str(request.data["estado"])
+                    filters['estado__in'] = request.data["estado"]
             
             if "tipoCredito" in request.data:
                 if request.data["tipoCredito"] != '':
