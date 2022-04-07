@@ -56,6 +56,7 @@ urlpatterns = [
     url(r'^central/auth/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('central/productos/', include(('apps.CENTRAL.central_productos.urls', 'productos'), namespace='productos')),
     path('central/publicaciones/', include(('apps.CENTRAL.central_publicaciones.urls', 'publicaciones'), namespace='publicaciones')),
+    path('central/correosLanding/', include(('apps.CENTRAL.central_correosLanding.urls', 'correosLanding'), namespace='correosLanding')),
     # PERSONAS
     path('personas/personas/', include(('apps.PERSONAS.personas_personas.urls', 'personas'), namespace='personas')),
     path('personas/historialLaboral/', include(('apps.PERSONAS.personas_historialLaboral.urls', 'historialLaboral'), namespace='historialLaboral')),
@@ -74,11 +75,11 @@ urlpatterns = [
     path('mdm/prospectosClientes/', include(('apps.MDM.mdm_prospectosClientes.urls', 'prospectos_clientes'), namespace='prospectos_clientes')),
     path('mdm/clientes/', include(('apps.MDM.mdm_clientes.urls', 'clientes'), namespace='clientes')),
     path('mdm/negocios/', include(('apps.MDM.mdm_negocios.urls', 'negocios'), namespace='negocios')),
-    path('mdm/facturas/', include(('apps.MDM.mdm_facturas.urls', 'facturas'), namespace='facturas')),
+    path('mdm/facturas/', include(('apps.MDM.mdm_facturas.urls', 'facturasMDM'), namespace='facturasMDM')),
     #Modulo MDP
     path('mdp/categorias/', include(('apps.MDP.mdp_categorias.urls', 'categorias'), namespace='categorias')),
     path('mdp/subCategorias/', include(('apps.MDP.mdp_subCategorias.urls', 'subCategorias'), namespace='subCategorias')),
-    path('mdp/productos/', include(('apps.MDP.mdp_productos.urls', 'productos'), namespace='productos')),
+    path('mdp/productos/', include(('apps.MDP.mdp_productos.urls', 'productosMDP'), namespace='productosMDP')),
     path('mdp/fichaTecnicaProductos/', include(('apps.MDP.mdp_fichaTecnicaProductos.urls', 'fichaTecnicaProductos'), namespace='fichaTecnicaProductos')),
     # Modulo MDO
     path('mdo/prediccionCrosseling/', include(('apps.MDO.mdo_prediccionCrosseling.urls', 'prediccionCrosseling'), namespace='prediccionCrosseling')),

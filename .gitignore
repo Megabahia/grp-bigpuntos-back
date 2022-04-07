@@ -5,6 +5,8 @@ GlobalRedPyme/apps/CENTRAL/central_autenticacion/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_autenticacion/migrations/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_catalogo/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_catalogo/migrations/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_correosLanding/__pycache__/
+GlobalRedPyme/apps/CENTRAL/central_correosLanding/migrations/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_facturas/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_facturas/migrations/__pycache__/
 GlobalRedPyme/apps/CENTRAL/central_infoUsuarios/__pycache__/
