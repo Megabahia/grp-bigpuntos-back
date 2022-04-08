@@ -3,6 +3,7 @@ from rest_framework import serializers
 from bson import ObjectId
 
 from apps.CORP.corp_empresas.models import Empresas
+from apps.CORP.corp_empresas.serializers import EmpresasSerializer
 
 from apps.CENTRAL.central_productos.models import (
     Productos
@@ -20,8 +21,10 @@ class ProductosSerializer(serializers.ModelSerializer):
         if empresa:
             data['empresa'] = empresa.nombreComercial
             data['local'] = empresa.direccion
+            data['pais'] = empresa.pais
             data['provincia'] = empresa.provincia
             data['ciudad'] = empresa.ciudad
+            data['imagen_empresa'] = EmpresasSerializer(empresa).data['imagen']
         return data
 
 class ProductosImagenSerializer(serializers.HyperlinkedModelSerializer):
