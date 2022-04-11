@@ -60,6 +60,43 @@ def productos_list(request):
             createLog(logModel,err,logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
+#LISTAR TODOS SIN AUTENTICARSE
+@api_view(['POST'])
+def productos_list_free(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'list/',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #paginacion
+            limit = Catalogo.objects.filter(tipo="CONFIG_SLIDER").first().valor
+            #Filtros
+            filters={"state":"1"}
+
+            if "tipo" in request.data:
+                filters['tipo'] = request.data["tipo"]
+
+            #Serializar los datos
+            query = Productos.objects.filter(**filters).order_by('-created_at')
+            serializer = ProductosSerializer(query[:int(limit)], many=True)
+            new_serializer_data={'cont': query.count(),
+            'info':serializer.data}
+            #envio de datos
+            return Response(new_serializer_data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
 #CREAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
