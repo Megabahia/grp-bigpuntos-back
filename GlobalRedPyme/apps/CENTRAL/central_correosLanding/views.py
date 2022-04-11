@@ -83,7 +83,7 @@ def correos_create(request):
     if request.method == 'POST':
         try:
             # Generar codigo
-            length_of_string = 8
+            length_of_string = 5
             codigo = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(length_of_string))
             request.data['codigo'] = codigo
 
