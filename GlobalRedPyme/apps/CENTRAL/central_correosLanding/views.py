@@ -67,7 +67,6 @@ def correos_list(request):
 
 #CREAR
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def correos_create(request):
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
@@ -134,7 +133,6 @@ def correos_create(request):
 
 # ACTUALIZAR
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def correos_update(request, pk):
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
