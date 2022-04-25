@@ -19,6 +19,7 @@ class ProductosSerializer(serializers.ModelSerializer):
         empresa_id = data.pop('empresa_id')
         empresa = Empresas.objects.get(pk=ObjectId(empresa_id))
         if empresa:
+            data['empresa_id'] = empresa_id
             data['empresa'] = empresa.nombreComercial
             data['local'] = empresa.direccion
             data['pais'] = empresa.pais
