@@ -66,6 +66,10 @@ def empresas_list(request):
             if "nombreComercial" in request.data:
                 if request.data["nombreComercial"] != '':
                     filters['nombreComercial__icontains'] = str(request.data["nombreComercial"])
+            
+            if "tipoEmpresa" in request.data:
+                if request.data["tipoEmpresa"] != '':
+                    filters['tipoEmpresa'] = str(request.data["tipoEmpresa"])
 
             #Serializar los datos
             query = Empresas.objects.filter(**filters).order_by('-created_at')

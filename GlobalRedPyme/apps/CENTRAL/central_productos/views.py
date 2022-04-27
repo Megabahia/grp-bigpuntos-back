@@ -46,7 +46,12 @@ def productos_list(request):
             filters={"state":"1"}
 
             if "tipo" in request.data:
-                filters['tipo'] = request.data["tipo"]
+                if request.data["tipo"] != "":
+                    filters['tipo'] = request.data["tipo"]
+            
+            if "empresa_id" in request.data:
+                if request.data["empresa_id"] != "":
+                    filters['empresa_id'] = ObjectId(request.data["empresa_id"])
 
             #Serializar los datos
             query = Productos.objects.filter(**filters).order_by('-created_at')
