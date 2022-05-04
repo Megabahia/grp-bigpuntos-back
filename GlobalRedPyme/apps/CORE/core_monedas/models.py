@@ -6,8 +6,8 @@ class Monedas(models.Model):
 
     class TipoEnum(models.TextChoices):
         SUPERMONEDAS = 'Supermonedas'
-        CREDITO = 'Credito'
-        PAGOS = 'Pagos'
+        RECOMPENSA = 'Recompensa'
+        PAGO = 'Pago'
         COBROS = 'Cobros'
         DESCUENTOS = 'Descuentos'
         ACUMULACION = 'Acumulación'
