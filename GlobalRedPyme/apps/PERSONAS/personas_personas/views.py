@@ -1,3 +1,4 @@
+from apps.CENTRAL.central_usuarios.models import  Usuarios
 from apps.CENTRAL.central_catalogo.models import  Catalogo
 from apps.PERSONAS.personas_personas.models import  Personas, ValidarCuenta
 from apps.PERSONAS.personas_personas.serializers import (
@@ -17,6 +18,8 @@ import string
 import random
 # TWILIO
 from twilio.rest import Client
+# Enviar Correo
+from apps.config.util import sendEmail
 # ObjectId
 from bson import ObjectId
 #logs
@@ -173,11 +176,27 @@ def personas_update(request, pk):
                 # Guardar codigo en base
                 ValidarCuenta.objects.create(codigo=codigo,user_id=request.data['user_id'])
                 # Enviar codigo
-                message = client.messages.create(
-                    from_='whatsapp:'+numeroTwilio,
-                    body=mensaje+' '+codigo,
-                    to='whatsapp:'+serializer.data['whatsapp']
-                )
+                # message = client.messages.create(
+                #     from_='whatsapp:'+numeroTwilio,
+                #     body=mensaje+' '+codigo,
+                #     to='whatsapp:'+serializer.data['whatsapp']
+                # )
+                # Correo de la corp
+                user = Usuarios.objects.get(pk=ObjectId(pk))
+                subject, from_email, to = 'Generacion de codigo de verificación de su cuenta', "08d77fe1da-d09822@inbox.mailtrap.io",user.email
+                txt_content = mensaje + ' ' + codigo
+                html_content = """
+                <html>
+                    <body>
+                        <h1>Se acaba de generar el codigo de verificación de su cuenta</h1>
+                        """ + mensaje + ' '+ codigo+"""<br>
+                        Atentamente,<br>
+                        Equipo Global Red Pymes Personas.<br>
+                    </body>
+                </html>
+                """
+                sendEmail(subject, txt_content, from_email,to,html_content)
+
 
                 createLog(logModel,serializer.data,logTransaccion)
                 return Response(serializer.data)
