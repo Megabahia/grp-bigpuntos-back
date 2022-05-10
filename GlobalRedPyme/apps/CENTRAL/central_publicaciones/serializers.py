@@ -4,6 +4,8 @@ from apps.CENTRAL.central_publicaciones.models import (
     Publicaciones, CompartirPublicaciones
 )
 
+from apps.PERSONAS.personas_personas.models import Personas
+
 class PublicacionesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publicaciones
@@ -60,3 +62,26 @@ class PublicacionesSinCompartirSerializer(serializers.ModelSerializer):
         data['updated_at'] = publicacion['updated_at']
         data['state'] = publicacion['state']
         return data
+
+
+class CompartirPublicacionesReporteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompartirPublicaciones
+        fields = ['user','publicacion','created_at']
+
+    def to_representation(self, instance):
+        data = super(CompartirPublicacionesReporteSerializer, self).to_representation(instance)
+        # publicacion
+        publicacion = Publicaciones.objects.get(pk=data.pop('publicacion'))
+        data.update({"publicacion_titulo": publicacion.titulo})
+        data.update({"publicacion_imagen": PublicacionesImagenSerializer(publicacion.imagen).data['imagen']})
+        # user
+        persona = Personas.objects.get(user_id=str(data.pop('user')))
+        data.update({"nombres": persona.nombres})
+        data.update({"apellidos": persona.apellidos})
+        data.update({"whatsapp": persona.whatsapp})
+        data.update({"email": persona.email})
+        return data
+
+
+

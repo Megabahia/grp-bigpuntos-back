@@ -9,6 +9,7 @@ from apps.CENTRAL.central_publicaciones.views import(
 	publicaciones_compartir,
 	publicaciones_usuario,
 	publicaciones_list_full,
+	publicaciones_reporte,
 )
 app_name = 'central_publicaciones'
 
@@ -22,5 +23,6 @@ urlpatterns = [
 	path('update/imagen/<str:pk>', publicaciones_imagenUpdate, name="publicaciones_imagenUpdate"),
 	path('compartir/', publicaciones_compartir, name="publicaciones_compartir"),
 	path('usuario/', publicaciones_usuario, name="publicaciones_usuario"),
+	path('reporte/', publicaciones_reporte, name="publicaciones_reporte"),
 ]
 
