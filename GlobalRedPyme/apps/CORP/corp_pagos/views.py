@@ -67,7 +67,7 @@ def pagos_create(request):
             if serializer.is_valid():
                 serializer.save()
                 monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id']).order_by('-created_at').first()
-                request.data['tipo'] = 'Pagos'
+                request.data['tipo'] = 'Pago'
                 request.data['estado'] = 'aprobado'
                 request.data['debito'] = request.data['monto']
                 request.data['saldo'] = monedasUsuario.saldo - float(request.data['monto'])
