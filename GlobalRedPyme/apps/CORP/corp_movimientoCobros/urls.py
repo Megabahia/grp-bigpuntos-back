@@ -4,7 +4,8 @@ from apps.CORP.corp_movimientoCobros.views import(
 	movimientoCobros_list,
 	movimientoCobros_listOne,
 	movimientoCobros_update,
-	movimientoCobros_delete
+	movimientoCobros_delete,
+	movimientoCobros_reporte_empresas,
 )
 app_name = 'corp_movimientoCobros'
 
@@ -14,5 +15,6 @@ urlpatterns = [
 	path('listOne/<str:pk>', movimientoCobros_listOne, name="movimientoCobros_listOne"),
 	path('update/<str:pk>', movimientoCobros_update, name="movimientoCobros_update"),
 	path('delete/<str:pk>', movimientoCobros_delete, name="movimientoCobros_delete"),
+	path('reporte/empresas/', movimientoCobros_reporte_empresas, name="movimientoCobros_reporte_empresas"),
 ]
 
