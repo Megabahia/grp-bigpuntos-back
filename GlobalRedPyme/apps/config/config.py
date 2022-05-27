@@ -1,3 +1,15 @@
+# environ init
+import os
+import environ
+
+env = environ.Env()
+
+# Establecer el directorio base del proyecto
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Tomar variables de entorno del archivo .env
+environ.Env.read_env(os.path.join(BASE_DIR, '../GlobalRedPyme/.env'))
+
 PRODUCTION=True
 
 #VARIABLES GLOBALES
@@ -51,12 +63,7 @@ if PRODUCTION:
             'NAME': 'grp_central',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -73,12 +80,7 @@ if PRODUCTION:
             'NAME': 'grp_personas',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -95,12 +97,7 @@ if PRODUCTION:
             'NAME': 'grp_core',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -117,12 +114,7 @@ if PRODUCTION:
             'NAME': 'grp_pymes',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -139,12 +131,7 @@ if PRODUCTION:
             'NAME': 'grp_corp',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -161,12 +148,7 @@ if PRODUCTION:
             'NAME': 'grp_mdm',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -183,12 +165,7 @@ if PRODUCTION:
             'NAME': 'grp_mdp',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -205,12 +182,7 @@ if PRODUCTION:
             'NAME': 'grp_mdo',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -227,12 +199,7 @@ if PRODUCTION:
             'NAME': 'grp_gdo',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
@@ -249,12 +216,7 @@ if PRODUCTION:
             'NAME': 'grp_gde',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': '209.145.61.41',
-                'port': 27017,
-                'username': 'usr_testing',
-                'password': 'FAiK&OgZpP8^',
-                'authSource': 'admin',
-                'authMechanism': 'SCRAM-SHA-1'
+                'host': env.str('MONGODB_ATLAS'),
             },
             'LOGGING': {
                 'version': 1,
