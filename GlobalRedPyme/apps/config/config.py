@@ -55,6 +55,7 @@ if PRODUCTION:
         "http://localhost:4200",
         "http://209.145.61.41:4205",
         "http://127.0.0.1:4205",
+        "https://master--bigpuntos.netlify.app",
     ]
     #databases
     DATABASES = {
