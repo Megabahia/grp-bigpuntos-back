@@ -57,7 +57,17 @@ if PRODUCTION:
         "http://127.0.0.1:4205",
         "https://master--bigpuntos.netlify.app",
         "https://api.bigpuntos.com",
-        "http://api.bigpuntos.com"
+        "http://api.bigpuntos.com",
+        "http://credit.bigpuntos.com",
+        "https://credit.bigpuntos.com",
+        "http://corps.bigpuntos.com",
+        "https://corps.bigpuntos.com",
+        "http://ifis.bigpuntos.com",
+        "https://ifis.bigpuntos.com",
+        "http://center.bigpuntos.com",
+        "https://center.bigpuntos.com",
+        "http://www.bigpuntos.com",
+        "https://www.bigpuntos.com",
     ]
     #databases
     DATABASES = {
