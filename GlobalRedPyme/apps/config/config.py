@@ -19,7 +19,8 @@ endpointEmailReseteoPassword="/grp/reseteoPassword/"
 #VARIABLES VARIAN DE ACUERDO A PRODUCCION O DESARROLLO
 if PRODUCTION:
     # URL BACK END
-    API_BACK_END = '209.145.61.41:8002/'
+    # API_BACK_END = '209.145.61.41:8002/'
+    API_BACK_END = 'https://api.bigpuntos.com/'
     #URL FRONT END
     API_FRONT_END="http://209.145.61.41:4203"
     API_FRONT_END_CENTRAL="http://209.145.61.41:4201"
