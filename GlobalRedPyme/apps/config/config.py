@@ -22,7 +22,7 @@ if PRODUCTION:
     # API_BACK_END = '209.145.61.41:8002/'
     API_BACK_END = 'https://api.bigpuntos.com/'
     #URL FRONT END
-    API_FRONT_END="http://209.145.61.41:4203"
+    API_FRONT_END="https://center.bigpuntos.com"
     API_FRONT_END_CENTRAL="https://www.bigpuntos.com"
     API_FRONT_END_CREDIT="https://credit.bigpuntos.com"
     #TIEMPO DE EXPIRACION DE TOKEN (EN SEGUNDOS)
