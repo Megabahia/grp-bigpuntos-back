@@ -23,8 +23,8 @@ if PRODUCTION:
     API_BACK_END = 'https://api.bigpuntos.com/'
     #URL FRONT END
     API_FRONT_END="http://209.145.61.41:4203"
-    API_FRONT_END_CENTRAL="http://209.145.61.41:4201"
-    API_FRONT_END_CREDIT="http://209.145.61.41:4205"
+    API_FRONT_END_CENTRAL="https://www.bigpuntos.com"
+    API_FRONT_END_CREDIT="https://credit.bigpuntos.com"
     #TIEMPO DE EXPIRACION DE TOKEN (EN SEGUNDOS)
     TOKEN_EXPIRED_AFTER_SECONDS = 86400
     #NOMBRE KEYWORK TOKEN
@@ -45,29 +45,28 @@ if PRODUCTION:
     AWS_STORAGE_BUCKET_NAME = ''
     #CORS
     CORS_ALLOWED_ORIGINS = [
-        "http://209.145.61.41:4201",
-        "http://127.0.0.1:4201",
-        "http://209.145.61.41:4202",
-        "http://127.0.0.1:4202",
-        "http://209.145.61.41:4203",
-        "http://127.0.0.1:4203",
-        "http://209.145.61.41:4204",
-        "http://127.0.0.1:4204",
-        "http://localhost:4200",
-        "http://209.145.61.41:4205",
-        "http://127.0.0.1:4205",
+        "https://209.145.61.41:4201",
+        "https://127.0.0.1:4201",
+        "https://209.145.61.41:4202",
+        "https://127.0.0.1:4202",
+        "https://209.145.61.41:4203",
+        "https://127.0.0.1:4203",
+        "https://209.145.61.41:4204",
+        "https://127.0.0.1:4204",
+        "https://localhost:4200",
+        "https://209.145.61.41:4205",
+        "https://127.0.0.1:4205",
         "https://master--bigpuntos.netlify.app",
         "https://api.bigpuntos.com",
-        "http://api.bigpuntos.com",
-        "http://credit.bigpuntos.com",
+        "https://api.bigpuntos.com",
         "https://credit.bigpuntos.com",
-        "http://corps.bigpuntos.com",
+        "https://credit.bigpuntos.com",
         "https://corps.bigpuntos.com",
-        "http://ifis.bigpuntos.com",
+        "https://corps.bigpuntos.com",
         "https://ifis.bigpuntos.com",
-        "http://center.bigpuntos.com",
+        "https://ifis.bigpuntos.com",
         "https://center.bigpuntos.com",
-        "http://www.bigpuntos.com",
+        "https://bigpuntos.com",
         "https://www.bigpuntos.com",
     ]
     #databases

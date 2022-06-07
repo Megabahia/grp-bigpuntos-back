@@ -32,17 +32,11 @@ environ.Env.read_env() # LEE ARCHIVO .ENV
 SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+# DEBUG = env.bool('DEBUG', default=False)
+DEBUG = True
 
 # ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[]))
-ALLOWED_HOSTS = ['127.0.0.1', '209.145.61.41', 'web.vittoria_app.com'
-                ,'http://localhost:4201','http://localhost:4202','http://localhost:4200'
-                ,"http://209.145.61.41:4201","http://127.0.0.1:4201","http://209.145.61.41:4202"
-                ,"http://127.0.0.1:4202","http://209.145.61.41:4203","http://127.0.0.1:4203"
-                ,"http://209.145.61.41:4205","http://127.0.0.1:4205"
-                ,"18.218.102.236","http://api.bigpuntos.com"
-                ,"https://master--bigpuntos.netlify.app"
-                ]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
