@@ -71,7 +71,7 @@ def pagos_create(request):
                 request.data['estado'] = 'aprobado'
                 request.data['debito'] = request.data['monto']
                 request.data['saldo'] = monedasUsuario.saldo - float(request.data['monto'])
-                request.data['descripcion'] = 'Generar comprobante de pago con supermonedas.'
+                request.data['descripcion'] = 'Generar comprobante de pago con big puntos'
                 monedasSerializer = MonedasGuardarSerializer(data=request.data)
                 if monedasSerializer.is_valid():
                     monedasSerializer.save()
