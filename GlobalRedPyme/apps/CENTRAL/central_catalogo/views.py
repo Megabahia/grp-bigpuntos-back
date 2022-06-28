@@ -411,3 +411,16 @@ def catalogo_filter_listOne_tipo(request):
         except Exception as e: 
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+#TODAS LAS PARAMETRIZACIONES DE ACUERDO AL TIPO SIN TOKEN
+@api_view(['POST'])
+def catalogo_list_parametrosTipo_sintoken(request):
+
+    if request.method == 'POST':
+        try:
+            catalogo= Catalogo.objects.filter(state=1,tipo=request.data['tipo'])
+            serializer = CatalogoHijoSerializer(catalogo, many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            return Response(err, status=status.HTTP_400_BAD_REQUEST) 

@@ -4,7 +4,7 @@ from apps.CENTRAL.central_catalogo.views import(
 	estado_list, pais_list,tipo_list,catalogo_list_hijo,catalogo_list_hijoNombre,catalogo_list_hijos,
 	catalogo_list_parametrosTipo, catalogo_listSinPaginacion,
 	catalogo_filter_name, catalogo_filter_listOne_name_tipo,
-	catalogo_filter_listOne_tipo,
+	catalogo_filter_listOne_tipo, catalogo_list_parametrosTipo_sintoken,
 )
 
 from rest_framework.authtoken.views import obtain_auth_token
@@ -33,6 +33,8 @@ urlpatterns = [
 	path('list/tipo/hijo/', catalogo_list_hijos, name="tipoPadre__list"), 
 	#buscar todos LOS QUE TENGAN EL PARÁMETRO
 	path('list/tipo/todos/', catalogo_list_parametrosTipo, name="catalogo_list_parametrosTipo"), 
+	#buscar todos LOS QUE TENGAN EL PARÁMETRO SIN TOKEN
+	path('list/tipo/todos/free', catalogo_list_parametrosTipo_sintoken, name="catalogo_list_parametrosTipo_sintoken"), 
 	# FILTRO Y NOMBRE
 	path('list/filtro/nombre', catalogo_filter_name, name="parametrizaciones_filter_name"),
 	path('list/listOne', catalogo_filter_listOne_name_tipo, name="catalogo_filter_listOne_name_tipo"),
