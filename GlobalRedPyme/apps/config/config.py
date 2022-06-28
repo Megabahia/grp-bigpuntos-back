@@ -8,7 +8,7 @@ env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Tomar variables de entorno del archivo .env
-environ.Env.read_env(os.path.join(BASE_DIR, '../GlobalRedPyme/.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, '../GlobalRedPyme/.env.test'))
 
 PRODUCTION=True
 
@@ -20,11 +20,11 @@ endpointEmailReseteoPassword="/grp/reseteoPassword/"
 if PRODUCTION:
     # URL BACK END
     # API_BACK_END = '209.145.61.41:8002/'
-    API_BACK_END = 'https://api.bigpuntos.com/'
+    API_BACK_END = env.str('API_BACK_END')
     #URL FRONT END
-    API_FRONT_END="https://center.bigpuntos.com/#"
-    API_FRONT_END_CENTRAL="https://bigpuntos.com/#"
-    API_FRONT_END_CREDIT="https://credit.bigpuntos.com/#"
+    API_FRONT_END=env.str('API_FRONT_END')
+    API_FRONT_END_CENTRAL=env.str('API_FRONT_END_CENTRAL')
+    API_FRONT_END_CREDIT=env.str('API_FRONT_END_CREDIT')
     #TIEMPO DE EXPIRACION DE TOKEN (EN SEGUNDOS)
     TOKEN_EXPIRED_AFTER_SECONDS = 86400
     #NOMBRE KEYWORK TOKEN
@@ -44,31 +44,7 @@ if PRODUCTION:
     AWS_SECRET_ACCESS_KEY = ''
     AWS_STORAGE_BUCKET_NAME = ''
     #CORS
-    CORS_ALLOWED_ORIGINS = [
-        "https://209.145.61.41:4201",
-        "https://127.0.0.1:4201",
-        "https://209.145.61.41:4202",
-        "https://127.0.0.1:4202",
-        "https://209.145.61.41:4203",
-        "https://127.0.0.1:4203",
-        "https://209.145.61.41:4204",
-        "https://127.0.0.1:4204",
-        "https://localhost:4200",
-        "https://209.145.61.41:4205",
-        "https://127.0.0.1:4205",
-        "https://master--bigpuntos.netlify.app",
-        "https://api.bigpuntos.com",
-        "https://api.bigpuntos.com",
-        "https://credit.bigpuntos.com",
-        "https://credit.bigpuntos.com",
-        "https://corps.bigpuntos.com",
-        "https://corps.bigpuntos.com",
-        "https://ifis.bigpuntos.com",
-        "https://ifis.bigpuntos.com",
-        "https://center.bigpuntos.com",
-        "https://bigpuntos.com",
-        "https://www.bigpuntos.com",
-    ]
+    CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS'))
     #databases
     DATABASES = {
         'default': {
@@ -268,10 +244,7 @@ else:
     AWS_SECRET_ACCESS_KEY = ''
     AWS_STORAGE_BUCKET_NAME = ''
     #CORS
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:4200",
-        "http://127.0.0.1:4200"
-    ]
+    CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS'))
     #databases
     DATABASES = {
         'default': {
