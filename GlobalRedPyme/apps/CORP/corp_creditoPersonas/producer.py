@@ -4,7 +4,7 @@ import json
 from apps.config import config
 
 
-def publish():
+def publish(data):
     topicArn = config.AWS_TOPIC_ARN
     snsClient = boto3.client(
         'sns',
@@ -17,7 +17,8 @@ def publish():
 
     response = snsClient.publish(
         TopicArn=topicArn,
-        Message=json.dumps(publishObject),
+        # Message=json.dumps(publishObject),
+        Message=json.dumps(data),
         Subject='PURCHASE',
         MessageAttributes={"TransactionType":{"DataType":"String","StringValue":"PURCHASE"}}
     )

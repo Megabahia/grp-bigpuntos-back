@@ -1,18 +1,17 @@
-
-from apps.CENTRAL.central_acciones.models import Acciones,AccionesPermitidas,AccionesPorRol
-from apps.CENTRAL.central_acciones.serializers import AccionesSerializer,AccionesPermitidasSerializer,AccionesPorRolSerializer
+from apps.CENTRAL.central_acciones.models import Acciones, AccionesPermitidas, AccionesPorRol
+from apps.CENTRAL.central_acciones.serializers import AccionesSerializer, AccionesPermitidasSerializer, \
+    AccionesPorRolSerializer
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
-#CRUD ACCIONES
+# CRUD ACCIONES
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def acciones_list(request):
-
     if request.method == 'GET':
-        acciones= Acciones.objects.filter(idAccionPadre__isnull=False,state=1)
+        acciones = Acciones.objects.filter(idAccionPadre__isnull=False, state=1)
         serializer = AccionesSerializer(acciones, many=True)
         return Response(serializer.data)
 
@@ -31,7 +30,7 @@ def acciones_create(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ENCONTRAR UNO
+# ENCONTRAR UNO
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def acciones_findOne(request, pk):
@@ -39,13 +38,15 @@ def acciones_findOne(request, pk):
         acciones = Acciones.objects.get(pk=pk, state=1)
     except Acciones.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'GET':
         serializer = AccionesSerializer(acciones)
         return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ACTUALIZAR 
+
+
+# ACTUALIZAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def acciones_update(request, pk):
@@ -53,19 +54,21 @@ def acciones_update(request, pk):
         acciones = Acciones.objects.get(pk=pk, state=1)
     except Acciones.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'POST':
         now = timezone.localtime(timezone.now())
         request.data['updated_at'] = str(now)
         if 'created_at' in request.data:
             request.data.pop('created_at')
-        serializer = AccionesSerializer(acciones, data=request.data,partial=True)
+        serializer = AccionesSerializer(acciones, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ELIMINAR
+
+
+# ELIMINAR
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def acciones_delete(request, pk):
@@ -73,29 +76,30 @@ def acciones_delete(request, pk):
         acciones = Acciones.objects.get(pk=pk, state=1)
     except Acciones.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'DELETE':
         now = timezone.localtime(timezone.now())
-        serializer = AccionesSerializer(acciones, data={'state': '0','updated_at':str(now)},partial=True)
+        serializer = AccionesSerializer(acciones, data={'state': '0', 'updated_at': str(now)}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#CRUD ACCIONESPermitidas
+# CRUD ACCIONESPermitidas
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_list(request):
-
     if request.method == 'GET':
-        accionesPermitidas= AccionesPermitidas.objects.filter(state=1)
+        accionesPermitidas = AccionesPermitidas.objects.filter(state=1)
         serializer = AccionesPermitidasSerializer(accionesPermitidas, many=True)
         return Response(serializer.data)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#CREAR
+
+
+# CREAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_create(request):
@@ -109,7 +113,9 @@ def accionesPermitidas_create(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ENCONTRAR UNO
+
+
+# ENCONTRAR UNO
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_findOne(request, pk):
@@ -117,13 +123,15 @@ def accionesPermitidas_findOne(request, pk):
         acciones = AccionesPermitidas.objects.get(pk=pk, state=1)
     except AccionesPermitidas.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'GET':
         serializer = AccionesPermitidasSerializer(accionesPermitidas)
         return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ACTUALIZAR 
+
+
+# ACTUALIZAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_update(request, pk):
@@ -131,19 +139,21 @@ def accionesPermitidas_update(request, pk):
         accionesPermitidas = AccionesPermitidas.objects.get(pk=pk, state=1)
     except AccionesPermitidas.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'POST':
         now = timezone.localtime(timezone.now())
         request.data['updated_at'] = str(now)
         if 'created_at' in request.data:
             request.data.pop('created_at')
-        serializer = AccionesPermitidasSerializer(accionesPermitidas, data=request.data,partial=True)
+        serializer = AccionesPermitidasSerializer(accionesPermitidas, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ELIMINAR
+
+
+# ELIMINAR
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_delete(request, pk):
@@ -151,28 +161,31 @@ def accionesPermitidas_delete(request, pk):
         accionesPermitidas = AccionesPermitidas.objects.get(pk=pk, state=1)
     except AccionesPermitidas.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'DELETE':
         now = timezone.localtime(timezone.now())
-        serializer = AccionesPermitidasSerializer(accionesPermitidas, data={'state': '0','updated_at':str(now)},partial=True)
+        serializer = AccionesPermitidasSerializer(accionesPermitidas, data={'state': '0', 'updated_at': str(now)},
+                                                  partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#CRUD AccionesPorRol
+
+# CRUD AccionesPorRol
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_list(request):
-
     if request.method == 'GET':
-        accionesPorRol= AccionesPorRol.objects.filter(state=1)
+        accionesPorRol = AccionesPorRol.objects.filter(state=1)
         serializer = AccionesPorRolSerializer(accionesPorRol, many=True)
         return Response(serializer.data)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#CREAR
+
+
+# CREAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_create(request):
@@ -186,7 +199,9 @@ def accionesPorRol_create(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ENCONTRAR UNO
+
+
+# ENCONTRAR UNO
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_findOne(request, pk):
@@ -194,13 +209,15 @@ def accionesPorRol_findOne(request, pk):
         acciones = AccionesPorRol.objects.get(pk=pk, state=1)
     except AccionesPorRol.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'GET':
         serializer = AccionesPorRolSerializer(accionesPorRol)
         return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ACTUALIZAR 
+
+
+# ACTUALIZAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_update(request, pk):
@@ -208,19 +225,21 @@ def accionesPorRol_update(request, pk):
         accionesPorRol = AccionesPorRol.objects.get(pk=pk, state=1)
     except AccionesPorRol.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'POST':
         now = timezone.localtime(timezone.now())
         request.data['updated_at'] = str(now)
         if 'created_at' in request.data:
             request.data.pop('created_at')
-        serializer = AccionesPorRolSerializer(accionesPorRol, data=request.data,partial=True)
+        serializer = AccionesPorRolSerializer(accionesPorRol, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#ELIMINAR
+
+
+# ELIMINAR
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_delete(request, pk):
@@ -228,12 +247,12 @@ def accionesPorRol_delete(request, pk):
         accionesPorRol = AccionesPorRol.objects.get(pk=pk, state=1)
     except AccionesPorRol.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    #tomar el dato
+    # tomar el dato
     if request.method == 'DELETE':
         now = timezone.localtime(timezone.now())
-        serializer = AccionesPorRolSerializer(accionesPorRol, data={'state': '0','updated_at':str(now)},partial=True)
+        serializer = AccionesPorRolSerializer(accionesPorRol, data={'state': '0', 'updated_at': str(now)}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-   
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
