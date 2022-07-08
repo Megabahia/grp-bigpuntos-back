@@ -36,6 +36,8 @@ def get_queue_url():
             jsonRequest.pop('rolesPago')
             jsonRequest.pop('panillaIESS')
             jsonRequest.pop('documentoAprobacion')
+            jsonRequest.pop('imagen')
+            jsonRequest.pop('imagenComercial')
             serializer = CreditoPersonasSerializer(query, data=jsonRequest, partial=True)
 
             if serializer.is_valid():
