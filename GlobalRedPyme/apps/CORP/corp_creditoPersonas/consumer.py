@@ -26,7 +26,7 @@ def get_queue_url():
             # process message body
             body = json.loads(message.body)
             jsonRequest = json.loads(body['Message'])
-            _idCredidPerson = json.loads(body['Message'])['_id']
+            _idCredidPerson = json.loads(body['Message'])['external_id']
             # print(json.loads(message.body))
             message_bodies.append(body)
             query = CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson), state=1).first()
