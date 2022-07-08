@@ -148,6 +148,7 @@ def creditoPersonas_update(request, pk):
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
+                # Se envia a la cola de bigpuntos
                 publish(serializer.data)
                 return Response(serializer.data)
             createLog(logModel,serializer.errors,logExcepcion)
@@ -450,15 +451,6 @@ def creditoPersonas_listOne_persona(request, pk):
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
-#ENCONTRAR UNO
-@api_view(['GET'])
-def prueba(request):
-    publish()
-    return Response({"message":"se acaba de crear la cola"},200)
 
-@api_view(['GET'])
-def prueba2(request):
-    get_queue_url()
-    return Response({"message":"Escuchar la cola"},200)
 
 
