@@ -30,6 +30,12 @@ def get_queue_url():
             # print(json.loads(message.body))
             message_bodies.append(body)
             query = CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson), state=1).first()
+            jsonRequest.pop('reporteBuro')
+            jsonRequest.pop('identificacion')
+            jsonRequest.pop('ruc')
+            jsonRequest.pop('rolesPago')
+            jsonRequest.pop('panillaIESS')
+            jsonRequest.pop('documentoAprobacion')
             serializer = CreditoPersonasSerializer(query, data=jsonRequest, partial=True)
 
             if serializer.is_valid():
