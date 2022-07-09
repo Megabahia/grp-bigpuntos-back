@@ -30,16 +30,7 @@ def get_queue_url():
             # print(json.loads(message.body))
             message_bodies.append(body)
             query = CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson), state=1).first()
-            jsonRequest.pop('reporteBuro')
-            jsonRequest.pop('identificacion')
-            jsonRequest.pop('ruc')
-            jsonRequest.pop('rolesPago')
-            jsonRequest.pop('panillaIESS')
-            jsonRequest.pop('documentoAprobacion')
-            jsonRequest.pop('imagen')
-            jsonRequest.pop('imagenComercial')
             serializer = CreditoPersonasSerializer(query, data=jsonRequest, partial=True)
-
             if serializer.is_valid():
                 serializer.save()
 
@@ -48,7 +39,6 @@ def get_queue_url():
                 'Id': message.message_id,
                 'ReceiptHandle': message.receipt_handle
             })
-            
         # if you don't receive any notifications the
         # messages_to_delete list will be empty
         if len(messages_to_delete) == 0:
