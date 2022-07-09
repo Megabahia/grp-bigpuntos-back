@@ -29,6 +29,7 @@ def get_queue_url():
             _idCredidPerson = json.loads(body['Message'])['external_id']
             # print(json.loads(message.body))
             message_bodies.append(body)
+            jsonRequest.pop('_id')
             query = CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson), state=1).first()
             serializer = CreditoPersonasSerializer(query, data=jsonRequest, partial=True)
             if serializer.is_valid():
