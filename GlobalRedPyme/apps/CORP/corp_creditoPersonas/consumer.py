@@ -5,6 +5,8 @@ from apps.config import config
 from .serializers import CreditoPersonasSerializer
 from .models import CreditoPersonas
 from bson import ObjectId
+#logs
+from apps.CENTRAL.central_logs.methods import createLog,datosTipoLog, datosProductosMDP
 #declaracion variables log
 datosAux=datosProductosMDP()
 datosTipoLogAux=datosTipoLog()
