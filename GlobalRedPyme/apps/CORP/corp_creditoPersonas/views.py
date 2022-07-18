@@ -452,5 +452,10 @@ def creditoPersonas_listOne_persona(request, pk):
 
 
 
-
+#ENCONTRAR UNO
+@api_view(['GET'])
+def prueba(request):
+    get_queue_url()
+    err={"error":'Un error ha ocurrido: '}  
+    return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
