@@ -23,7 +23,7 @@ class EmpresasFiltroSerializer(serializers.ModelSerializer):
 class EmpresasFiltroIfisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Empresas
-       	fields = ['_id','nombreEmpresa','nombreComercial','tipoCategoria','ruc']
+       	fields = ['_id','nombreEmpresa','nombreComercial','tipoCategoria','ruc','imagen']
 
 class EmpresasConvenioCreateSerializer(serializers.ModelSerializer):
     class Meta:
