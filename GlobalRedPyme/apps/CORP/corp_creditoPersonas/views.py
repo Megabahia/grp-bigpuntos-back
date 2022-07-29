@@ -481,17 +481,19 @@ def creditoPersonas_creditoPreaprobado_codigo(request):
                     filters['cedula'] = request.data["cedula"]
         
             #Serializar los datos
-            query = CodigoCreditoPreaprobado.objects.filter(**filters).order_by('-created_at').first()
-            response = {}
-            estado = status.HTTP_400_BAD_REQUEST
-            if query:
-                query.state = 0
-                query.save()
-                estado = status.HTTP_200_OK
-                response['monto'] = query.monto
+            try:
+                query = CodigoCreditoPreaprobado.objects.get(**filters)
+            except CodigoCreditoPreaprobado.DoesNotExist:
+                err={"error":"No existe"}  
+                createLog(logModel,err,logExcepcion)
+                return Response(err,status=status.HTTP_404_NOT_FOUND)
+
+            response = {'monto': query.monto}
+            query.state = 0
+            query.save()
 
             #envio de datos
-            return Response(response, status=estado)
+            return Response(response, status=status.HTTP_200_OK)
         except Exception as e: 
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             createLog(logModel,err,logExcepcion)
