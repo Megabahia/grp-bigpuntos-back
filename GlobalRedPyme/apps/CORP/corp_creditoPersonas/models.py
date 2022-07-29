@@ -57,3 +57,13 @@ class AutorizacionCredito(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
+
+class CodigoCreditoPreaprobado(models.Model):
+    _id = models.ObjectIdField()
+    codigo = models.CharField(max_length=255,null=False)
+    cedula = models.CharField(max_length=255,null=False)
+    monto = models.CharField(max_length=255,null=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    state = models.SmallIntegerField(default=1)

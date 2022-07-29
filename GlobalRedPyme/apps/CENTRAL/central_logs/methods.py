@@ -207,3 +207,11 @@ def datosGestionEntregaGDE():
         'api':'gestionEntrega/'
     }
     return data  
+
+#CONSUMO SQS
+def datosSQS():
+    data={
+        'modulo':'SQS',
+        'api':'codigosCreditosPreaprobados/'
+    }
+    return data  

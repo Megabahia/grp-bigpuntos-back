@@ -1,5 +1,5 @@
 from apps.CENTRAL.central_catalogo.models import  Catalogo
-from apps.CORP.corp_creditoPersonas.models import  CreditoPersonas
+from apps.CORP.corp_creditoPersonas.models import  CreditoPersonas, CodigoCreditoPreaprobado
 from apps.PERSONAS.personas_personas.models import  Personas
 from apps.CORP.corp_empresas.models import  Empresas
 from apps.PERSONAS.personas_personas.serializers import  PersonasSearchSerializer
@@ -451,5 +451,50 @@ def creditoPersonas_listOne_persona(request, pk):
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+#ENCONTRAR CODIGO CREDITO PREAPROBADO
+@api_view(['POST'])
+def creditoPersonas_creditoPreaprobado_codigo(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi+'creditoPreaprobado/codigo',
+        'modulo':logModulo,
+        'tipo' : logExcepcion,
+        'accion' : 'LEER',
+        'fechaInicio' : str(timezone_now),
+        'dataEnviada' : '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida' : '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            #Filtros
+            filters={"state":"1"}
+
+            if "codigo" in request.data:
+                if request.data["codigo"] != '':
+                    filters['codigo'] = request.data["codigo"]
+            
+            if "cedula" in request.data:
+                if request.data["cedula"] != '':
+                    filters['cedula'] = request.data["cedula"]
+        
+            #Serializar los datos
+            query = CodigoCreditoPreaprobado.objects.filter(**filters).order_by('-created_at').first()
+            response = {}
+            estado = status.HTTP_400_BAD_REQUEST
+            if query:
+                query.state = 0
+                query.save()
+                estado = status.HTTP_200_OK
+                response['monto'] = query.monto
+
+            #envio de datos
+            return Response(response, status=estado)
+        except Exception as e: 
+            err={"error":'Un error ha ocurrido: {}'.format(e)}  
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 

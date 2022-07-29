@@ -47,6 +47,7 @@ if PRODUCTION:
     AWS_TOPIC_ARN = env.str('AWS_TOPIC_ARN')
     AWS_REGION_NAME = env.str('AWS_REGION_NAME')
     AWS_QUEUE_NAME = env.str('AWS_QUEUE_NAME')
+    AWS_QUEUE_NAME_CODIGOS = env.str('AWS_QUEUE_NAME_CODIGOS')
     #CORS
     CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS'))
     #databases
