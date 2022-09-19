@@ -8,7 +8,7 @@ env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Tomar variables de entorno del archivo .env
-environ.Env.read_env(os.path.join(BASE_DIR, '../GlobalRedPyme/.env.test'))
+environ.Env.read_env(os.path.join(BASE_DIR, '../GlobalRedPyme/.env'))
 
 PRODUCTION=True
 
@@ -50,6 +50,9 @@ if PRODUCTION:
     AWS_QUEUE_NAME_CODIGOS = env.str('AWS_QUEUE_NAME_CODIGOS')
     AWS_ACCESS_KEY_ID_COLAS = env.str('AWS_ACCESS_KEY_ID_COLAS')
     AWS_SECRET_ACCESS_KEY_COLAS = env.str('AWS_SECRET_ACCESS_KEY_COLAS')
+    # CONFIGURACION DE AMAZON TEXTRACT
+    AWS_ACCESS_KEY_ID_TEXTRACT = env.str('AWS_ACCESS_KEY_ID_TEXTRACT')
+    AWS_SECRET_ACCESS_KEY_TEXTRACT = env.str('AWS_SECRET_ACCESS_KEY_TEXTRACT')
     #CORS
     CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS'))
     #databases

@@ -21,9 +21,13 @@ python manage.py runserver
 
 # Como utilizar este repositorio en Ambiente DEV con Docker
 
-## 1.Construir la imagen
+## 1.Construir la imagen para windows y otro para mac
 ```shell
 sudo docker build -t papagayodev/grp-backend:dev .
+```
+
+```
+docker buildx build --platform linux/amd64 -t papagayodev/grp-backend:dev .
 ```
 
 ## 2.Subir la imagen al Docker Hub (ejecutar "docker login" en caso de no estar logueado desde consola en dockerhub)

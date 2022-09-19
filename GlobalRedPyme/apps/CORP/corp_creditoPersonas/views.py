@@ -29,6 +29,10 @@ import random
 from dateutil.relativedelta import relativedelta
 # ObjectId
 from bson import ObjectId
+# Lectura de AWS s3
+import boto3
+import re
+from apps.config import config
 #logs
 from apps.CENTRAL.central_logs.methods import createLog,datosTipoLog, datosProductosMDP
 #declaracion variables log
@@ -498,5 +502,133 @@ def creditoPersonas_creditoPreaprobado_codigo(request):
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             createLog(logModel,err,logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def creditoPersonas_lecturaArchivos(request, pk):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'lecturaArchivos/' + pk,
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    try:
+        try:
+            query = CreditoPersonas.objects.filter(pk=ObjectId(pk), state=1).first()
+        except CreditoPersonas.DoesNotExist:
+            err = {"error": "No existe"}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+        # tomar el dato
+        if request.method == 'GET':
+            print(query.identificacion.name)
+            dato1 = None if query.identificacion.name is None else obtenerDatosArchivos(str(query.identificacion.name))
+            dato2 = None if query.ruc.name is None else obtenerDatosArchivos(str(query.ruc.name))
+            # serializer = CreditoPersonasPersonaSerializer(query)
+            # createLog(logModel, serializer.data, logTransaccion)
+            return Response({'cedula':dato1,'ruc':dato2}, status=status.HTTP_200_OK)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+def obtenerDatosArchivos(nombreArchivo):
+    # Function invokes
+    jobId = InvokeTextDetectJob('globalredpymes',nombreArchivo)
+    print("Started job with id: {}".format(jobId))
+    respuesta = {}
+    if (CheckJobComplete(jobId)):
+        response = JobResults(jobId)
+        for resultPage in response:
+            for item in resultPage["Blocks"]:
+                if item['BlockType'] == 'LINE':
+                    if re.match("\d{10}001", item['Text']):
+                        respuesta['ruc'] = item['Text']
+
+                    elif re.match("No. \d{9}-[0-9]", item['Text']):
+                        respuesta['identificacion'] = item['Text'][4:]
+
+                    elif re.match("^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$", item['Text']):
+                        respuesta['fechaExpiracion'] = item['Text']
+
+                    elif re.match("[aA-Zz]\d{4}[aA-Zz]\d{4}", item['Text']):
+                        respuesta['codigoDactilar'] = item['Text']
+
+    print("-------------------Imprimir-----------------")
+    return respuesta
+
+import time
+## Textract APIs used - "start_document_text_detection", "get_document_text_detection"
+def InvokeTextDetectJob(bucket, nombreArchivo):
+    response = None
+    textarctmodule = boto3.client(
+        'textract',
+        aws_access_key_id=config.AWS_ACCESS_KEY_ID_TEXTRACT,
+        aws_secret_access_key=config.AWS_SECRET_ACCESS_KEY_TEXTRACT,
+        region_name='us-east-1'
+    )
+    response = textarctmodule.start_document_text_detection(
+        DocumentLocation={
+            'S3Object': {
+                'Bucket': bucket,
+                # 'Name': nombreArchivo
+                'Name': 'CORP/documentosCreditosPersonas/62d97613bceeaa781e803920_1658498310065_comprobante_1.pdf'
+            }
+        }
+    )
+    return response["JobId"]
+
+
+def CheckJobComplete(jobId):
+    time.sleep(5)
+    client = boto3.client(
+        'textract',
+        aws_access_key_id=config.AWS_ACCESS_KEY_ID_TEXTRACT,
+        aws_secret_access_key=config.AWS_SECRET_ACCESS_KEY_TEXTRACT,
+        region_name='us-east-1'
+    )
+    response = client.get_document_text_detection(JobId=jobId)
+    status = response["JobStatus"]
+    print("Job status: {}".format(status))
+    while (status == "IN_PROGRESS"):
+        time.sleep(5)
+        response = client.get_document_text_detection(JobId=jobId)
+        status = response["JobStatus"]
+        print("Job status: {}".format(status))
+    return status
+
+
+def JobResults(jobId):
+    pages = []
+    client = boto3.client(
+        'textract',
+        aws_access_key_id=config.AWS_ACCESS_KEY_ID_TEXTRACT,
+        aws_secret_access_key=config.AWS_SECRET_ACCESS_KEY_TEXTRACT,
+        region_name='us-east-1'
+    )
+    response = client.get_document_text_detection(JobId=jobId)
+
+    pages.append(response)
+    print("Resultset page recieved: {}".format(len(pages)))
+    nextToken = None
+    if ('NextToken' in response):
+        nextToken = response['NextToken']
+        while (nextToken):
+            response = client.get_document_text_detection(JobId=jobId, NextToken=nextToken)
+            pages.append(response)
+            print("Resultset page recieved: {}".format(len(pages)))
+            nextToken = None
+            if ('NextToken' in response):
+                nextToken = response['NextToken']
+    return pages
+
+
+
 
 
