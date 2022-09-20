@@ -1,3 +1,4 @@
+import jsonfield
 from djongo import models
 
 def upload_path(instance, filname):
@@ -28,7 +29,16 @@ class Personas(models.Model):
     youtube = models.CharField(max_length=250,blank=True, null=True)
     imagen = models.FileField(blank=True,null=True,upload_to=upload_path)
     user_id = models.CharField(max_length=250,blank=False, null=False)  # Relacion usuario
-    
+    nivelInstruccion = models.CharField(max_length=200,null=True,blank=True)
+    tipoVivienda = models.CharField(max_length=200,null=True,blank=True)
+    nombreDueno = models.CharField(max_length=200,null=True,blank=True)
+    direccionDomicilio = models.CharField(max_length=200,null=True,blank=True)
+    referenciaDomicilio = models.CharField(max_length=200,null=True,blank=True)
+    ocupacionSolicitante = jsonfield.JSONField()
+    referenciasSolicitante = jsonfield.JSONField()
+    ingresosSolicitante = jsonfield.JSONField()
+    gastosSolicitante = jsonfield.JSONField()
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
