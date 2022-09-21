@@ -1,3 +1,4 @@
+import jsonfield
 from djongo import models
 
 def upload_path(instance, filname):
@@ -13,8 +14,8 @@ class CreditoPersonas(models.Model):
     aceptaTerminos = models.SmallIntegerField(default=1)
     estado = models.CharField(max_length=255,blank=True, null=True)
     user_id = models.CharField(max_length=255,blank=True, null=True)  # Relacion usuario
-    empresaComercial_id = models.CharField(max_length=255,blank=False, null=False)  # Relacion empresa comercial
-    empresaIfis_id = models.CharField(max_length=255,blank=False, null=False)  # Relacion empresa ifis
+    empresaComercial_id = models.CharField(max_length=255,blank=True, null=True)  # Relacion empresa comercial
+    empresaIfis_id = models.CharField(max_length=255,blank=True, null=True)  # Relacion empresa ifis
     reporteBuro = models.FileField(blank=True,null=True,upload_to=upload_path)
     calificacionBuro = models.CharField(max_length=255,blank=True, null=True)
     buroValido = models.CharField(max_length=255,blank=True, null=True)
@@ -43,7 +44,8 @@ class CreditoPersonas(models.Model):
     checkTablaAmortizacion = models.BooleanField(blank=True, null=True)
     checkManualPago = models.BooleanField(blank=True, null=True)
     checkCedula = models.BooleanField(blank=True, null=True)
-    
+    user = jsonfield.JSONField()
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
