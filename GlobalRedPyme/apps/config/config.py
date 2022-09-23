@@ -1,6 +1,9 @@
 # environ init
 import os
 import environ
+# LIBRERIA FIREBASE
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 env = environ.Env()
 
@@ -8,7 +11,7 @@ env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Tomar variables de entorno del archivo .env
-environ.Env.read_env(os.path.join(BASE_DIR, '../GlobalRedPyme/.env.test'))
+environ.Env.read_env(os.path.join(BASE_DIR, '../GlobalRedPyme/.env'))
 
 PRODUCTION=True
 
@@ -55,6 +58,10 @@ if PRODUCTION:
     AWS_SECRET_ACCESS_KEY_TEXTRACT = env.str('AWS_SECRET_ACCESS_KEY_TEXTRACT')
     #CORS
     CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS'))
+    # FIREBASE
+    FIREBASE_CRED = credentials.Certificate('apps/config/serviceAccountKey.json')
+    firebase_admin.initialize_app(FIREBASE_CRED, {"databaseURL": 'grp-bigpuntos'})
+    FIREBASE_DB = firestore.client()
     #databases
     DATABASES = {
         'default': {

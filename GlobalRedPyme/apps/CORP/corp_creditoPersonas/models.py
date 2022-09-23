@@ -45,6 +45,7 @@ class CreditoPersonas(models.Model):
     checkManualPago = models.BooleanField(blank=True, null=True)
     checkCedula = models.BooleanField(blank=True, null=True)
     user = jsonfield.JSONField()
+    observacion = models.TextField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)

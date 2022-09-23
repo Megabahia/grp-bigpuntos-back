@@ -77,6 +77,7 @@ def creditoPersonas_create(request):
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
+                config.FIREBASE_DB.collection('creditosPersonas').add(serializer.data)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             createLog(logModel,serializer.errors,logExcepcion)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
