@@ -24,8 +24,9 @@ class CreditoPersonasSerializer(serializers.ModelSerializer):
             entidadFinanciera = Empresas.objects.filter(_id=ObjectId(empresaIfis_id), state=1).first()
             data.update({"entidadFinanciera": entidadFinanciera.nombreComercial})
             data['empresaIfis_id'] = str(empresaIfis_id)
-            empresaSerializer = EmpresasInfoBasicaSerializer(entidadFinanciera).data
-            data['imagen'] = empresaSerializer['imagen']
+            if entidadFinanciera is not None:
+                empresaSerializer = EmpresasInfoBasicaSerializer(entidadFinanciera).data
+                data['imagen'] = empresaSerializer['imagen']
         # Info empresa comercial
         # empresaComercial_id = data.pop('empresaComercial_id')
         # data['empresaComercial_id'] = str(empresaComercial_id)

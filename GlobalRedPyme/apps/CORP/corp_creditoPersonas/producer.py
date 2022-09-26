@@ -25,8 +25,10 @@ def publish(data):
     data['panillaIESS'] = str(panillaIESS).replace('https://globalredpymes.s3.amazonaws.com/','')
     documentoAprobacion = data.pop('documentoAprobacion')
     data['documentoAprobacion'] = str(documentoAprobacion).replace('https://globalredpymes.s3.amazonaws.com/','')
-    data.pop('imagen')
-    data.pop('imagenComercial')
+    if 'imagen' in data:
+        data.pop('imagen')
+    if 'imagenComercial' in data:
+        data.pop('imagenComercial')
 
     response = snsClient.publish(
         TopicArn=topicArn,
