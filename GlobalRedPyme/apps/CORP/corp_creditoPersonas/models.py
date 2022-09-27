@@ -57,6 +57,8 @@ class CreditoPersonas(models.Model):
     user = jsonfield.JSONField()
     observacion = models.TextField(null=True, blank=True)
 
+    checks = jsonfield.JSONField()
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
