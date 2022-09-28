@@ -10,6 +10,7 @@ class CreditoPersonas(models.Model):
     numero = models.IntegerField(blank=True, null=True)
     canal = models.CharField(max_length=255,blank=True, null=True)
     monto = models.FloatField(blank=True, null=True)
+    cuota = models.FloatField(blank=True, null=True)
     plazo = models.PositiveIntegerField(blank=True, null=True)
     aceptaTerminos = models.SmallIntegerField(default=1)
     estado = models.CharField(max_length=255,blank=True, null=True)
