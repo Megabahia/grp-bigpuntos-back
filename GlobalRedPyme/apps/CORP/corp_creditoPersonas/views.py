@@ -153,8 +153,10 @@ def creditoPersonas_update(request, pk):
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
-                # Se envia a la cola de bigpuntos
-                publish(serializer.data)
+                if "estado" in request.data:
+                    if request.data["estado"] == 'Verificado':
+                        # Se envia a la cola de bigpuntos
+                        publish(serializer.data)
                 return Response(serializer.data)
             createLog(logModel,serializer.errors,logExcepcion)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
