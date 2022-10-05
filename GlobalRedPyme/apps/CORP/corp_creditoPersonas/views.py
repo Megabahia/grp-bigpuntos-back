@@ -154,7 +154,7 @@ def creditoPersonas_update(request, pk):
                 serializer.save()
                 createLog(logModel,serializer.data,logTransaccion)
                 if "estado" in request.data:
-                    if request.data["estado"] == 'Verificado':
+                    if request.data["estado"] == 'Enviado':
                         # Se envia a la cola de bigpuntos
                         publish(serializer.data)
                 return Response(serializer.data)
