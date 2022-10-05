@@ -34,6 +34,8 @@ class CreditoPersonas(models.Model):
     ruc = models.FileField(blank=True,null=True,upload_to=upload_path)
     rolesPago = models.FileField(blank=True,null=True,upload_to=upload_path)
     panillaIESS = models.FileField(blank=True,null=True,upload_to=upload_path)
+    mecanizadoIess = models.FileField(blank=True,null=True,upload_to=upload_path)
+    fotoCarnet = models.FileField(blank=True,null=True,upload_to=upload_path)
     tomarSolicitud = models.CharField(max_length=255,null=True, blank=True)
     fechaAprobacion = models.DateTimeField(null=True, blank=True)
     tipoCredito = models.CharField(max_length=255,null=True, blank=True)
