@@ -23,27 +23,27 @@ python manage.py runserver
 
 ## 1.Construir la imagen para windows y otro para mac
 ```shell
-sudo docker build -t papagayodev/grp-backend:dev .
+sudo docker build -t james46007/grp-backend:dev .
 ```
-
+El siguiente comando sirve para computadoras mac
 ```
-docker buildx build --platform linux/amd64 -t papagayodev/grp-backend:dev .
+docker buildx build --platform linux/amd64 -t james46007/grp-backend:dev .
 ```
 
 ## 2.Subir la imagen al Docker Hub (ejecutar "docker login" en caso de no estar logueado desde consola en dockerhub)
 ```shell
-sudo docker push papagayodev/grp-backend:dev
+sudo docker push james46007/grp-backend:dev
 ```
 
 ## 3.En el servidor debe estar instalado y configurado Docker
 ## 4.Bajar la imagen del server a deployar
 ```shell
-sudo docker pull papagayodev/grp-backend:dev
+sudo docker pull james46007/grp-backend:dev
 ```
 
 ## 5.Construir el contenedor , este comando deja corriebdo el contenedor
 ```shell
-sudo docker run -d -p 8000:8000 -it --log-opt max-size=10m --log-opt max-file=3 --name grp-backend --restart always papagayodev/grp-backend:dev
+sudo docker run -d -p 8000:8000 -it --log-opt max-size=10m --log-opt max-file=3 --name grp-backend --restart always james46007/grp-backend:dev
 ```
 
 ## 6.Para iniciar el contenedor
