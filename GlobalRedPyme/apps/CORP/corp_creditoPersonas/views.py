@@ -496,7 +496,7 @@ def creditoPersonas_creditoPreaprobado_codigo(request):
                 createLog(logModel,err,logExcepcion)
                 return Response(err,status=status.HTTP_404_NOT_FOUND)
 
-            response = {'monto': query.monto}
+            response = {'monto': query.monto, 'nombreCompleto': query.nombres + ' ' + query.apellidos}
             query.state = 0
             query.save()
 
