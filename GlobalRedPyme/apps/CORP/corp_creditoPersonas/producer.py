@@ -14,31 +14,31 @@ def publish(data):
     )
 
     reporteBuro = data.pop('reporteBuro')
-    data['reporteBuro'] = str(reporteBuro).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['reporteBuro'] = str(reporteBuro).replace('https://globalredpymes.s3.amazonaws.com/', '')
     identificacion = data.pop('identificacion')
-    data['identificacion'] = str(identificacion).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['identificacion'] = str(identificacion).replace('https://globalredpymes.s3.amazonaws.com/', '')
     ruc = data.pop('ruc')
-    data['ruc'] = str(ruc).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['ruc'] = str(ruc).replace('https://globalredpymes.s3.amazonaws.com/', '')
     rolesPago = data.pop('rolesPago')
-    data['rolesPago'] = str(rolesPago).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['rolesPago'] = str(rolesPago).replace('https://globalredpymes.s3.amazonaws.com/', '')
     panillaIESS = data.pop('panillaIESS')
-    data['panillaIESS'] = str(panillaIESS).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['panillaIESS'] = str(panillaIESS).replace('https://globalredpymes.s3.amazonaws.com/', '')
     documentoAprobacion = data.pop('documentoAprobacion')
-    data['documentoAprobacion'] = str(documentoAprobacion).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['documentoAprobacion'] = str(documentoAprobacion).replace('https://globalredpymes.s3.amazonaws.com/', '')
     papeletaVotacion = data.pop('papeletaVotacion')
-    data['papeletaVotacion'] = str(papeletaVotacion).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['papeletaVotacion'] = str(papeletaVotacion).replace('https://globalredpymes.s3.amazonaws.com/', '')
     planillaLuzDomicilio = data.pop('planillaLuzDomicilio')
-    data['planillaLuzDomicilio'] = str(planillaLuzDomicilio).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['planillaLuzDomicilio'] = str(planillaLuzDomicilio).replace('https://globalredpymes.s3.amazonaws.com/', '')
     matriculaVehiculo = data.pop('matriculaVehiculo')
-    data['matriculaVehiculo'] = str(matriculaVehiculo).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['matriculaVehiculo'] = str(matriculaVehiculo).replace('https://globalredpymes.s3.amazonaws.com/', '')
     impuestoPredial = data.pop('impuestoPredial')
-    data['impuestoPredial'] = str(impuestoPredial).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['impuestoPredial'] = str(impuestoPredial).replace('https://globalredpymes.s3.amazonaws.com/', '')
     buroCredito = data.pop('buroCredito')
-    data['buroCredito'] = str(buroCredito).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['buroCredito'] = str(buroCredito).replace('https://globalredpymes.s3.amazonaws.com/', '')
     mecanizadoIess = data.pop('mecanizadoIess')
-    data['mecanizadoIess'] = str(mecanizadoIess).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['mecanizadoIess'] = str(mecanizadoIess).replace('https://globalredpymes.s3.amazonaws.com/', '')
     fotoCarnet = data.pop('fotoCarnet')
-    data['fotoCarnet'] = str(fotoCarnet).replace('https://globalredpymes.s3.amazonaws.com/','')
+    data['fotoCarnet'] = str(fotoCarnet).replace('https://globalredpymes.s3.amazonaws.com/', '')
     if 'imagen' in data:
         data.pop('imagen')
     if 'imagenComercial' in data:
@@ -48,8 +48,6 @@ def publish(data):
         TopicArn=topicArn,
         Message=json.dumps(data),
         Subject='PURCHASE',
-        MessageAttributes={"TransactionType":{"DataType":"String","StringValue":"PURCHASE"}}
+        MessageAttributes={"TransactionType": {"DataType": "String", "StringValue": "PURCHASE"}}
     )
     print(response['ResponseMetadata']['HTTPStatusCode'])
-
-    

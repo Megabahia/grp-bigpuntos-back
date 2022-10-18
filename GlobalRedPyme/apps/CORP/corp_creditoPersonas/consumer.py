@@ -5,28 +5,30 @@ from apps.config import config
 from .serializers import CreditoPersonasSerializer
 from .models import CreditoPersonas
 from bson import ObjectId
-#logs
-from apps.CENTRAL.central_logs.methods import createLog,datosTipoLog, datosProductosMDP
-#declaracion variables log
-datosAux=datosProductosMDP()
-datosTipoLogAux=datosTipoLog()
-#asignacion datos modulo
-logModulo=datosAux['modulo']
-logApi=datosAux['api']
-#asignacion tipo de datos
-logTransaccion=datosTipoLogAux['transaccion']
-logExcepcion=datosTipoLogAux['excepcion']
+# logs
+from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+
+# declaracion variables log
+datosAux = datosProductosMDP()
+datosTipoLogAux = datosTipoLog()
+# asignacion datos modulo
+logModulo = datosAux['modulo']
+logApi = datosAux['api']
+# asignacion tipo de datos
+logTransaccion = datosTipoLogAux['transaccion']
+logExcepcion = datosTipoLogAux['excepcion']
+
 
 def get_queue_url():
     logModel = {
-        'endPoint': logApi+'listOne/',
-        'modulo':logModulo,
-        'tipo' : logExcepcion,
-        'accion' : 'CRON_SQS_BIGBUNTOS',
+        'endPoint': logApi + 'listOne/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'CRON_SQS_BIGBUNTOS',
         # 'fechaInicio' : str(timezone_now),
-        'dataEnviada' : '{}',
+        'dataEnviada': '{}',
         # 'fechaFin': str(timezone_now),
-        'dataRecibida' : '{}'
+        'dataRecibida': '{}'
     }
     try:
         region_name = config.AWS_REGION_NAME
@@ -35,8 +37,8 @@ def get_queue_url():
         aws_access_key_id = config.AWS_ACCESS_KEY_ID_COLAS
         aws_secret_access_key = config.AWS_SECRET_ACCESS_KEY_COLAS
         sqs = boto3.resource('sqs', region_name=region_name,
-                            aws_access_key_id=aws_access_key_id,
-                            aws_secret_access_key=aws_secret_access_key)
+                             aws_access_key_id=aws_access_key_id,
+                             aws_secret_access_key=aws_secret_access_key)
         queue = sqs.get_queue_by_name(QueueName=queue_name)
 
         # Consultar la cola maximo 10 mensajes
@@ -48,13 +50,17 @@ def get_queue_url():
             jsonRequest.pop('_id')
             # Busca en la bdd las sqs
             query = CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson), state=1).first()
-            serializer = CreditoPersonasSerializer(query, data=jsonRequest, partial=True)
-            if serializer.is_valid():
+            if query is None:
                 # Guardamos
-                serializer.save()
-                # Borramos SQS
-                message.delete()
+                credito = CreditoPersonas.objects.create(**jsonRequest)
+            else:
+                CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson)).update(**jsonRequest)
+                credito = query
+            # Crear objeto en firebase para las notificaciones
+            config.FIREBASE_DB.collection('creditosPersonas').document(str(credito._id)).set(jsonRequest)
+            # Borramos SQS
+            message.delete()
     except Exception as e:
-        err={"error":'Un error ha ocurrido: {}'.format(e)}
-        createLog(logModel,err,logExcepcion)
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
         return err

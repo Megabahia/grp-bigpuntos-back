@@ -1,5 +1,5 @@
 from django.urls import path,include
-from apps.CORP.corp_creditoArchivos.views import(
+from .views import(
 	creditoArchivos_create,
 	creditoArchivos_list,
 	creditoArchivos_delete,
