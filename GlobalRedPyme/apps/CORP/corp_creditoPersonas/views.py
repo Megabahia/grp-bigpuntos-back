@@ -501,7 +501,7 @@ def creditoPersonas_creditoPreaprobado_codigo(request):
 
             # Serializar los datos
             try:
-                query = CreditoPersonas.objects.filter(**filters).first()
+                query = CreditoPersonas.objects.get(**filters)
             except CreditoPersonas.DoesNotExist:
                 err = {"error": "No existe"}
                 createLog(logModel, err, logExcepcion)
