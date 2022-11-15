@@ -34,7 +34,7 @@ def catalogo_list(request):
         'dataRecibida' : '{}'
     }
     if request.method == 'POST':
-        try:
+        # try:
             logModel['dataEnviada'] = str(request.data)
             #paginacion
             page_size=int(request.data['page_size'])
@@ -45,10 +45,14 @@ def catalogo_list(request):
             filters={"state":"1"}
             if 'nombre' in request.data:
                 if request.data['nombre']!='':
-                    filters['nombre__startswith'] = str(request.data['nombre'])
+                    filters['nombre__icontains'] = str(request.data['nombre'])
             if 'tipo' in request.data:
                 if request.data['tipo']!='':
-                    filters['tipo'] = str(request.data['tipo'])
+                    filters['tipo__icontains'] = str(request.data['tipo'])
+
+            if 'descripcion' in request.data:
+                if request.data['descripcion']!='':
+                    filters['descripcion__icontains'] = str(request.data['descripcion'])
           
             #Serializar los datos
             query = Catalogo.objects.filter(**filters).order_by('-created_at')
@@ -57,10 +61,10 @@ def catalogo_list(request):
             'info':serializer.data}
             #envio de datos
             return Response(new_serializer_data,status=status.HTTP_200_OK)
-        except Exception as e: 
-            err={"error":'Un error ha ocurrido: {}'.format(e)}  
-            createLog(logModel,err,logExcepcion)
-            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+        # except Exception as e:
+        #     err={"error":'Un error ha ocurrido: {}'.format(e)}
+        #     createLog(logModel,err,logExcepcion)
+        #     return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 #CREAR
 @api_view(['POST'])
