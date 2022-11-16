@@ -12,7 +12,7 @@ class CatalogoSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super(CatalogoSerializer, self).to_representation(instance)
         idPadre = str(data['idPadre'])
-        data.update({"idPadre": idPadre})
+        data.update({"idPadre": idPadre if idPadre is None else ''})
         return data
 
 class CatalogoHijoSerializer(serializers.ModelSerializer):
