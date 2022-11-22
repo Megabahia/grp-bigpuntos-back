@@ -1,5 +1,5 @@
 from django.urls import path,include
-from apps.PERSONAS.personas_personas.views import(
+from .views import(
 	personas_create,
 	personas_listOne,
 	personas_update,
