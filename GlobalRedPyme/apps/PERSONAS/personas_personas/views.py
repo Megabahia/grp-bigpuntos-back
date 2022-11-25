@@ -1,6 +1,6 @@
 from apps.CENTRAL.central_usuarios.models import Usuarios
 from apps.CENTRAL.central_catalogo.models import Catalogo
-from apps.PERSONAS.personas_personas.models import Personas, ValidarCuenta
+from .models import Personas, ValidarCuenta
 from apps.PERSONAS.personas_personas.serializers import (
     PersonasSerializer, PersonasUpdateSerializer, PersonasImagenSerializer, ValidarCuentaSerializer,
     PersonasUpdateSinImagenSerializer
@@ -193,12 +193,13 @@ def personas_update(request, pk):
                 # )
                 # Correo de la corp
                 user = Usuarios.objects.get(pk=ObjectId(pk))
+                print(user.email)
                 subject, from_email, to = 'Generacion de codigo de verificación de su cuenta', "08d77fe1da-d09822@inbox.mailtrap.io",user.email
                 txt_content = mensaje + ' ' + codigo
                 html_content = f"""
                 <html>
                     <body>
-                        <h1>Hola!</h1>
+                        <h1>Verifique su cuenta</h1>
                         <p>{mensaje} {codigo}</p>
                         <br>
                         <p>Recuerde que con su validación de cuenta podrá ganar Big Puntos para canjearlos por premios.</p>
