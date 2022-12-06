@@ -193,7 +193,6 @@ def personas_update(request, pk):
                 # )
                 # Correo de la corp
                 user = Usuarios.objects.get(pk=ObjectId(pk))
-                print(user.email)
                 subject, from_email, to = 'Generacion de codigo de verificación de su cuenta', "08d77fe1da-d09822@inbox.mailtrap.io",user.email
                 txt_content = mensaje + ' ' + codigo
                 html_content = f"""
@@ -210,8 +209,7 @@ def personas_update(request, pk):
                     </body>
                 </html>
                 """
-                if user.estado == "3":
-                    print('entro')
+                if user.estado >= "2" and user.estado <= "3":
                     sendEmail(subject, txt_content, from_email, to, html_content)
 
                 createLog(logModel, serializer.data, logTransaccion)
