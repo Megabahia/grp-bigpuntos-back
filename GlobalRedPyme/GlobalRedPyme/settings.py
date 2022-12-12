@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'apps.CENTRAL.central_infoUsuarios',
     'apps.CENTRAL.central_productos',
     'apps.CENTRAL.central_publicaciones',
+    'apps.CENTRAL.central_empresas',
     'apps.CENTRAL.central_tipoUsuarios',
     'apps.CENTRAL.central_correosLanding',
     #apps vittoria MDM+

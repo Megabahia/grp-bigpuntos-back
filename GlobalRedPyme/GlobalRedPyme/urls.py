@@ -56,6 +56,7 @@ urlpatterns = [
     url(r'^central/auth/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('central/productos/', include(('apps.CENTRAL.central_productos.urls', 'productos'), namespace='productos')),
     path('central/publicaciones/', include(('apps.CENTRAL.central_publicaciones.urls', 'publicaciones'), namespace='publicaciones')),
+    path('central/empresas/', include(('apps.CENTRAL.central_empresas.urls', 'central_empresas'), namespace='central_empresas')),
     path('central/correosLanding/', include(('apps.CENTRAL.central_correosLanding.urls', 'correosLanding'), namespace='correosLanding')),
     # PERSONAS
     path('personas/personas/', include(('apps.PERSONAS.personas_personas.urls', 'personas'), namespace='personas')),

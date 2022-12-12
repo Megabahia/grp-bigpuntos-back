@@ -210,8 +210,7 @@ def personas_update(request, pk):
                     </body>
                 </html>
                 """
-                if user.estado == "2":
-                    print('entro')
+                if user.estado >= "2" and user.estado <= "3":
                     sendEmail(subject, txt_content, from_email, to, html_content)
 
                 createLog(logModel, serializer.data, logTransaccion)
