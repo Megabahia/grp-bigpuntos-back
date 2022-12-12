@@ -210,7 +210,7 @@ def personas_update(request, pk):
                     </body>
                 </html>
                 """
-                if user.estado == "3":
+                if user.estado == "2":
                     print('entro')
                     sendEmail(subject, txt_content, from_email, to, html_content)
 

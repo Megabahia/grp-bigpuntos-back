@@ -35,6 +35,8 @@ import re
 from apps.config import config
 # logs
 from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+# IMPORTAR ENVIO CONFIGURACION CORREO
+from apps.config.util2 import sendEmail
 
 # declaracion variables log
 datosAux = datosProductosMDP()
@@ -163,6 +165,8 @@ def creditoPersonas_update(request, pk):
                     if request.data["estado"] == 'Enviado':
                         # Se envia a la cola de bigpuntos
                         publish(serializer.data)
+                    if request.data["estado"] == 'Negado':
+                        en
                 return Response(serializer.data)
             createLog(logModel, serializer.errors, logExcepcion)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -656,3 +660,33 @@ def pruebaConsumer(request):
     get_queue_url()
     err = {"message": 'Lectura'}
     return Response(err, status=status.HTTP_200_OK)
+
+
+def enviarCorreoSolicitud(email):
+    subject, from_email, to = 'Generación de código para crédito aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
+                              email
+    txt_content = f"""
+                        Su microcrédito línea de crédito para pago a proveedores ha sido NEGADO.
+                            Crédito Pagos es la mejor opción para el crecimiento de su negocio
+                        Atentamente,
+                        Global RedPyme – Crédito Pagos
+    """
+    html_content = f"""
+                <html>
+                    <body>
+                        <h1>LO SENTIMOS!! </h1>
+                        <p>Su microcrédito línea de crédito para pago a proveedores ha sido <b>NEGADO.</b> 
+                        Esperamos poder ayudarle en una próxima ocasión.</p>
+                        <br>
+                        <br>
+                        <p>Crédito Pagos es la mejor opción para el crecimiento de su negocio</p>
+                        <br>
+                        <br>
+                        Atentamente,
+                        <br>
+                        Global RedPyme – Crédito Pagos
+                        <br>
+                    </body>
+                </html>
+                """
+    sendEmail(subject, txt_content, from_email, to, html_content)

@@ -7,6 +7,8 @@ from .models import CreditoPersonas
 from bson import ObjectId
 # logs
 from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+# IMPORTAR ENVIO CONFIGURACION CORREO
+from apps.config.util2 import sendEmail
 
 # declaracion variables log
 datosAux = datosProductosMDP()
@@ -58,9 +60,55 @@ def get_queue_url():
                 credito = query
             # Crear objeto en firebase para las notificaciones
             config.FIREBASE_DB.collection('creditosPersonas').document(str(credito._id)).set(jsonRequest)
+            # Enviar correo de aprobado
+            enviarCorreoSolicitud(jsonRequest['email'])
             # Borramos SQS
             message.delete()
     except Exception as e:
         err = {"error": 'Un error ha ocurrido: {}'.format(e)}
         createLog(logModel, err, logExcepcion)
         return err
+
+
+def enviarCorreoSolicitud(email):
+    subject, from_email, to = 'Generación de código para crédito aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
+                              email
+    txt_content = f"""
+                        Global RedPyme - Crédito Pagos ha recibido su solicitud, estaremos en contacto con usted a la brevedad posible.
+                            Crédito Pagos es la mejor opción para el crecimiento de su negocio
+                        Atentamente,
+                        Global RedPyme – Crédito Pagos
+    """
+    html_content = f"""
+                <html>
+                    <body>
+                        <h1>FELICIDADES!!</h1>
+                        <p>Su microcrédito línea de crédito para pago a proveedores ha sido <b>APROBADO.</b></p>
+                        <br>
+                        <br>
+                        <p>Realice los siguientes pasos:</p>
+                        <ul>
+                        <li>
+                        Ingrese a: https://coopsanjose-personas.crediventa.com/#/personas/registroFirmaElectronica y 
+                        cargue su firma electrónica en nuestra plataforma. Recuerde que al hacerlo, autoriza a la Plataforma y 
+                        Entidad Financiera a realizar movimientos desde su cuenta con el único fin de completar el 
+                        proceso del PAGO A SUS PROVEEDORES desde su cuenta.
+                        </li>
+                        <li>
+                        Registre a sus proveedores a través de
+                         https://coopsanjose-personas.crediventa.com/#/personas/registroProveedores para realizar
+                          el pago de forma fácil y rápida.
+                        </li>
+                        </ul>
+                        <br>
+                        <br>
+                        <h3><b>Crédito Pagos es la mejor opción para el crecimiento de su negocio</b></h3>
+                        <br>
+                        Atentamente,
+                        <br>
+                        Global RedPyme – Crédito Pagos
+                        <br>
+                    </body>
+                </html>
+                """
+    sendEmail(subject, txt_content, from_email, to, html_content)
