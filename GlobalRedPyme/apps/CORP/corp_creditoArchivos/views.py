@@ -131,6 +131,10 @@ def creditoArchivos_list(request):
                 if request.data["campania"] != '':
                     filters['campania'] = str(request.data["campania"])
 
+            if "empresa_comercial" in request.data:
+                if request.data["empresa_comercial"] != '':
+                    filters['empresa_comercial'] = str(request.data["empresa_comercial"])
+
             if "tipoCredito" in request.data:
                 if request.data["tipoCredito"] != '':
                     filters['tipoCredito'] = str(request.data["tipoCredito"])

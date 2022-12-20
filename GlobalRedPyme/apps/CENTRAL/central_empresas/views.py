@@ -156,6 +156,39 @@ def empresas_listOne(request, pk):
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
+# ENCONTRAR UNO
+@api_view(['GET'])
+def empresas_listOne_url(request, pk):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'listOne/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    try:
+        try:
+            url = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + pk
+            query = Empresas.objects.get(url=url, state=1)
+        except Empresas.DoesNotExist:
+            err = {"error": "No existe"}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_200_OK)
+        # tomar el dato
+        if request.method == 'GET':
+            serializer = EmpresasSerializer(query)
+            createLog(logModel, serializer.data, logTransaccion)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
 # ACTUALIZAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -188,7 +221,8 @@ def empresas_update(request, pk):
             if 'created_at' in request.data:
                 request.data.pop('updated_at')
 
-            empresa = Empresas.objects.filter(nombre=request.data['nombre'], estado='Activo', state=1).exclude(_id=pk).first()
+            empresa = Empresas.objects.filter(nombre=request.data['nombre'], estado='Activo', state=1).exclude(
+                _id=pk).first()
             if empresa is not None:
                 data = {'error': 'El nombre ya esta registrado.'}
                 createLog(logModel, data, logExcepcion)
@@ -196,8 +230,10 @@ def empresas_update(request, pk):
 
             if 'url' not in request.data:
                 nombre = request.data['nombre']
-                request.data['url'] = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + nombre.replace(" ","-")
-                empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).exclude(_id=pk).first()
+                request.data['url'] = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + nombre.replace(" ",
+                                                                                                                 "-")
+                empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).exclude(
+                    _id=pk).first()
                 if empresa is not None:
                     data = {'error': 'La url ya esta registrado.'}
                     createLog(logModel, data, logExcepcion)

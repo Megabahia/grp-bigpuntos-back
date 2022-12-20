@@ -1,5 +1,5 @@
 from django.urls import path,include
-from apps.CORE.core_monedas.views import(
+from .views import(
 	monedas_create,
 	monedas_list,
 	monedas_listOne,
