@@ -304,7 +304,7 @@ def uploadEXCEL_creditosPreaprobados_empleados(request, pk):
                 first = False
                 continue
             else:
-                if len(dato) == 23:
+                if len(dato) == 22:
                     resultadoInsertar = insertarDato_creditoPreaprobado_empleado(dato, archivo.empresa_financiera)
                     if resultadoInsertar != 'Dato insertado correctamente':
                         contInvalidos += 1
@@ -436,7 +436,7 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera):
         """
         CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
         sendEmail(subject, txt_content, from_email, to, html_content)
-        publish(**data)
+        # publish(data)
         return "Dato insertado correctamente"
     except Exception as e:
         return str(e)
