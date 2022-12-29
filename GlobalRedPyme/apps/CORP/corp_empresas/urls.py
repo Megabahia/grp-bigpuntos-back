@@ -1,5 +1,5 @@
 from django.urls import path,include
-from apps.CORP.corp_empresas.views import(
+from .views import(
 	empresas_create,
 	empresas_list,
 	empresas_listOne,
@@ -13,6 +13,11 @@ from apps.CORP.corp_empresas.views import(
 	empresas_listOne_filtros,
 	empresas_list_logos,
 	empresas_list_array,
+	empresas_uploadEmpleados,
+	empresas_listEmpleados,
+	empresas_listOne_empleado,
+	empresas_update_empleado,
+	empresas_delete_empleado,
 )
 app_name = 'corp_empresas'
 
@@ -30,5 +35,11 @@ urlpatterns = [
 	path('listOne/filtros/', empresas_listOne_filtros, name="empresas_listOne_filtros"),
 	path('list/logos', empresas_list_logos, name="empresas_list_logos"),
 	path('list/empresas/array/', empresas_list_array, name="empresas_list_array"),
+	path('upload/empleados/', empresas_uploadEmpleados, name="empresas_uploadEmpleados"),
+	path('list/empleados/', empresas_listEmpleados, name="empresas_listEmpleados"),
+	path('listOne/empleado/<str:pk>', empresas_listOne_empleado, name="empresas_listOne_empleado"),
+	path('actualizar/<str:pk>', empresas_update_empleado, name="empresas_update_empleado"),
+	path('empleado/delete/<str:pk>', empresas_delete_empleado, name="empresas_delete_empleado"),
+
 ]
 

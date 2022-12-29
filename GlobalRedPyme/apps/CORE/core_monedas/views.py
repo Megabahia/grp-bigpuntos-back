@@ -1,7 +1,7 @@
-from apps.CORE.core_monedas.models import  Monedas
+from .models import  Monedas
 from apps.PERSONAS.personas_personas.models import  Personas
 from apps.CORP.corp_empresas.models import  Empresas
-from apps.CORE.core_monedas.serializers import (
+from .serializers import (
     MonedasSerializer, MonedasUsuarioSerializer, ListMonedasSerializer, ListMonedasRegaladasSerializer
 )
 from rest_framework import status
@@ -14,6 +14,10 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 # ObjectId
 from bson import ObjectId
+# Utils
+from apps.utils import utils
+# IMPORTAR ENVIO CONFIGURACION CORREO
+from apps.config.util2 import sendEmail
 #excel
 import openpyxl
 #logs
@@ -355,7 +359,7 @@ def uploadEXCEL_monedasRegaladas(request):
                 first = False
                 continue
             else:
-                if len(dato)==9:
+                if len(dato)==10:
                     resultadoInsertar=insertarDato_creditoPreaprobado(dato)
                     if resultadoInsertar!='Dato insertado correctamente':
                         contInvalidos+=1 
@@ -381,26 +385,65 @@ def uploadEXCEL_monedasRegaladas(request):
 def insertarDato_creditoPreaprobado(dato):
     try:
         timezone_now = timezone.localtime(timezone.now())
+        if (not utils.__validar_ced_ruc(dato[0], 0)):
+            return 'Cedula incorrecta'
         data={}
         persona = Personas.objects.filter(identificacion=dato[0],state=1).first()
-        data['user_id'] = persona.user_id
-        empresa = Empresas.objects.filter(ruc=dato[3],state=1).first()
+        if persona is not None:
+            data['user_id'] = persona.user_id
+        empresa = Empresas.objects.filter(ruc=dato[4],state=1).first()
+        data['identificacion'] = dato[0]
+        data['nombres'] = dato[1]
+        data['apellidos'] = dato[2]
+        data['email'] = dato[3]
         data['empresa_id'] = empresa._id
         data['tipo'] = 'Otro'
         data['estado'] = 'pendiente'
-        data['credito'] = dato[5].replace('"', "") if dato[5] != "NULL" else None
-        monedasUsuario = Monedas.objects.filter(user_id=persona.user_id,state=1).order_by('-created_at').first()
-        data['saldo'] = monedasUsuario.saldo + float(dato[5])
-        data['descripcion'] = dato[8].replace('"', "") if dato[8] != "NULL" else None
-        data['fechaVigencia'] = dato[7].replace('"', "")[0:10] if dato[7] != "NULL" else None
+        data['credito'] = dato[6].replace('"', "") if dato[6] != "NULL" else None
+        if persona is not None:
+            monedasUsuario = Monedas.objects.filter(user_id=persona.user_id,state=1).order_by('-created_at').first().saldo
+        else:
+            monedasUsuario = 0
+        data['saldo'] = monedasUsuario + float(dato[6])
+        data['descripcion'] = dato[9].replace('"', "") if dato[9] != "NULL" else None
+        data['fechaVigencia'] = dato[8].replace('"', "")[0:10] if dato[8] != "NULL" else None
         data['created_at'] = str(timezone_now)
         #inserto el dato con los campos requeridos
         Monedas.objects.create(**data)
+        enviarCorreoSolicitud(data['email'], data['credito'])
         return 'Dato insertado correctamente'
     except Exception as e:
         return str(e)
 
 
+def enviarCorreoSolicitud(email, monedas):
+    subject, from_email, to = 'Monedas otorgadas', "08d77fe1da-d09822@inbox.mailtrap.io", \
+                              email
+    txt_content = f"""
+                        Enhorabuena
+                        Se le acaba de otorgar unos {monedas} big puntos
+                        Por favor registrate en nuestro portal de https://portal.bigpuntos.com
+                        Atentamente,
+                        Global RedPyme – Crédito Pagos
+    """
+    html_content = f"""
+                <html>
+                    <body>
+                        <h1>Enhorabuena</h1>
+                        <p>Se le acaba de otorgar unos <b>{monedas} big puntos</b></p>
+                        <br>
+                        <br>
+                        <p>Por favor registrate en nuestro portal de https://portal.bigpuntos.com</p>
+                        <br>
+                        <br>
+                        Atentamente,
+                        <br>
+                        Global RedPyme – Crédito Pagos
+                        <br>
+                    </body>
+                </html>
+                """
+    sendEmail(subject, txt_content, from_email, to, html_content)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
