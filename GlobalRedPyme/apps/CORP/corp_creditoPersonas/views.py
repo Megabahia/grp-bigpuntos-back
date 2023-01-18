@@ -657,9 +657,25 @@ def JobResults(jobId):
 
 @api_view(['GET'])
 def pruebaConsumer(request):
-    get_queue_url()
-    err = {"message": 'Lectura'}
-    return Response(err, status=status.HTTP_200_OK)
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'listOne/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    try:
+        get_queue_url()
+        msg = {"msg": "Se actualizo la cola"}
+        return Response(msg, status=status.HTTP_202_ACCEPTED)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
 def enviarCorreoSolicitud(email):
