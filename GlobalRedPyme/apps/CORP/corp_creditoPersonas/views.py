@@ -165,8 +165,9 @@ def creditoPersonas_update(request, pk):
                     if request.data["estado"] == 'Enviado':
                         # Se envia a la cola de bigpuntos
                         publish(serializer.data)
-                    if request.data["estado"] == 'Negado':
-                        en
+                    if request.data["estado"] == 'Completado':
+                        # Se envia a la cola de bigpuntos
+                        publish(serializer.data)
                 return Response(serializer.data)
             createLog(logModel, serializer.errors, logExcepcion)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
