@@ -5,13 +5,15 @@ from apps.PERSONAS.personas_personas.models import Personas
 from apps.CORP.corp_creditoArchivos.serializers import (
     CreditoArchivosSerializer
 )
-from apps.CORP.corp_creditoPersonas.models import CodigoCreditoPreaprobado
+from apps.CORP.corp_empresas.models import Empleados
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from django.conf import settings
+# Utils
+from apps.utils import utils
 # Importar boto3
 import boto3
 import tempfile
@@ -33,6 +35,8 @@ from bson import ObjectId
 from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 # Importar en producer de los creditos personas
 from ..corp_creditoPersonas.producer import publish
+#Importar configuraciones
+from apps.config import config
 
 # declaracion variables log
 datosAux = datosProductosMDP()
@@ -305,7 +309,7 @@ def uploadEXCEL_creditosPreaprobados_empleados(request, pk):
                 continue
             else:
                 if len(dato) == 22:
-                    resultadoInsertar = insertarDato_creditoPreaprobado_empleado(dato, archivo.empresa_financiera)
+                    resultadoInsertar = insertarDato_creditoPreaprobado_empleado(dato, archivo.empresa_financiera, archivo.empresa_comercial)
                     if resultadoInsertar != 'Dato insertado correctamente':
                         contInvalidos += 1
                         errores.append({"error": "Error en la línea " + str(contTotal) + ": " + str(resultadoInsertar)})
@@ -353,33 +357,36 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         data['nombresCompleto'] = data['nombres'] + ' ' + data['apellidos']
         data['empresaIfis_id'] = empresa_financiera
         data['empresasAplican'] = dato[19]
+        # Genera el codigo
+        codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
+        data['codigoPreaprobado'] = codigo
         data['created_at'] = str(timezone_now)
         # inserto el dato con los campos requeridos
         CreditoPersonas.objects.create(**data)
-        # Genera el codigo
-        codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
-        subject, from_email, to = 'Generacion de codigo de credito pre-aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
+        subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
                                   dato[13]
         txt_content = codigo
-        html_content = """
+        html_content = f"""
         <html>
             <body>
-                <h1>Se acaba de generar el codigo de verificación de su cuenta</h1>
+                <h1>PRE-CALIFICACIÓN DE CRÉDITO DE CONSUMO</h1>
 
-                <p>USTED TIENE UN CREDITO PRE-APROBADO DE $ """ + data['monto'] + """, PARA QUE REALICE LA COMPRA EN www.credicompra.com, 
-                Por favor ingrese a la plataforma www.credicompra.com y disfrute de su compra:
+                <p>Usted tiene un crédito Pre-Aprobado de $ {data['monto']}
+                 para que realice compras en las mejores Casas Comerciales de país.
+                </p>
+                <br>
+                <p>Ingrese al siguiente link y acceda a su crédito:
+                <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
                 </p>
 
-                <a href='www.credicompra.com'>Link</a>
-
-                Al ingresar por favor digitar el siguiente código: """ + codigo + """<br>
+                Al ingresar por favor digitar el siguiente código: {codigo}<br>
 
                 Saludos,<br>
                 Equipo Global Red Pymes.<br>
             </body>
         </html>
         """
-        CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
+        # CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
         sendEmail(subject, txt_content, from_email, to, html_content)
         return 'Dato insertado correctamente'
     except Exception as e:
@@ -387,9 +394,19 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
 
 
 # INSERTAR DATOS EN LA BASE INDIVIDUAL
-def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera):
+def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_comercial):
     print('entro')
     try:
+        if (not utils.__validar_ced_ruc(str(dato[7]), 0)):
+            return f"""El usuario {dato[8]} {dato[9]} tiene la cédula incorrecta."""
+
+        empleado = Empleados.objects.filter(identificacion=str(dato[7])).first()
+        if empleado is None:
+            return f"""El usuario {dato[8]} {dato[9]} no está registrado, por favor registre al usuario en la opción EMPLEADOS DE EMPRESAS."""
+        else:
+            if empleado.empresa._id != ObjectId(empresa_comercial):
+                return f"""Lo sentimos, el empleado {dato[8]} {dato[9]} se repite, por favor verifique los datos y vuelva a intentarlo"""
+
         timezone_now = timezone.localtime(timezone.now())
         data = {}
         data['vigencia'] = dato[0].replace('"', "")[0:10] if dato[0] != "NULL" else None
@@ -408,33 +425,36 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera):
         data['nombresCompleto'] = data['nombres'] + ' ' + data['apellidos']
         data['empresaIfis_id'] = empresa_financiera
         data['empresasAplican'] = dato[21]
+        # Genera el codigo
+        codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
+        data['codigoPreaprobado'] = codigo
         data['created_at'] = str(timezone_now)
         # inserto el dato con los campos requeridos
         CreditoPersonas.objects.create(**data)
-        # Genera el codigo
-        codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
-        subject, from_email, to = 'Generacion de codigo de credito pre-aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
+        subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
                                   dato[15]
         txt_content = codigo
-        html_content = """
-        <html>
-            <body>
-                <h1>Se acaba de generar el codigo de verificación de su cuenta</h1>
+        html_content = f"""
+                <html>
+                    <body>
+                        <h1>PRE-CALIFICACIÓN DE CRÉDITO DE CONSUMO</h1>
 
-                <p>USTED TIENE UN CREDITO PRE-APROBADO DE $ """ + data['monto'] + """, PARA QUE REALICE LA COMPRA EN www.credicompra.com, 
-                Por favor ingrese a la plataforma www.credicompra.com y disfrute de su compra:
-                </p>
+                        <p>Usted tiene un crédito Pre-Aprobado de $ {data['monto']}
+                         para que realice compras en las mejores Casas Comerciales de país.
+                        </p>
+                        <br>
+                        <p>Ingrese al siguiente link y acceda a su crédito: 
+                        <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
+                        </p>
 
-                <a href='www.credicompra.com'>Link</a>
+                        Al ingresar por favor digitar el siguiente código: {codigo}<br>
 
-                Al ingresar por favor digitar el siguiente código: """ + codigo + """<br>
-
-                Saludos,<br>
-                Equipo Global Red Pymes.<br>
-            </body>
-        </html>
-        """
-        CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
+                        Saludos,<br>
+                        Equipo Global Red Pymes.<br>
+                    </body>
+                </html>
+                """
+        # CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
         sendEmail(subject, txt_content, from_email, to, html_content)
         # publish(data)
         return "Dato insertado correctamente"

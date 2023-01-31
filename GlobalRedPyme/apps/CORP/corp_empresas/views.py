@@ -79,6 +79,10 @@ def empresas_list(request):
                 if request.data["tipoEmpresa"] != '':
                     filters['tipoEmpresa'] = str(request.data["tipoEmpresa"])
 
+            if "estado" in request.data:
+                if request.data["estado"] != '':
+                    filters['estado'] = str(request.data["estado"])
+
             # Serializar los datos
             query = Empresas.objects.filter(**filters).order_by('-created_at')
             serializer = EmpresasSerializer(query[offset:limit], many=True)
