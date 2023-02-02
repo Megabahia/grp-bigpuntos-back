@@ -73,14 +73,16 @@ class CompartirPublicacionesReporteSerializer(serializers.ModelSerializer):
         data = super(CompartirPublicacionesReporteSerializer, self).to_representation(instance)
         # publicacion
         publicacion = Publicaciones.objects.get(pk=data.pop('publicacion'))
-        data.update({"publicacion_titulo": publicacion.titulo})
-        data.update({"publicacion_imagen": PublicacionesImagenSerializer(publicacion).data['imagen']})
+        if publicacion is not None:
+            data.update({"publicacion_titulo": publicacion.titulo})
+            data.update({"publicacion_imagen": PublicacionesImagenSerializer(publicacion).data['imagen']})
         # user
         persona = Personas.objects.get(user_id=str(data.pop('user')))
-        data.update({"nombres": persona.nombres})
-        data.update({"apellidos": persona.apellidos})
-        data.update({"whatsapp": persona.whatsapp})
-        data.update({"email": persona.email})
+        if persona is not None:
+            data.update({"nombres": persona.nombres})
+            data.update({"apellidos": persona.apellidos})
+            data.update({"whatsapp": persona.whatsapp})
+            data.update({"email": persona.email})
         return data
 
 

@@ -101,6 +101,7 @@ def empresas_create(request):
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
             request.data['url'] = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + request.data['nombre']
+            request.data['urlClientes'] = config.API_FRONT_END_CENTRAL + '/pages/clientes/' + request.data['nombre']
 
             empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).first()
             if empresa is not None:
@@ -231,6 +232,8 @@ def empresas_update(request, pk):
             if 'url' not in request.data:
                 nombre = request.data['nombre']
                 request.data['url'] = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + nombre.replace(" ",
+                                                                                                                 "-")
+                request.data['urlClientes'] = config.API_FRONT_END_CENTRAL + '/pages/clientes/' + nombre.replace(" ",
                                                                                                                  "-")
                 empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).exclude(
                     _id=pk).first()

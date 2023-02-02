@@ -1,5 +1,5 @@
 from django.urls import path,include
-from apps.CENTRAL.central_publicaciones.views import(
+from .views import(
 	publicaciones_create,
 	publicaciones_list,
 	publicaciones_listOne,

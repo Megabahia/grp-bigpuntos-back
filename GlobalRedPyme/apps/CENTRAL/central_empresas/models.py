@@ -10,6 +10,7 @@ class Empresas(models.Model):
     nombre = models.CharField(max_length=200,null=True, blank=True)
     bigPuntos = models.IntegerField(null=True, blank=True)
     url = models.CharField(max_length=255,null=True, blank=True)
+    urlClientes = models.CharField(max_length=255,null=True, blank=True)
     estado = models.CharField(default="Activo",max_length=200,null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

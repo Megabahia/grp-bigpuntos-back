@@ -317,7 +317,7 @@ def movimientoCobros_reporte_empresas(request):
                     filters['empresa_id'] = str(request.data['empresa_id'])
 
             #Serializar los datos
-            query = MovimientoCobros.objects.filter(**filters).order_by('created_at')
+            query = MovimientoCobros.objects.filter(**filters).order_by('-created_at')
             serializer = MovimientoCobrosSerializer(query[offset:limit], many=True)
             new_serializer_data={'cont': query.count(),
             'info':serializer.data}
