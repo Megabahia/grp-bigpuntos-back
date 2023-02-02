@@ -9,6 +9,9 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from django.conf import settings
+# Sumar minutos
+from dateutil import parser
+from dateutil.relativedelta import relativedelta
 # Swagger
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -65,12 +68,30 @@ def publicaciones_list(request):
             # Publicaciones de usuario
             filters['user'] = ObjectId(request.data['user_id'])
             query1 = CompartirPublicaciones.objects.filter(user=ObjectId(request.data['user_id'])).order_by('-created_at')
+            # print(query1[0])
             publicaciones = PublicacionesSinCompartirSerializer(query1, many=True)
-            detalles_actualizar = {item['_id']: item for item in publicaciones.data}
+            detalles_actualizar = []
+            # print(publicaciones.data)
+            for item in publicaciones.data:
+                print(item['created_at_compartir'])
+                detalles_actualizar.append({'_id': item['_id'], 'created_at': item['created_at_compartir']})
 
+            print(detalles_actualizar)
             for serial in query.all():
-                if str(serial._id) in detalles_actualizar:
-                    query = query.exclude(_id=serial._id)
+                for item in detalles_actualizar:
+                    # print(item['_id'])
+                    # print('fechas', item['created_at'])
+                    datetime_obj = parser.parse(item['created_at'])
+                    horaPasada = datetime_obj + relativedelta(hours=3)
+                    if str(serial._id) == str(item['_id']):
+                        # print('Tiempo actual', timezone_now)
+                        # print('Tiempo sumado', horaPasada)
+                        if horaPasada < timezone_now:
+                            print('if')
+                            # print('aun no pasan tiempo')
+                        else:
+                            # print('else')
+                            query = query.exclude(_id=serial._id)
 
             serializer = PublicacionesSerializer(query, many=True)
             new_serializer_data={'cont': query.count(),

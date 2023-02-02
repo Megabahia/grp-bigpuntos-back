@@ -47,12 +47,13 @@ class PublicacionesSinCompartirSerializer(serializers.ModelSerializer):
     publicacion = PublicacionesSerializer(many=False, read_only=True)
     class Meta:
         model = CompartirPublicaciones
-        fields = ['publicacion']
+        fields = ['publicacion','created_at', '_id']
 
     def to_representation(self, instance):
         data = super(PublicacionesSinCompartirSerializer, self).to_representation(instance)
         # publicacion
         publicacion = data.pop('publicacion')
+        data['created_at_compartir'] = data.pop('created_at')
         data['_id'] = publicacion['_id']
         data['titulo'] = publicacion['titulo']
         data['subtitulo'] = publicacion['subtitulo']
