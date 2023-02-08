@@ -16,7 +16,7 @@ def hi():
             'estado': 'aprobado',
             'credito': pago.monto,
             'saldo': monedasUsuario.saldo + pago.monto,
-            'descripcion': 'Devolución de monedas al no usar el comprobante de pago.'
+            'descripcion': 'Devolución de Big Puntos por no completar la transacción.'
         }
         Monedas.objects.create(**data)
         pago.state = 0

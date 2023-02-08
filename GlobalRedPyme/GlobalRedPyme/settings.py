@@ -243,6 +243,8 @@ AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env.str('AWS_STORAGE_BUCKET_NAME')
 AWS_QUERYSTRING_AUTH = False 
 
+# Exportar excel
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 CRONJOBS = [
     # La función temporizada se ejecuta cada minuto

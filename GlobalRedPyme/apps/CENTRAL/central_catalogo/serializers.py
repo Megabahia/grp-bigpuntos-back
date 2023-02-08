@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Catalogo
+from import_export import resources
 
 
 class CatalogoSerializer(serializers.ModelSerializer):
@@ -52,3 +53,8 @@ class CatalogoTipoSerializer(serializers.ModelSerializer):
         _id = str(catalogo._id)
         data.update({"_id": _id})
         return data
+
+class CatalogoResource(resources.ModelResource):
+    class Meta:
+        model = Catalogo
+        exclude = ('_id', 'idPadre')

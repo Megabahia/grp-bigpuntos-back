@@ -57,7 +57,7 @@ def productos_list(request):
                     filters['empresa_id'] = ObjectId(request.data["empresa_id"])
 
             # Serializar los datos
-            query = Productos.objects.filter(**filters).order_by('-created_at')
+            query = Productos.objects.filter(**filters).exclude(tipo='clientes').exclude(tipo='empleados').order_by('-created_at')
             serializer = ProductosSerializer(query[:int(limit)], many=True)
             new_serializer_data = {'cont': query.count(),
                                    'info': serializer.data}
