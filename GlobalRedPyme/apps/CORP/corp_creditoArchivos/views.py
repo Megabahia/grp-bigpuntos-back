@@ -35,7 +35,7 @@ from bson import ObjectId
 from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 # Importar en producer de los creditos personas
 from ..corp_creditoPersonas.producer import publish
-#Importar configuraciones
+# Importar configuraciones
 from apps.config import config
 
 # declaracion variables log
@@ -309,7 +309,8 @@ def uploadEXCEL_creditosPreaprobados_empleados(request, pk):
                 continue
             else:
                 if len(dato) == 22:
-                    resultadoInsertar = insertarDato_creditoPreaprobado_empleado(dato, archivo.empresa_financiera, archivo.empresa_comercial)
+                    resultadoInsertar = insertarDato_creditoPreaprobado_empleado(dato, archivo.empresa_financiera,
+                                                                                 archivo.empresa_comercial)
                     if resultadoInsertar != 'Dato insertado correctamente':
                         contInvalidos += 1
                         errores.append({"error": "Error en la línea " + str(contTotal) + ": " + str(resultadoInsertar)})
@@ -327,7 +328,7 @@ def uploadEXCEL_creditosPreaprobados_empleados(request, pk):
                   }
         os.remove(ruta)
         # archivo.state = 0
-        # archivo.estado = "Cargado"
+        archivo.estado = "Cargado"
         archivo.save()
         return Response(result, status=status.HTTP_201_CREATED)
 
@@ -371,15 +372,15 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
             <body>
                 <h1>PRE-CALIFICACIÓN DE CRÉDITO DE CONSUMO</h1>
 
-                <p>Usted tiene un crédito Pre-Aprobado de $ {data['monto']}
-                 para que realice compras en las mejores Casas Comerciales de país.
+                <p>
+                 Usted Tiene un crédito Pre-Aprobado de $ {data['monto']} para que realice compras en las mejores Casas Comerciales del país.
                 </p>
                 <br>
-                <p>Ingrese al siguiente link y acceda a su crédito:
+                <p>Ingrese al siguiente link y acceda a su crédito: 
                 <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
                 </p>
 
-                Al ingresar por favor digitar el siguiente código: {codigo}<br>
+                Su código de ingreso es: {codigo}<br>
 
                 Saludos,<br>
                 Equipo Global Red Pymes.<br>
@@ -439,15 +440,15 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
                     <body>
                         <h1>PRE-CALIFICACIÓN DE CRÉDITO DE CONSUMO</h1>
 
-                        <p>Usted tiene un crédito Pre-Aprobado de $ {data['monto']}
-                         para que realice compras en las mejores Casas Comerciales de país.
+                        <p>
+                         Usted Tiene un crédito Pre-Aprobado de $ {data['monto']} para que realice compras en las mejores Casas Comerciales del país.
                         </p>
                         <br>
                         <p>Ingrese al siguiente link y acceda a su crédito: 
                         <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
                         </p>
-
-                        Al ingresar por favor digitar el siguiente código: {codigo}<br>
+        
+                        Su código de ingreso es: {codigo}<br>
 
                         Saludos,<br>
                         Equipo Global Red Pymes.<br>
