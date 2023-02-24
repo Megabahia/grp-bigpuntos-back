@@ -2,7 +2,7 @@ from django_rest_passwordreset.views import User
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from apps.CENTRAL.central_usuarios.models import Usuarios, UsuariosEmpresas
+from ..central_usuarios.models import Usuarios, UsuariosEmpresas
 # Importar base de datos personas
 from apps.PERSONAS.personas_personas.models import Personas
 # Importar serializers empresa y base de datos empresa

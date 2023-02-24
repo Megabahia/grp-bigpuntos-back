@@ -4,6 +4,7 @@ from apps.CORP.corp_empresas.models import  Empresas
 from .serializers import (
     MonedasSerializer, MonedasUsuarioSerializer, ListMonedasSerializer, ListMonedasRegaladasSerializer
 )
+from .cron import hi
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
@@ -359,7 +360,7 @@ def uploadEXCEL_monedasRegaladas(request):
                 first = False
                 continue
             else:
-                if len(dato)==10:
+                if len(dato)==9:
                     resultadoInsertar=insertarDato_creditoPreaprobado(dato)
                     if resultadoInsertar!='Dato insertado correctamente':
                         contInvalidos+=1 
@@ -405,8 +406,8 @@ def insertarDato_creditoPreaprobado(dato):
         else:
             monedasUsuario = 0
         data['saldo'] = monedasUsuario + float(dato[6])
-        data['descripcion'] = dato[9].replace('"', "") if dato[9] != "NULL" else None
-        data['fechaVigencia'] = dato[8].replace('"', "")[0:10] if dato[8] != "NULL" else None
+        data['descripcion'] = dato[8].replace('"', "") if dato[8] != "NULL" else None
+        # data['fechaVigencia'] = dato[8].replace('"', "")[0:10] if dato[8] != "NULL" else None
         data['created_at'] = str(timezone_now)
         #inserto el dato con los campos requeridos
         Monedas.objects.create(**data)
@@ -417,28 +418,33 @@ def insertarDato_creditoPreaprobado(dato):
 
 
 def enviarCorreoSolicitud(email, monedas):
-    subject, from_email, to = 'Monedas otorgadas', "08d77fe1da-d09822@inbox.mailtrap.io", \
+    subject, from_email, to = 'RECOMPENSA BIG PUNTOS', "08d77fe1da-d09822@inbox.mailtrap.io", \
                               email
     txt_content = f"""
-                        Enhorabuena
-                        Se le acaba de otorgar unos {monedas} big puntos
-                        Por favor registrate en nuestro portal de https://portal.bigpuntos.com
+                        ¡FELICIDADES!
+                        USTED ACABA DE RECIBIR {monedas} para que realice compras en los establecimientos 
+                        afiliados pagando menos dinero en efectivo
+                        Regístrese a través de nuestro portal https://portal.bigpuntos.com y reciba sus 
+                        Big Puntos de recompensa en su cuenta
                         Atentamente,
-                        Global RedPyme – Crédito Pagos
+                        CrediCompra - Big Puntos
     """
     html_content = f"""
                 <html>
                     <body>
-                        <h1>Enhorabuena</h1>
-                        <p>Se le acaba de otorgar unos <b>{monedas} big puntos</b></p>
+                        <h1>¡FELICIDADES!</h1>
+                        <br>
+                        <p>USTED ACABA DE RECIBIR <b>{monedas}</b> para que realice compras en los establecimientos 
+                        afiliados pagando menos dinero en efectivo</p>
                         <br>
                         <br>
-                        <p>Por favor registrate en nuestro portal de https://portal.bigpuntos.com</p>
+                        <p>Regístrese a través de nuestro portal https://portal.bigpuntos.com y reciba sus 
+                        Big Puntos de recompensa en su cuenta</p>
                         <br>
                         <br>
                         Atentamente,
                         <br>
-                        Global RedPyme – Crédito Pagos
+                        CrediCompra - Big Puntos
                         <br>
                     </body>
                 </html>
@@ -490,3 +496,24 @@ def list_monedas_regaladas_empresa(request):
 
 
 
+@api_view(['GET'])
+def pruebaConsumer(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'listOne/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    try:
+        hi()
+        msg = {"msg": "Se actualizo la cola"}
+        return Response(msg, status=status.HTTP_202_ACCEPTED)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)

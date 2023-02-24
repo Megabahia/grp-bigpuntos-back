@@ -94,20 +94,44 @@ def empresas_create(request):
             request.data['created_at'] = str(timezone_now)
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
-            empresa = Empresas.objects.filter(nombre=request.data['nombre'], estado='Activo', state=1).first()
+            filters = { 'estado': 'Activo', 'state':1}
+
+            if 'type' in request.data:
+                if request.data['type'] != '':
+                    filters['type'] = request.data['type']
+
+            if 'nombre' in request.data:
+                if request.data['nombre'] != '':
+                    filters['nombre'] = request.data['nombre']
+
+            empresa = Empresas.objects.filter(**filters).first()
             if empresa is not None:
                 data = {'error': 'El nombre ya esta registrado.'}
                 createLog(logModel, data, logExcepcion)
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-            request.data['url'] = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + request.data['nombre']
-            request.data['urlClientes'] = config.API_FRONT_END_CENTRAL + '/pages/clientes/' + request.data['nombre']
+            if request.data['type'] == 'cliente':
+                request.data['urlClientes'] = config.API_FRONT_END_CENTRAL + '/pages/clientes/' + request.data[
+                    'nombre'].replace(" ",
+                                      "-")
 
-            empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).first()
-            if empresa is not None:
-                data = {'error': 'La url ya esta registrado.'}
-                createLog(logModel, data, logExcepcion)
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+                empresa = Empresas.objects.filter(urlClientes=request.data['urlClientes'], estado='Activo',
+                                                  state=1).first()
+                if empresa is not None:
+                    data = {'error': 'La url ya esta registrado.'}
+                    createLog(logModel, data, logExcepcion)
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
+            if request.data['type'] == 'empleado':
+                request.data['url'] = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + request.data[
+                    'nombre'].replace(" ",
+                                      "-")
+
+                empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).first()
+                if empresa is not None:
+                    data = {'error': 'La url ya esta registrado.'}
+                    createLog(logModel, data, logExcepcion)
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
             serializer = EmpresasSerializer(data=request.data)
             if serializer.is_valid():
@@ -222,21 +246,40 @@ def empresas_update(request, pk):
             if 'created_at' in request.data:
                 request.data.pop('updated_at')
 
-            empresa = Empresas.objects.filter(nombre=request.data['nombre'], estado='Activo', state=1).exclude(
-                _id=pk).first()
+            filters = {'estado': 'Activo', 'state': 1}
+
+            if 'type' in request.data:
+                if request.data['type'] != '':
+                    filters['type'] = request.data['type']
+
+            if 'nombre' in request.data:
+                if request.data['nombre'] != '':
+                    filters['nombre'] = request.data['nombre']
+
+            empresa = Empresas.objects.filter(**filters).exclude(_id=pk).first()
             if empresa is not None:
                 data = {'error': 'El nombre ya esta registrado.'}
                 createLog(logModel, data, logExcepcion)
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-            if 'url' not in request.data:
-                nombre = request.data['nombre']
-                request.data['url'] = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + nombre.replace(" ",
-                                                                                                                 "-")
-                request.data['urlClientes'] = config.API_FRONT_END_CENTRAL + '/pages/clientes/' + nombre.replace(" ",
-                                                                                                                 "-")
-                empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).exclude(
-                    _id=pk).first()
+            if request.data['type'] == 'cliente':
+                request.data['urlClientes'] = config.API_FRONT_END_CENTRAL + '/pages/clientes/' + request.data[
+                    'nombre'].replace(" ",
+                                      "-")
+
+                empresa = Empresas.objects.filter(urlClientes=request.data['urlClientes'], estado='Activo',
+                                                  state=1).exclude(_id=pk).first()
+                if empresa is not None:
+                    data = {'error': 'La url ya esta registrado.'}
+                    createLog(logModel, data, logExcepcion)
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
+            if request.data['type'] == 'empleado':
+                request.data['url'] = config.API_FRONT_END_CENTRAL + '/pages/socios-empleados/' + request.data[
+                    'nombre'].replace(" ",
+                                      "-")
+
+                empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).exclude(_id=pk).first()
                 if empresa is not None:
                     data = {'error': 'La url ya esta registrado.'}
                     createLog(logModel, data, logExcepcion)
