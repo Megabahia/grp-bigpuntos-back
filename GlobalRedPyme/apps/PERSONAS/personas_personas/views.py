@@ -200,13 +200,21 @@ def personas_update(request, pk):
                 <html>
                     <body>
                         <h1>Verifique su cuenta</h1>
-                        <p>{mensaje} {codigo}</p>
+                        <p>Le saluda CrediCompra – Big Puntos!</p>
                         <br>
-                        <p>Recuerde que con su validación de cuenta podrá ganar Big Puntos para canjearlos por premios.</p>
+                        <p>Está a un paso de ingresar al mundo de CrediCompra – Big Puntos</p>
+                        <br>
+                        <p>Su código de verificación es {codigo}</p>
+                        <br>
+                        <p>Validando su cuenta usted podrá realizar compras con créditos otorgados por Cooperativas de 
+                        Ahorro y Crédito reguladas en las mejores Casas Comerciales el país. Y, acumule Big Puntos que  
+                        podrá canjear por productos de varias categorías en establecimientos afiliados 
+                        PAGANDO MENOS DINERO EN EFECTIVO
+                        </p>
                         <br>
                         <br>
                         Atentamente,<br>
-                        CrediCompra-Big Puntos<br>
+                        CredicCompra – Big Puntos<br>
                     </body>
                 </html>
                 """
