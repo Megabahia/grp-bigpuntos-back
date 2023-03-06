@@ -19,6 +19,12 @@ def publish(data):
     if 'identificacion' in data:
         identificacion = data.pop('identificacion')
         data['identificacion'] = str(identificacion).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'identificacionConyuge' in data:
+        identificacionConyuge = data.pop('identificacionConyuge')
+        data['identificacionConyuge'] = str(identificacionConyuge).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'papeletaVotacionConyuge' in data:
+        papeletaVotacionConyuge = data.pop('papeletaVotacionConyuge')
+        data['papeletaVotacionConyuge'] = str(papeletaVotacionConyuge).replace('https://globalredpymes.s3.amazonaws.com/', '')
     if 'ruc' in data:
         ruc = data.pop('ruc')
         data['ruc'] = str(ruc).replace('https://globalredpymes.s3.amazonaws.com/', '')
@@ -37,6 +43,9 @@ def publish(data):
     if 'planillaLuzDomicilio' in data:
         planillaLuzDomicilio = data.pop('planillaLuzDomicilio')
         data['planillaLuzDomicilio'] = str(planillaLuzDomicilio).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'planillaLuzNegocio' in data:
+        planillaLuzNegocio = data.pop('planillaLuzNegocio')
+        data['planillaLuzNegocio'] = str(planillaLuzNegocio).replace('https://globalredpymes.s3.amazonaws.com/', '')
     if 'matriculaVehiculo' in data:
         matriculaVehiculo = data.pop('matriculaVehiculo')
         data['matriculaVehiculo'] = str(matriculaVehiculo).replace('https://globalredpymes.s3.amazonaws.com/', '')
@@ -52,6 +61,15 @@ def publish(data):
     if 'fotoCarnet' in data:
         fotoCarnet = data.pop('fotoCarnet')
         data['fotoCarnet'] = str(fotoCarnet).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'facturasVentas2meses' in data:
+        facturasVentas2meses = data.pop('facturasVentas2meses')
+        data['facturasVentas2meses'] = str(facturasVentas2meses).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'facturasVentas2meses2' in data:
+        facturasVentas2meses2 = data.pop('facturasVentas2meses2')
+        data['facturasVentas2meses2'] = str(facturasVentas2meses2).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'facturasVentasCertificado' in data:
+        facturasVentasCertificado = data.pop('facturasVentasCertificado')
+        data['facturasVentasCertificado'] = str(facturasVentasCertificado).replace('https://globalredpymes.s3.amazonaws.com/', '')
     if 'imagen' in data:
         data.pop('imagen')
     if 'imagenComercial' in data:

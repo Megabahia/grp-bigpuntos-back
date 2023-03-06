@@ -11,6 +11,9 @@ from apps.CORP.corp_creditoPersonas.producer import publish
 # Consumir en sqs
 from .consumer import get_queue_url
 
+#include json library
+import json
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -167,6 +170,8 @@ def creditoPersonas_update(request, pk):
                     if request.data["estado"] == 'Enviado':
                         # Se envia a la cola de bigpuntos
                         publish(serializer.data)
+                        usuario = serializer.data['user']
+                        enviarCorreoSolicitudEnviada(usuario['email'])
                     if request.data["estado"] == 'Completado':
                         # Se envia a la cola de bigpuntos
                         publish(serializer.data)
@@ -704,6 +709,42 @@ def enviarCorreoSolicitud(email):
                         Atentamente,
                         <br>
                         Global RedPyme – Crédito Pagos
+                        <br>
+                    </body>
+                </html>
+                """
+    sendEmail(subject, txt_content, from_email, to, html_content)
+
+
+def enviarCorreoSolicitudEnviada(email):
+    subject, from_email, to = 'Estamos revisando sus documentos', "08d77fe1da-d09822@inbox.mailtrap.io", \
+                              email
+    txt_content = f"""
+                        REVISIÓN DE DOCUMENTOS EN PROCESO
+                        Sus documentos para acceder a un Crédito de consumo otorgado por una Cooperativa de Ahorro y
+                            Crédito regulada para realizar compras en las mejores Casas Comerciales del país, 
+                            están siendo revisados.
+                        Le mantendremos informado a través de nuestros canales.
+                        Atentamente,
+                        CrediCompra – Big Puntos
+    """
+    html_content = f"""
+                <html>
+                    <body>
+                        <h1>REVISIÓN DE DOCUMENTOS EN PROCESO</h1>
+                        <p>
+                            Sus documentos para acceder a un Crédito de consumo otorgado por una Cooperativa de Ahorro y
+                            Crédito regulada para realizar compras en las mejores Casas Comerciales del país, 
+                            están siendo revisados.
+                         </p>
+                        <br>
+                        <br>
+                        <p>Le mantendremos informado a través de nuestros canales.</p>
+                        <br>
+                        <br>
+                        Atentamente,
+                        <br>
+                        CrediCompra – Big Puntos
                         <br>
                     </body>
                 </html>
