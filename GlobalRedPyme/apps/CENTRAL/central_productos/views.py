@@ -1,5 +1,5 @@
-from apps.CENTRAL.central_catalogo.models import Catalogo
-from apps.CENTRAL.central_productos.models import Productos
+from ...CENTRAL.central_catalogo.models import Catalogo
+from ...CENTRAL.central_productos.models import Productos
 from .serializers import (
     ProductosSerializer, ProductosImagenSerializer, ProductosLandingSerializer,
 )
@@ -11,7 +11,7 @@ from django.utils import timezone
 # ObjectId
 from bson import ObjectId
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+from ...CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 
 # declaracion variables log
 datosAux = datosProductosMDP()
@@ -57,7 +57,8 @@ def productos_list(request):
                     filters['empresa_id'] = ObjectId(request.data["empresa_id"])
 
             # Serializar los datos
-            query = Productos.objects.filter(**filters).exclude(tipo='clientes').exclude(tipo='empleados').order_by('-created_at')
+            query = Productos.objects.filter(**filters).exclude(tipo='clientes').exclude(tipo='empleados').order_by(
+                '-created_at')
             serializer = ProductosSerializer(query[:int(limit)], many=True)
             new_serializer_data = {'cont': query.count(),
                                    'info': serializer.data}

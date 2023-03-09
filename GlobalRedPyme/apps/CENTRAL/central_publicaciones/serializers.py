@@ -1,20 +1,23 @@
 from rest_framework import serializers
 
-from apps.CENTRAL.central_publicaciones.models import (
+from .models import (
     Publicaciones, CompartirPublicaciones
 )
 
-from apps.PERSONAS.personas_personas.models import Personas
+from ...PERSONAS.personas_personas.models import Personas
+
 
 class PublicacionesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publicaciones
-       	fields = '__all__'
+        fields = '__all__'
+
 
 class PublicacionesImagenSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Publicaciones
-        fields = ['imagen','updated_at']
+        fields = ['imagen', 'updated_at']
+
 
 class CompartirPublicacionesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,8 +34,10 @@ class CompartirPublicacionesSerializer(serializers.ModelSerializer):
         data.update({"user": user})
         return data
 
+
 class ListCompartirPublicacionesSerializer(serializers.ModelSerializer):
     publicacion = PublicacionesSerializer(many=False, read_only=True)
+
     class Meta:
         model = CompartirPublicaciones
         fields = '__all__'
@@ -43,11 +48,13 @@ class ListCompartirPublicacionesSerializer(serializers.ModelSerializer):
         data.pop('user')
         return data
 
+
 class PublicacionesSinCompartirSerializer(serializers.ModelSerializer):
     publicacion = PublicacionesSerializer(many=False, read_only=True)
+
     class Meta:
         model = CompartirPublicaciones
-        fields = ['publicacion','created_at', '_id']
+        fields = ['publicacion', 'created_at', '_id']
 
     def to_representation(self, instance):
         data = super(PublicacionesSinCompartirSerializer, self).to_representation(instance)
@@ -68,7 +75,7 @@ class PublicacionesSinCompartirSerializer(serializers.ModelSerializer):
 class CompartirPublicacionesReporteSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompartirPublicaciones
-        fields = ['user','publicacion','created_at']
+        fields = ['user', 'publicacion', 'created_at']
 
     def to_representation(self, instance):
         data = super(CompartirPublicacionesReporteSerializer, self).to_representation(instance)
@@ -77,14 +84,18 @@ class CompartirPublicacionesReporteSerializer(serializers.ModelSerializer):
         if publicacion is not None:
             data.update({"publicacion_titulo": publicacion.titulo})
             data.update({"publicacion_imagen": PublicacionesImagenSerializer(publicacion).data['imagen']})
-        # user
-        persona = Personas.objects.get(user_id=str(data.pop('user')))
-        if persona is not None:
-            data.update({"nombres": persona.nombres})
-            data.update({"apellidos": persona.apellidos})
-            data.update({"whatsapp": persona.whatsapp})
-            data.update({"email": persona.email})
+        try:
+            # user
+            persona = Personas.objects.get(user_id=str(data.pop('user')))
+            if persona is not None:
+                data.update({"nombres": persona.nombres})
+                data.update({"apellidos": persona.apellidos})
+                data.update({"whatsapp": persona.whatsapp})
+                data.update({"email": persona.email})
+        except Personas.DoesNotExist:
+            data.update({"nombres": ""})
+            data.update({"apellidos": ""})
+            data.update({"whatsapp": ""})
+            data.update({"email": ""})
+
         return data
-
-
-

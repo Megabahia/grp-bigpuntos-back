@@ -4,30 +4,23 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from ..central_usuarios.models import Usuarios, UsuariosEmpresas
 # Importar base de datos personas
-from apps.PERSONAS.personas_personas.models import Personas
+from ...PERSONAS.personas_personas.models import Personas
 # Importar serializers empresa y base de datos empresa
-from apps.CORP.corp_empresas.models import Empresas
-from apps.CORP.corp_empresas.serializers import EmpresasSerializer
+from ...CORP.corp_empresas.models import Empresas
+from ...CORP.corp_empresas.serializers import EmpresasSerializer
 # Importar serializer de personas
-from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
-from apps.CENTRAL.central_usuarios.serializers import UsuarioSerializer
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import login, logout, authenticate
+from ...PERSONAS.personas_personas.serializers import PersonasSerializer
 # ObjectId
 from bson import ObjectId
 # token login
-from rest_framework.authtoken.views import ObtainAuthToken
-from apps.CENTRAL.central_autenticacion.models import Token
-from apps.CENTRAL.central_autenticacion.auth import token_expire_handler, expires_in, deleteExpiredTokens
+from ...CENTRAL.central_autenticacion.models import Token
+from ...CENTRAL.central_autenticacion.auth import token_expire_handler, expires_in, deleteExpiredTokens
 from django.utils import timezone
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosAuth, datosTipoLog
+from ...CENTRAL.central_logs.methods import createLog, datosAuth, datosTipoLog
 # permisos
-from apps.CENTRAL.central_roles.models import RolesUsuarios
-from apps.CENTRAL.central_roles.serializers import ListRolesSerializer
-from apps.CENTRAL.central_acciones.models import Acciones, AccionesPermitidas, AccionesPorRol
-from django_rest_passwordreset.models import ResetPasswordToken, clear_expired, get_password_reset_token_expiry_time, \
-    get_password_reset_lookup_field
+from ...CENTRAL.central_roles.models import RolesUsuarios
+from ...CENTRAL.central_roles.serializers import ListRolesSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 
 # declaracion variables log

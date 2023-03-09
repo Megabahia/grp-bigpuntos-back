@@ -2,12 +2,10 @@ from rest_framework import serializers
 # ObjectId
 from bson import ObjectId
 
-from apps.CORP.corp_empresas.models import Empresas
-from apps.CENTRAL.central_empresas.models import Empresas as EmpresasCenter
-from apps.CENTRAL.central_empresas.serializers import EmpresasSerializer as EmpresasLandingSerializer
-from apps.CORP.corp_empresas.serializers import EmpresasSerializer
+from ...CORP.corp_empresas.models import Empresas
+from ...CORP.corp_empresas.serializers import EmpresasSerializer
 
-from apps.CENTRAL.central_productos.models import (
+from ...CENTRAL.central_productos.models import (
     Productos
 )
 
