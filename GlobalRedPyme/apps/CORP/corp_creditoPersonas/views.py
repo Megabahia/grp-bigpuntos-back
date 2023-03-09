@@ -679,6 +679,7 @@ def pruebaConsumer(request):
     try:
         get_queue_url()
         msg = {"msg": "Se actualizo la cola"}
+
         return Response(msg, status=status.HTTP_202_ACCEPTED)
     except Exception as e:
         err = {"error": 'Un error ha ocurrido: {}'.format(e)}

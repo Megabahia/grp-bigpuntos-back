@@ -60,8 +60,10 @@ def get_queue_url():
                 credito = query
             # Crear objeto en firebase para las notificaciones
             config.FIREBASE_DB.collection('creditosPersonas').document(str(credito._id)).set(jsonRequest)
-            # Enviar correo de aprobado
-            enviarCorreoSolicitud(jsonRequest['email'])
+            if jsonRequest['email'] == 'Aprobado':
+                usuario = jsonRequest['user']
+                # Enviar correo de aprobado
+                enviarCorreoSolicitud(usuario['email'])
             # Borramos SQS
             message.delete()
     except Exception as e:

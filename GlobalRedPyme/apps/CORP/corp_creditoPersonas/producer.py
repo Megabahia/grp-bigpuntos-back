@@ -67,6 +67,9 @@ def publish(data):
     if 'facturasVentas2meses2' in data:
         facturasVentas2meses2 = data.pop('facturasVentas2meses2')
         data['facturasVentas2meses2'] = str(facturasVentas2meses2).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'facturasVentas2meses3' in data:
+        facturasVentas2meses3 = data.pop('facturasVentas2meses3')
+        data['facturasVentas2meses3'] = str(facturasVentas2meses3).replace('https://globalredpymes.s3.amazonaws.com/', '')
     if 'facturasVentasCertificado' in data:
         facturasVentasCertificado = data.pop('facturasVentasCertificado')
         data['facturasVentasCertificado'] = str(facturasVentasCertificado).replace('https://globalredpymes.s3.amazonaws.com/', '')
