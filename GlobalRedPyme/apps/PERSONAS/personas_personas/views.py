@@ -1,7 +1,7 @@
-from apps.CENTRAL.central_usuarios.models import Usuarios
-from apps.CENTRAL.central_catalogo.models import Catalogo
+from ...CENTRAL.central_usuarios.models import Usuarios
+from ...CENTRAL.central_catalogo.models import Catalogo
 from .models import Personas, ValidarCuenta
-from apps.PERSONAS.personas_personas.serializers import (
+from ...PERSONAS.personas_personas.serializers import (
     PersonasSerializer, PersonasUpdateSerializer, PersonasImagenSerializer, ValidarCuentaSerializer,
     PersonasUpdateSinImagenSerializer
 )
@@ -20,11 +20,11 @@ import random
 # TWILIO
 from twilio.rest import Client
 # Enviar Correo
-from apps.config.util import sendEmail
+from ...config.util import sendEmail
 # ObjectId
 from bson import ObjectId
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+from ...CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 
 # declaracion variables log
 datosAux = datosProductosMDP()
@@ -194,7 +194,7 @@ def personas_update(request, pk):
                 # Correo de la corp
                 user = Usuarios.objects.get(pk=ObjectId(pk))
                 print(user.email)
-                subject, from_email, to = 'Generacion de codigo de verificación de su cuenta', "08d77fe1da-d09822@inbox.mailtrap.io",user.email
+                subject, from_email, to = 'Generacion de codigo de verificación de su cuenta', "08d77fe1da-d09822@inbox.mailtrap.io", user.email
                 txt_content = mensaje + ' ' + codigo
                 html_content = f"""
                 <html>
