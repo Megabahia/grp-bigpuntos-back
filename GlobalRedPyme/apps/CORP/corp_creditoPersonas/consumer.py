@@ -62,8 +62,11 @@ def get_queue_url():
             config.FIREBASE_DB.collection('creditosPersonas').document(str(credito._id)).set(jsonRequest)
             if jsonRequest['email'] == 'Aprobado':
                 usuario = jsonRequest['user']
+                email = usuario['email'] if usuario else jsonRequest['email']
+                if email == '' or email is None:
+                    email = jsonRequest['empresaInfo']['correo']
                 # Enviar correo de aprobado
-                enviarCorreoSolicitud(usuario['email'])
+                enviarCorreoSolicitud(email)
             # Borramos SQS
             message.delete()
     except Exception as e:
