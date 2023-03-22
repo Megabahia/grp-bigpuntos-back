@@ -171,7 +171,11 @@ def creditoPersonas_update(request, pk):
                         # Se envia a la cola de bigpuntos
                         publish(serializer.data)
                         usuario = serializer.data['user']
-                        enviarCorreoSolicitudEnviada(usuario['email'])
+                        if usuario:
+                            email = usuario['email']
+                        else:
+                            email = serializer.data['empresaInfo']['correo']
+                        enviarCorreoSolicitudEnviada(email)
                     if request.data["estado"] == 'Completado':
                         # Se envia a la cola de bigpuntos
                         publish(serializer.data)

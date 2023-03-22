@@ -1,11 +1,12 @@
 from .models import PreAprobados
-from apps.CENTRAL.central_catalogo.models import Catalogo
-from apps.CORP.corp_creditoPersonas.models import CreditoPersonas
-from apps.PERSONAS.personas_personas.models import Personas
-from apps.CORP.corp_creditoArchivos.serializers import (
+from ...CENTRAL.central_catalogo.models import Catalogo
+from ...CORP.corp_creditoPersonas.models import CreditoPersonas
+from ...CORP.corp_creditoPersonas.serializers import CreditoPersonasSerializer
+from ...PERSONAS.personas_personas.models import Personas
+from .serializers import (
     CreditoArchivosSerializer
 )
-from apps.CORP.corp_empresas.models import Empleados
+from ...CORP.corp_empresas.models import Empleados
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -13,7 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from django.conf import settings
 # Utils
-from apps.utils import utils
+from ...utils import utils
 # Importar boto3
 import boto3
 import tempfile
@@ -26,17 +27,17 @@ import random
 from datetime import datetime
 from datetime import timedelta
 # Enviar Correo
-from apps.config.util import sendEmail
+from ...config.util import sendEmail
 # excel
 import openpyxl
 # ObjectId
 from bson import ObjectId
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+from ...CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 # Importar en producer de los creditos personas
 from ..corp_creditoPersonas.producer import publish
 # Importar configuraciones
-from apps.config import config
+from ...config import config
 
 # declaracion variables log
 datosAux = datosProductosMDP()
@@ -461,3 +462,191 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
         return "Dato insertado correctamente"
     except Exception as e:
         return str(e)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def uploadEXCEL_creditosPreaprobados_negocios(request, pk):
+    contValidos = 0
+    contInvalidos = 0
+    contTotal = 0
+    errores = []
+    try:
+        if request.method == 'POST':
+            archivo = PreAprobados.objects.filter(pk=pk, state=1).first()
+            # environ init
+            env = environ.Env()
+            environ.Env.read_env()  # LEE ARCHIVO .ENV
+            client_s3 = boto3.client(
+                's3',
+                aws_access_key_id=env.str('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key=env.str('AWS_SECRET_ACCESS_KEY')
+            )
+            with tempfile.TemporaryDirectory() as d:
+                ruta = d + 'creditosPreAprobados.xlsx'
+                s3 = boto3.resource('s3')
+                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+
+            first = True  # si tiene encabezado
+            #             uploaded_file = request.FILES['documento']
+            # you may put validations here to check extension or file size
+            wb = openpyxl.load_workbook(ruta)
+            # getting a particular sheet by name out of many sheets
+            worksheet = wb["Preaprobar líneas-de-crédito_CO"]
+            lines = list()
+        for row in worksheet.iter_rows():
+            row_data = list()
+            for cell in row:
+                if cell.value is None:
+                    break
+                row_data.append(str(cell.value))
+            if row_data:
+                lines.append(row_data)
+
+        for dato in lines:
+            contTotal += 1
+            if first:
+                first = False
+                continue
+            else:
+                if len(dato) == 14:
+                    resultadoInsertar = insertarDato_creditoPreaprobado_microCredito(dato, archivo.empresa_financiera,
+                                                                                 archivo.empresa_comercial)
+                    if resultadoInsertar != 'Dato insertado correctamente':
+                        contInvalidos += 1
+                        errores.append({"error": "Error en la línea " + str(contTotal) + ": " + str(resultadoInsertar)})
+                    else:
+                        contValidos += 1
+                else:
+                    contInvalidos += 1
+                    errores.append({"error": "Error en la línea " + str(
+                        contTotal) + ": la fila tiene un tamaño incorrecto (" + str(len(dato)) + ")"})
+
+        result = {"mensaje": "La Importación se Realizo Correctamente",
+                  "correctos": contValidos,
+                  "incorrectos": contInvalidos,
+                  "errores": errores
+                  }
+        os.remove(ruta)
+        # archivo.state = 0
+        archivo.estado = "Cargado"
+        archivo.save()
+        return Response(result, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        err = {"error": 'Error verifique el archivo, un error ha ocurrido: {}'.format(e)}
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+# INSERTAR DATOS EN LA BASE INDIVIDUAL
+def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empresa_comercial):
+    try:
+        if (not utils.__validar_ced_ruc(str(dato[8]), 0)):
+            return f"""El usuario {dato[5]} {dato[6]} tiene la identificación incorrecta."""
+
+        if (not utils.__validar_ced_ruc(str(dato[4]), 0)):
+            return f"""El usuario {dato[3]} tiene el ruc incorrecto."""
+
+        timezone_now = timezone.localtime(timezone.now())
+        data = {}
+        data['vigencia'] = dato[0].replace('"', "")[0:10] if dato[0] != "NULL" else None
+        data['concepto'] = dato[1].replace('"', "") if dato[1] != "NULL" else None
+        data['monto'] = dato[2].replace('"', "") if dato[2] != "NULL" else None
+        # data['plazo'] = dato[3].replace('"', "") if dato[3] != "NULL" else None
+        # data['interes'] = dato[4].replace('"', "") if dato[4] != "NULL" else None
+        data['estado'] = 'Nuevo'
+        data['tipoCredito'] = 'Pymes-PreAprobado'
+        data['canal'] = 'Pymes-PreAprobado'
+        # persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
+        # data['user_id'] = persona.user_id
+        data['numeroIdentificacion'] = dato[8]
+        data['nombres'] = dato[5].replace('"', "") if dato[5] != "NULL" else None
+        data['apellidos'] = dato[6].replace('"', "") if dato[6] != "NULL" else None
+        data['email'] = dato[10].replace('"', "") if dato[10] != "NULL" else None
+        data['nombresCompleto'] = data['nombres'] + ' ' + data['apellidos']
+        data['empresaIfis_id'] = empresa_financiera
+        # data['empresasAplican'] = dato[21]
+        # Genera el codigo
+        codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
+        data['codigoPreaprobado'] = codigo
+        data['created_at'] = str(timezone_now)
+        # inserto el dato con los campos requeridos
+        creditoPreAprobado = CreditoPersonas.objects.create(**data)
+        creditoSerializer = CreditoPersonasSerializer(creditoPreAprobado)
+        subject, from_email, to = 'Usted tiene una LÍNEA DE CRÉDITO PRE-APROBADA PARA PAGAR A SUS PROVEEDORES', "08d77fe1da-d09822@inbox.mailtrap.io", \
+                                  dato[10]
+        txt_content = codigo
+        html_content = f"""
+                <html>
+                    <body>
+                        <p>Estimad@ {data['nombresCompleto']}</p>
+                        <br>
+                        <p>
+                         Nos complace comunicarle que usted tiene una LÍNEA DE CRÉDITO PRE-APROBADA por $ {data['monto']}
+                         para que pueda realizar pagos a sus PROVEEDORES con un crédito otorgado {dato[13]}
+                        </p>
+                        <br>
+                        <p>Para acceder a su Línea de Crédito para pago a proveedores haga click en el siguiente enlace:
+                        <a href='{config.API_FRONT_END_COOPSANJOSE}/pages/preApprovedCreditLine'>Link</a>
+                        </p>
+
+                        Su código de ingreso es: {codigo}
+                        <br>
+                        <b>Crédito Pagos en la mejor opción de crecimiento para su negocio</b>
+                        <br>
+                        Saludos,<br>
+                        Crédito Pagos – Big Puntos<br>
+                    </body>
+                </html>
+                """
+        # CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
+        sendEmail(subject, txt_content, from_email, to, html_content)
+        publish(creditoSerializer.data)
+        return "Dato insertado correctamente"
+    except Exception as e:
+        return str(e)
+
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def viewEXCEL_creditosPreaprobados_negocios(request, pk):
+    contValidos = 0
+    contInvalidos = 0
+    contTotal = 0
+    errores = []
+    try:
+        if request.method == 'GET':
+            archivo = PreAprobados.objects.filter(pk=pk, state=1).first()
+            # environ init
+            env = environ.Env()
+            environ.Env.read_env()  # LEE ARCHIVO .ENV
+            client_s3 = boto3.client(
+                's3',
+                aws_access_key_id=env.str('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key=env.str('AWS_SECRET_ACCESS_KEY')
+            )
+            with tempfile.TemporaryDirectory() as d:
+                ruta = d + 'creditosPreAprobados.xlsx'
+                s3 = boto3.resource('s3')
+                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+
+            first = True  # si tiene encabezado
+            #             uploaded_file = request.FILES['documento']
+            # you may put validations here to check extension or file size
+            wb = openpyxl.load_workbook(ruta)
+            # getting a particular sheet by name out of many sheets
+            worksheet = wb["Preaprobar líneas-de-crédito_CO"]
+            lines = list()
+        for row in worksheet.iter_rows():
+            row_data = list()
+            for cell in row:
+                if cell.value is None:
+                    break
+                row_data.append(str(cell.value))
+            if row_data:
+                lines.append(row_data)
+        os.remove(ruta)
+        return Response(lines, status=status.HTTP_200_OK)
+    except Exception as e:
+        err = {"error": 'Error verifique el archivo, un error ha ocurrido: {}'.format(e)}
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
