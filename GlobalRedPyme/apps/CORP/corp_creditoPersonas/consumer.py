@@ -1,14 +1,14 @@
 import boto3
 import json
 # Importar configuraciones
-from apps.config import config
+from ...config import config
 from .serializers import CreditoPersonasSerializer
 from .models import CreditoPersonas
 from bson import ObjectId
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+from ...CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 # IMPORTAR ENVIO CONFIGURACION CORREO
-from apps.config.util2 import sendEmail
+from ...config.util2 import sendEmail
 
 # declaracion variables log
 datosAux = datosProductosMDP()

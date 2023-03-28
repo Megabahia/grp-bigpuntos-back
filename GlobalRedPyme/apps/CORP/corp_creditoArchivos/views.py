@@ -15,6 +15,8 @@ from django.utils import timezone
 from django.conf import settings
 # Utils
 from ...utils import utils
+# Constantes
+from .constants import empresaInfo
 # Importar boto3
 import boto3
 import tempfile
@@ -570,6 +572,15 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
         codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
         data['codigoPreaprobado'] = codigo
         data['created_at'] = str(timezone_now)
+        data['razonSocial'] = dato[3]
+        data['rucEmpresa'] = dato[4]
+        empresaInfo['reprsentante'] = data['nombresCompleto']
+        empresaInfo['rucEmpresa'] = dato[4]
+        empresaInfo['comercial'] = dato[3]
+        empresaInfo['correo'] = data['email']
+        empresaInfo['esatdo_civil'] = dato[9]
+        empresaInfo['celular'] = dato[11]
+        data['empresaInfo'] = empresaInfo
         # inserto el dato con los campos requeridos
         creditoPreAprobado = CreditoPersonas.objects.create(**data)
         creditoSerializer = CreditoPersonasSerializer(creditoPreAprobado)

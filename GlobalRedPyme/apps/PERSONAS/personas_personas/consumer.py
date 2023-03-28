@@ -4,7 +4,7 @@ import json
 from django.utils import timezone
 # Importar configuraciones
 from apps.config import config
-from apps.CORP.corp_creditoPersonas.models import CodigoCreditoPreaprobado
+from ...CORP.corp_creditoPersonas.models import CodigoCreditoPreaprobado
 from bson import ObjectId
 #logs
 from apps.CENTRAL.central_logs.methods import createLog,datosTipoLog, datosSQS
@@ -19,6 +19,7 @@ logTransaccion=datosTipoLogAux['transaccion']
 logExcepcion=datosTipoLogAux['excepcion']
 
 def codigoCreditoPreaprobado():
+    print('entro')
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi+'guardar/',
@@ -42,12 +43,14 @@ def codigoCreditoPreaprobado():
         queue = sqs.get_queue_by_name(QueueName=queue_name)
 
         # Consultar la cola maximo 10 mensajes
+        print('mensajes', queue.receive_messages(MaxNumberOfMessages=max_queue_messages))
         for message in queue.receive_messages(MaxNumberOfMessages=max_queue_messages):
             # process message body
             body = json.loads(message.body)
             jsonRequest = json.loads(body['Message'])
             # Busca en la bdd las sqs
             query = CodigoCreditoPreaprobado.objects.create(**jsonRequest)
+            print(query)
             if query is not None:
                 # Borramos SQS
                 message.delete()

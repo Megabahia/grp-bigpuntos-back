@@ -5,6 +5,7 @@ from ...PERSONAS.personas_personas.serializers import (
     PersonasSerializer, PersonasUpdateSerializer, PersonasImagenSerializer, ValidarCuentaSerializer,
     PersonasUpdateSinImagenSerializer
 )
+from .consumer import codigoCreditoPreaprobado
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -435,6 +436,30 @@ def personas_listOne_cedula(request):
             serializer = PersonasSerializer(query)
             createLog(logModel, serializer.data, logTransaccion)
             return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def pruebaConsumer(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'listOne/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    try:
+        codigoCreditoPreaprobado()
+        msg = {"msg": "Se actualizo la cola"}
+
+        return Response(msg, status=status.HTTP_202_ACCEPTED)
     except Exception as e:
         err = {"error": 'Un error ha ocurrido: {}'.format(e)}
         createLog(logModel, err, logExcepcion)

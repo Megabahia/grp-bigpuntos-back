@@ -73,6 +73,45 @@ def publish(data):
     if 'facturasVentasCertificado' in data:
         facturasVentasCertificado = data.pop('facturasVentasCertificado')
         data['facturasVentasCertificado'] = str(facturasVentasCertificado).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'facturasCompras2meses' in data:
+        facturasCompras2meses = data.pop('facturasCompras2meses')
+        data['facturasCompras2meses'] = str(facturasCompras2meses).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'facturasCompras2meses2' in data:
+        facturasCompras2meses2 = data.pop('facturasCompras2meses2')
+        data['facturasCompras2meses2'] = str(facturasCompras2meses2).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'nombramientoRepresentante' in data:
+        nombramientoRepresentante = data.pop('nombramientoRepresentante')
+        data['nombramientoRepresentante'] = str(nombramientoRepresentante).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'certificadoSuperintendencia' in data:
+        certificadoSuperintendencia = data.pop('certificadoSuperintendencia')
+        data['certificadoSuperintendencia'] = str(certificadoSuperintendencia).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'certificadoPatronales' in data:
+        certificadoPatronales = data.pop('certificadoPatronales')
+        data['certificadoPatronales'] = str(certificadoPatronales).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'nominaSocios' in data:
+        nominaSocios = data.pop('nominaSocios')
+        data['nominaSocios'] = str(nominaSocios).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'actaJuntaGeneral' in data:
+        actaJuntaGeneral = data.pop('actaJuntaGeneral')
+        data['actaJuntaGeneral'] = str(actaJuntaGeneral).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'certificadoBancario' in data:
+        certificadoBancario = data.pop('certificadoBancario')
+        data['certificadoBancario'] = str(certificadoBancario).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'referenciasComerciales' in data:
+        referenciasComerciales = data.pop('referenciasComerciales')
+        data['referenciasComerciales'] = str(referenciasComerciales).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'balancePerdidasGanancias' in data:
+        balancePerdidasGanancias = data.pop('balancePerdidasGanancias')
+        data['balancePerdidasGanancias'] = str(balancePerdidasGanancias).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'balanceResultados' in data:
+        balanceResultados = data.pop('balanceResultados')
+        data['balanceResultados'] = str(balanceResultados).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'declaracionIva' in data:
+        declaracionIva = data.pop('declaracionIva')
+        data['declaracionIva'] = str(declaracionIva).replace('https://globalredpymes.s3.amazonaws.com/', '')
+    if 'estadoCuentaTarjeta' in data:
+        estadoCuentaTarjeta = data.pop('estadoCuentaTarjeta')
+        data['estadoCuentaTarjeta'] = str(estadoCuentaTarjeta).replace('https://globalredpymes.s3.amazonaws.com/', '')
     if 'imagen' in data:
         data.pop('imagen')
     if 'imagenComercial' in data:

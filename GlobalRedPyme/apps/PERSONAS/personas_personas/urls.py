@@ -8,6 +8,7 @@ from .views import (
     personas_validarCodigo,
     personas_update_sin_imagen,
     personas_listOne_cedula,
+    pruebaConsumer,
 )
 
 app_name = 'personas_personas'
@@ -21,4 +22,5 @@ urlpatterns = [
     path('update/imagen/<str:pk>', personas_imagenUpdate, name="personas_imagenUpdate"),
     path('validarCodigo/', personas_validarCodigo, name="personas_validarCodigo"),
     path('listOne/cedula/', personas_listOne_cedula, name="personas_listOne_cedula"),
+    path('prueba/', pruebaConsumer, name="pruebaConsumer"),
 ]
