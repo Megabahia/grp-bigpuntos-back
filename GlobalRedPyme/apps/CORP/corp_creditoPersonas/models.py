@@ -109,6 +109,7 @@ class CreditoPersonas(models.Model):
     balanceResultados = models.FileField(blank=True, null=True, upload_to=upload_path)
     declaracionIva = models.FileField(blank=True, null=True, upload_to=upload_path)
     estadoCuentaTarjeta = models.FileField(blank=True, null=True, upload_to=upload_path)
+    facturasPendiente = models.FileField(blank=True, null=True, upload_to=upload_path)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
