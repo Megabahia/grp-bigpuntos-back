@@ -353,6 +353,7 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         data['estado'] = 'PreAprobado'
         data['tipoCredito'] = 'PreAprobado'
         data['canal'] = 'PreAprobado'
+        data['cargarOrigen'] = 'BIGPUNTOS'
         # persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
         # data['user_id'] = persona.user_id
         data['numeroIdentificacion'] = dato[5]
@@ -432,6 +433,7 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
         # Genera el codigo
         codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
         data['codigoPreaprobado'] = codigo
+        data['cargarOrigen'] = 'BIGPUNTOS'
         data['created_at'] = str(timezone_now)
         # inserto el dato con los campos requeridos
         CreditoPersonas.objects.create(**data)
@@ -581,6 +583,7 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
         empresaInfo['esatdo_civil'] = dato[9]
         empresaInfo['celular'] = dato[11]
         data['empresaInfo'] = empresaInfo
+        data['cargarOrigen'] = 'BIGPUNTOS'
         # inserto el dato con los campos requeridos
         creditoPreAprobado = CreditoPersonas.objects.create(**data)
         creditoSerializer = CreditoPersonasSerializer(creditoPreAprobado)

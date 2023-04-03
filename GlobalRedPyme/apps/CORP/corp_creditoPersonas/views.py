@@ -276,6 +276,10 @@ def creditoPersonas_list(request):
                 if request.data["canal"] != '':
                     filters['canal'] = str(request.data["canal"])
 
+            if "cargarOrigen" in request.data:
+                if request.data["cargarOrigen"] != '':
+                    filters['cargarOrigen'] = str(request.data["cargarOrigen"])
+
             # Serializar los datos
             query = CreditoPersonas.objects.filter(**filters).order_by('-created_at')
             serializer = CreditoPersonasSerializer(query[offset:limit], many=True)
