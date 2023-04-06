@@ -240,7 +240,7 @@ def uploadEXCEL_creditosPreaprobados(request, pk):
                 first = False
                 continue
             else:
-                if len(dato) == 9:
+                if len(dato) == 21:
                     resultadoInsertar = insertarDato_creditoPreaprobado(dato, archivo.empresa_financiera)
                     if resultadoInsertar != 'Dato insertado correctamente':
                         contInvalidos += 1
@@ -348,20 +348,24 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         data['vigencia'] = dato[0].replace('"', "")[0:10] if dato[0] != "NULL" else None
         data['concepto'] = dato[1].replace('"', "") if dato[1] != "NULL" else None
         data['monto'] = dato[2].replace('"', "") if dato[2] != "NULL" else None
+        data['montoDisponible'] = dato[2].replace('"', "") if dato[2] != "NULL" else None
         data['plazo'] = dato[3].replace('"', "") if dato[3] != "NULL" else None
         data['interes'] = dato[4].replace('"', "") if dato[4] != "NULL" else None
-        data['estado'] = 'PreAprobado'
-        data['tipoCredito'] = 'PreAprobado'
-        data['canal'] = 'PreAprobado'
+        data['cuota'] = dato[5].replace('"', "") if dato[5] != "NULL" else None
+        data['tipoPersona'] = dato[6].replace('"', "") if dato[6] != "NULL" else None
+        data['estadoCivil'] = dato[7].replace('"', "") if dato[7] != "NULL" else None
+        data['estado'] = 'Nuevo'
+        data['tipoCredito'] = ''
+        data['canal'] = 'Negocio-PreAprobado'
         data['cargarOrigen'] = 'BIGPUNTOS'
         # persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
         # data['user_id'] = persona.user_id
-        data['numeroIdentificacion'] = dato[5]
-        data['nombres'] = dato[6].replace('"', "") if dato[6] != "NULL" else None
-        data['apellidos'] = dato[7].replace('"', "") if dato[7] != "NULL" else None
+        data['numeroIdentificacion'] = dato[8]
+        data['nombres'] = dato[9].replace('"', "") if dato[9] != "NULL" else None
+        data['apellidos'] = dato[10].replace('"', "") if dato[10] != "NULL" else None
         data['nombresCompleto'] = data['nombres'] + ' ' + data['apellidos']
         data['empresaIfis_id'] = empresa_financiera
-        data['empresasAplican'] = dato[19]
+        data['empresasAplican'] = dato[20]
         # Genera el codigo
         codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
         data['codigoPreaprobado'] = codigo
@@ -369,7 +373,7 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         # inserto el dato con los campos requeridos
         CreditoPersonas.objects.create(**data)
         subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
-                                  dato[13]
+                                  dato[16]
         txt_content = codigo
         html_content = f"""
         <html>
@@ -420,7 +424,7 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
         data['plazo'] = dato[3].replace('"', "") if dato[3] != "NULL" else None
         data['interes'] = dato[4].replace('"', "") if dato[4] != "NULL" else None
         data['estado'] = 'Nuevo'
-        data['tipoCredito'] = 'Empleado-PreAprobado'
+        data['tipoCredito'] = ''
         data['canal'] = 'Empleado-PreAprobado'
         # persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
         # data['user_id'] = persona.user_id
@@ -559,7 +563,7 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
         # data['plazo'] = dato[3].replace('"', "") if dato[3] != "NULL" else None
         # data['interes'] = dato[4].replace('"', "") if dato[4] != "NULL" else None
         data['estado'] = 'Nuevo'
-        data['tipoCredito'] = 'Pymes-PreAprobado'
+        data['tipoCredito'] = ''
         data['canal'] = 'Pymes-PreAprobado'
         # persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
         # data['user_id'] = persona.user_id

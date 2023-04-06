@@ -162,6 +162,9 @@ def creditoPersonas_update(request, pk):
                 request.data.pop('created_at')
             if query.estado == 'Por completar':
                 request.data['estado'] = 'Completado'
+            if 'tipoCredito' in request.data:
+                if request.data['tipoCredito'] == '':
+                    request.data['tipoCredito'] = query.canal
             serializer = CreditoPersonasSerializer(query, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
