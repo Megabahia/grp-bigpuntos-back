@@ -208,7 +208,7 @@ def personas_update(request, pk):
                         <p>Su código de verificación es {codigo}</p>
                         <br>
                         <p>Validando su cuenta usted podrá realizar compras con créditos otorgados por Cooperativas de 
-                        Ahorro y Crédito reguladas en las mejores Casas Comerciales el país. Y, acumule Big Puntos que  
+                        Ahorro y Crédito reguladas en los mejores Locales Comerciales del país. Y, acumule Big Puntos que  
                         podrá canjear por productos de varias categorías en establecimientos afiliados 
                         PAGANDO MENOS DINERO EN EFECTIVO
                         </p>

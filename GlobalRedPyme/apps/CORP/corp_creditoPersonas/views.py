@@ -734,7 +734,7 @@ def enviarCorreoSolicitudEnviada(email):
     txt_content = f"""
                         REVISIÓN DE DOCUMENTOS EN PROCESO
                         Sus documentos para acceder a un Crédito de consumo otorgado por una Cooperativa de Ahorro y
-                            Crédito regulada para realizar compras en las mejores Casas Comerciales del país, 
+                            Crédito regulada para realizar compras en los mejores Locales Comerciales del país, 
                             están siendo revisados.
                         Le mantendremos informado a través de nuestros canales.
                         Atentamente,
@@ -746,7 +746,7 @@ def enviarCorreoSolicitudEnviada(email):
                         <h1>REVISIÓN DE DOCUMENTOS EN PROCESO</h1>
                         <p>
                             Sus documentos para acceder a un Crédito de consumo otorgado por una Cooperativa de Ahorro y
-                            Crédito regulada para realizar compras en las mejores Casas Comerciales del país, 
+                            Crédito regulada para realizar compras en los mejores Locales Comerciales del país, 
                             están siendo revisados.
                          </p>
                         <br>

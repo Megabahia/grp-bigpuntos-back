@@ -381,7 +381,7 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
                 <h1>PRE-CALIFICACIÓN DE CRÉDITO DE CONSUMO</h1>
 
                 <p>
-                 Usted Tiene un crédito Pre-Aprobado de $ {data['monto']} para que realice compras en las mejores Casas Comerciales del país.
+                 Usted Tiene un crédito Pre-Aprobado de $ {data['monto']} para que realice compras en los mejores Locales Comerciales del país.
                 </p>
                 <br>
                 <p>Ingrese al siguiente link y acceda a su crédito: 
@@ -450,7 +450,9 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
                         <h1>PRE-CALIFICACIÓN DE CRÉDITO DE CONSUMO</h1>
 
                         <p>
-                         Usted Tiene un crédito Pre-Aprobado de $ {data['monto']} para que realice compras en las mejores Casas Comerciales del país.
+                        Estimad@ {data['nombresCompleto']} la Cooperativa de Ahorro y Crédito {dato[20]} 
+                        le ha PREAPROBADO un crédito de consumo por $ {data['monto']} para que 
+                        realice compras en los mejores Locales Comerciales del país.
                         </p>
                         <br>
                         <p>Ingrese al siguiente link y acceda a su crédito: 
@@ -519,7 +521,7 @@ def uploadEXCEL_creditosPreaprobados_negocios(request, pk):
             else:
                 if len(dato) == 14:
                     resultadoInsertar = insertarDato_creditoPreaprobado_microCredito(dato, archivo.empresa_financiera,
-                                                                                 archivo.empresa_comercial)
+                                                                                     archivo.empresa_comercial)
                     if resultadoInsertar != 'Dato insertado correctamente':
                         contInvalidos += 1
                         errores.append({"error": "Error en la línea " + str(contTotal) + ": " + str(resultadoInsertar)})
