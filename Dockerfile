@@ -10,5 +10,5 @@ COPY . .
 WORKDIR /app/GlobalRedPyme
 EXPOSE 8000
 RUN python manage.py crontab add
-RUN chmod +x entrypoint.sh
-CMD ["/bin/bash", "entrypoint.sh", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+CMD ["sh", "-c", "cron && python manage.py runserver 0.0.0.0:8000"]
