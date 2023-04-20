@@ -424,7 +424,7 @@ def enviarCorreoSolicitud(email, monedas):
                         ¡FELICIDADES!
                         USTED ACABA DE RECIBIR {monedas} para que realice compras en los establecimientos 
                         afiliados pagando menos dinero en efectivo
-                        Regístrese a través de nuestro portal https://portal.bigpuntos.com y reciba sus 
+                        Regístrese a través de nuestro portal https://credicompra.bigpuntos.com y reciba sus
                         Big Puntos de recompensa en su cuenta
                         Atentamente,
                         CrediCompra - Big Puntos
@@ -438,7 +438,7 @@ def enviarCorreoSolicitud(email, monedas):
                         afiliados pagando menos dinero en efectivo</p>
                         <br>
                         <br>
-                        <p>Regístrese a través de nuestro portal https://portal.bigpuntos.com y reciba sus 
+                        <p>Regístrese a través de nuestro portal https://credicompra.bigpuntos.com y reciba sus
                         Big Puntos de recompensa en su cuenta</p>
                         <br>
                         <br>

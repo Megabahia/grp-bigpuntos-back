@@ -94,14 +94,14 @@ def enviarCorreoSolicitud(email):
                         <p>Realice los siguientes pasos:</p>
                         <ul>
                         <li>
-                        Ingrese a: https://coopsanjose-personas.crediventa.com/#/personas/registroFirmaElectronica y 
+                        Ingrese a: https://personas.crediventa.com/#/personas/registroFirmaElectronica y
                         cargue su firma electrónica en nuestra plataforma. Recuerde que al hacerlo, autoriza a la Plataforma y 
                         Entidad Financiera a realizar movimientos desde su cuenta con el único fin de completar el 
                         proceso del PAGO A SUS PROVEEDORES desde su cuenta.
                         </li>
                         <li>
                         Registre a sus proveedores a través de
-                         https://coopsanjose-personas.crediventa.com/#/personas/registroProveedores para realizar
+                         https://personas.crediventa.com/#/personas/registroProveedores para realizar
                           el pago de forma fácil y rápida.
                         </li>
                         </ul>
