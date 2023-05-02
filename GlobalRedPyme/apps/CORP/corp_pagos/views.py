@@ -70,15 +70,15 @@ def pagos_create(request):
             serializer = PagosSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                # monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id']).order_by('-created_at').first()
-                # request.data['tipo'] = 'Pago'
-                # request.data['estado'] = 'aprobado'
-                # request.data['debito'] = request.data['monto']
-                # request.data['saldo'] = monedasUsuario.saldo - float(request.data['monto'])
-                # request.data['descripcion'] = 'Generar comprobante de pago con big puntos'
-                # monedasSerializer = MonedasGuardarSerializer(data=request.data)
-                # if monedasSerializer.is_valid():
-                #     monedasSerializer.save()
+                monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id']).order_by('-created_at').first()
+                request.data['tipo'] = 'Pago'
+                request.data['estado'] = 'aprobado'
+                request.data['debito'] = request.data['monto']
+                request.data['saldo'] = monedasUsuario.saldo - float(request.data['monto'])
+                request.data['descripcion'] = 'Generar comprobante de pago con big puntos'
+                monedasSerializer = MonedasGuardarSerializer(data=request.data)
+                if monedasSerializer.is_valid():
+                    monedasSerializer.save()
                 publish(serializer.data)
 
                 createLog(logModel, serializer.data, logTransaccion)
