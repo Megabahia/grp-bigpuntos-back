@@ -2,7 +2,7 @@ from .models import Empresas, EmpresasConvenio, Empleados
 from .serializers import (
     EmpresasSerializer, EmpresasFiltroSerializer, EmpresasFiltroIfisSerializer, EmpresasConvenioSerializer,
     EmpresasConvenioCreateSerializer,
-    EmpresasLogosSerializer, EmpleadosSerializer,
+    EmpresasLogosSerializer, EmpleadosSerializer,EmpresasImagenB64Serialazer
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -47,7 +47,8 @@ logExcepcion = datosTipoLogAux['excepcion']
                      operation_description='Uninstall a version of Site',
                      responses={200: EmpresasSerializer(many=True)})
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
+
 def empresas_list(request):
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -85,7 +86,7 @@ def empresas_list(request):
 
             # Serializar los datos
             query = Empresas.objects.filter(**filters).order_by('-created_at')
-            serializer = EmpresasSerializer(query[offset:limit], many=True)
+            serializer = EmpresasImagenB64Serialazer(query[offset:limit], many=True)
             new_serializer_data = {'cont': query.count(),
                                    'info': serializer.data}
             # envio de datos
