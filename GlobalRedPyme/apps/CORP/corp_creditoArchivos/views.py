@@ -607,7 +607,7 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
                         </p>
                         <br>
                         <p>Para acceder a su Línea de Crédito para pago a proveedores haga click en el siguiente enlace:
-                        <a href='{config.API_FRONT_END_COOPSANJOSE}/pages/preApprovedCreditLine'>Link</a>
+                        <a href='{config.API_FRONT_END_COOPCLIENTES}/pages/preApprovedCreditLine'>Link</a>
                         </p>
 
                         Su código de ingreso es: {codigo}
