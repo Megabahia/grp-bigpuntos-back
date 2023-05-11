@@ -22,6 +22,7 @@ logExcepcion = datosTipoLogAux['excepcion']
 
 
 def get_queue_url():
+    print('entro')
     logModel = {
         'endPoint': logApi + 'listOne/',
         'modulo': logModulo,

@@ -251,5 +251,5 @@ CRONJOBS = [
     ('*/1 * * * *', "apps.CORP.corp_pagos.cron.hi"),
     ('*/1 * * * *', "apps.CORP.corp_creditoPersonas.consumer.get_queue_url"),
     ('*/1 * * * *', "apps.PERSONAS.personas_personas.consumer.codigoCreditoPreaprobado"),
-    ('*/1 * * * *', "apps.CORE.core_monedas.hi"),
+    ('*/1 * * * *', "apps.CORE.core_monedas.cron.hi"),
 ]

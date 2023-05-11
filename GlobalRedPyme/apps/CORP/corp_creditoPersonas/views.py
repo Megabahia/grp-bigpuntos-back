@@ -165,6 +165,10 @@ def creditoPersonas_update(request, pk):
             if 'tipoCredito' in request.data:
                 if request.data['tipoCredito'] == '':
                     request.data['tipoCredito'] = query.canal
+            if query.enviado == 0:
+                request.data['enviado'] = 1
+            if query.alcance is None:
+                request.data['alcance'] = 'OMNIGLOBAL'
             serializer = CreditoPersonasSerializer(query, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()

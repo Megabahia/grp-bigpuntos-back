@@ -1,24 +1,27 @@
 from rest_framework import serializers
 
-from apps.CORP.corp_movimientoCobros.models import (
+from .models import (
     MovimientoCobros
 )
 
-from apps.PERSONAS.personas_personas.models import Personas
+from ...PERSONAS.personas_personas.models import Personas
+from ...PERSONAS.personas_personas.serializers import PersonasSerializer
+
 
 class MovimientoCobrosSerializer(serializers.ModelSerializer):
     class Meta:
         model = MovimientoCobros
-       	fields = '__all__'
+        fields = '__all__'
         read_only_fields = ['_id']
 
     def to_representation(self, instance):
-            data = super(MovimientoCobrosSerializer, self).to_representation(instance)
-            # Buscamos la persona y agregamos los campos
-            persona = Personas.objects.filter(user_id=instance.user_id).first()
-            if persona:
-                data.update({"nombres": persona.nombres})
-                data.update({"apellidos": persona.apellidos})
-                data.update({"identificacion": persona.identificacion})
-                data.update({"email": persona.email})
-            return data
+        data = super(MovimientoCobrosSerializer, self).to_representation(instance)
+        # Buscamos la persona y agregamos los campos
+        persona = Personas.objects.filter(user_id=instance.user_id).first()
+        personaSerializer = PersonasSerializer(persona).data
+        if personaSerializer:
+            data.update({"nombres": personaSerializer.nombres})
+            data.update({"apellidos": personaSerializer.apellidos})
+            data.update({"identificacion": personaSerializer.identificacion})
+            data.update({"email": personaSerializer.email})
+        return data

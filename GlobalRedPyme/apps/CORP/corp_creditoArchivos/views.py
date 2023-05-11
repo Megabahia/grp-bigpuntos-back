@@ -603,16 +603,19 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
                         <br>
                         <p>
                          Nos complace comunicarle que usted tiene una LÍNEA DE CRÉDITO PRE-APROBADA por $ {data['monto']}
-                         para que pueda realizar pagos a sus PROVEEDORES con un crédito otorgado {dato[13]}
+                         para que pueda realizar pagos a sus PROVEEDORES con un crédito otorgado por {dato[13]}
                         </p>
                         <br>
                         <p>Para acceder a su Línea de Crédito para pago a proveedores haga click en el siguiente enlace:
                         <a href='{config.API_FRONT_END_COOPCLIENTES}/pages/preApprovedCreditLine'>Link</a>
                         </p>
 
-                        Su código de ingreso es: {codigo}
+                        <p>Su código de ingreso es: {codigo}</p>
                         <br>
+                        <br>
+                        <p>
                         <b>Crédito Pagos en la mejor opción de crecimiento para su negocio</b>
+                        </p>
                         <br>
                         Saludos,<br>
                         Crédito Pagos – Big Puntos<br>

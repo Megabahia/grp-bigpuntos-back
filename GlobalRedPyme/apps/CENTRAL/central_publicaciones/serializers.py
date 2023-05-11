@@ -5,6 +5,7 @@ from .models import (
 )
 
 from ...PERSONAS.personas_personas.models import Personas
+from ...PERSONAS.personas_personas.serializers import PersonasSerializer
 
 
 class PublicacionesSerializer(serializers.ModelSerializer):
@@ -87,11 +88,12 @@ class CompartirPublicacionesReporteSerializer(serializers.ModelSerializer):
         try:
             # user
             persona = Personas.objects.get(user_id=str(data.pop('user')))
-            if persona is not None:
-                data.update({"nombres": persona.nombres})
-                data.update({"apellidos": persona.apellidos})
-                data.update({"whatsapp": persona.whatsapp})
-                data.update({"email": persona.email})
+            personaSerializer = PersonasSerializer(persona).data
+            if personaSerializer is not None:
+                data.update({"nombres": personaSerializer.nombres})
+                data.update({"apellidos": personaSerializer.apellidos})
+                data.update({"whatsapp": personaSerializer.whatsapp})
+                data.update({"email": personaSerializer.email})
         except Personas.DoesNotExist:
             data.update({"nombres": ""})
             data.update({"apellidos": ""})
