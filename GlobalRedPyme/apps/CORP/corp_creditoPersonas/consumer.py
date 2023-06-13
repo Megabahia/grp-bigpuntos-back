@@ -77,7 +77,7 @@ def get_queue_url():
 
 
 def enviarCorreoSolicitud(email):
-    subject, from_email, to = 'Generación de código para crédito aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
+    subject, from_email, to = 'Generación de código para crédito aprobado', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
                         Global RedPyme - Crédito Pagos ha recibido su solicitud, estaremos en contacto con usted a la brevedad posible.

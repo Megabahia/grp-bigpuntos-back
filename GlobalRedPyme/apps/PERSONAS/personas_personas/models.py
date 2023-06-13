@@ -46,6 +46,8 @@ class Personas(models.Model):
     tipoPersona = models.TextField()
     celular = models.TextField()
     codigoUsuario = models.TextField()
+    autorizacion = models.TextField()
+    garante = models.TextField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)

@@ -153,15 +153,19 @@ def personas_update(request, pk):
         try:
             logModel['dataEnviada'] = str(request.data)
             query = Personas.objects.filter(user_id=pk, state=1).first()
+            querySerilizers = PersonasSerializer(query).data
+            print('entro')
         except Personas.DoesNotExist:
             errorNoExiste = {'error': 'No existe'}
             createLog(logModel, errorNoExiste, logExcepcion)
             return Response(status=status.HTTP_404_NOT_FOUND)
         if request.method == 'POST':
-            persona = Personas.objects.filter(identificacion=request.data['identificacion'], state=1).first()
+            hash_resultado = encriptar(request.data['identificacion'])
+            persona = Personas.objects.filter(identificacion=hash_resultado, state=1).first()
+            personaSerializers = PersonasSerializer(persona).data
 
-            if persona is not None:
-                if persona != query:
+            if personaSerializers is not None:
+                if '_id' in personaSerializers and personaSerializers["_id"] != querySerilizers["_id"]:
                     errorNoExiste = {'error': 'Ya existe otro usuario con la identificacion.'}
                     createLog(logModel, errorNoExiste, logExcepcion)
                     return Response(errorNoExiste, status=status.HTTP_200_OK)
@@ -196,7 +200,7 @@ def personas_update(request, pk):
                 # Correo de la corp
                 user = Usuarios.objects.get(pk=ObjectId(pk))
                 print(user.email)
-                subject, from_email, to = 'Generacion de codigo de verificación de su cuenta', "08d77fe1da-d09822@inbox.mailtrap.io", user.email
+                subject, from_email, to = 'Generacion de codigo de verificación de su cuenta', "credicompra.bigpuntos@corporacionomniglobal.com", user.email
                 txt_content = mensaje + ' ' + codigo
                 html_content = f"""
                 <html>
@@ -264,6 +268,8 @@ def personas_update_sin_imagen(request, pk):
             request.data['updated_at'] = str(now)
             if 'created_at' in request.data:
                 request.data.pop('created_at')
+            if 'nombres' and 'apellidos' in request.data:
+                request.data['nombresCompleto'] = request.data['nombres'] + ' ' + request.data['apellidos']
             serializer = PersonasUpdateSinImagenSerializer(query, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()

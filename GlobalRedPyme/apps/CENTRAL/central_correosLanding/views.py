@@ -100,7 +100,7 @@ def correos_create(request):
                 # No existe correo crearlo
                 serializer = CorreosSerializer(data=request.data)
 
-            subject, from_email, to = 'OBTENER MIS DESCUENTOS', "08d77fe1da-d09822@inbox.mailtrap.io",request.data['correo']
+            subject, from_email, to = 'OBTENER MIS DESCUENTOS', "credicompra.bigpuntos@corporacionomniglobal.com",request.data['correo']
             txt_content="""
                     Código generado
                     El código generado para que descubras tu premio es """+codigo+"""

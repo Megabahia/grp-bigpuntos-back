@@ -372,7 +372,7 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         data['created_at'] = str(timezone_now)
         # inserto el dato con los campos requeridos
         CreditoPersonas.objects.create(**data)
-        subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
+        subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "credicompra.bigpuntos@corporacionomniglobal.com", \
                                   dato[16]
         txt_content = codigo
         html_content = f"""
@@ -441,7 +441,7 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
         data['created_at'] = str(timezone_now)
         # inserto el dato con los campos requeridos
         CreditoPersonas.objects.create(**data)
-        subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
+        subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "credicompra.bigpuntos@corporacionomniglobal.com", \
                                   dato[15]
         txt_content = codigo
         html_content = f"""
@@ -593,21 +593,36 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
         # inserto el dato con los campos requeridos
         creditoPreAprobado = CreditoPersonas.objects.create(**data)
         creditoSerializer = CreditoPersonasSerializer(creditoPreAprobado)
-        subject, from_email, to = 'Usted tiene una LÍNEA DE CRÉDITO PRE-APROBADA PARA PAGAR A SUS PROVEEDORES', "08d77fe1da-d09822@inbox.mailtrap.io", \
+        subject, from_email, to = 'Usted tiene una  Línea de Crédito Preaprobada para su Negocio', "credicompra.bigpuntos@corporacionomniglobal.com", \
                                   dato[10]
-        txt_content = codigo
+        txt_content = f"""
+        FELICIDADES!
+        
+        Estimad@ {data['nombresCompleto']}
+        
+        Nos complace comunicarle que usted tiene una LÍNEA DE CRÉDITO PREAPROBADA otorgada por {dato[13]} de $ {data['monto']}
+        para que pueda realizar pagos a sus proveedores y/o empleados.
+        
+        Para acceder a su Línea de Crédito y realizar pagos a sus proveedores y/o empleados, por favor haga click en
+         el siguiente enlace: LINK
+         
+        {codigo}
+        """
         html_content = f"""
                 <html>
                     <body>
+                        <h1><b>FELICIDADES!</b></h1>
+                        <br>
                         <p>Estimad@ {data['nombresCompleto']}</p>
                         <br>
                         <p>
-                         Nos complace comunicarle que usted tiene una LÍNEA DE CRÉDITO PRE-APROBADA por $ {data['monto']}
-                         para que pueda realizar pagos a sus PROVEEDORES con un crédito otorgado por {dato[13]}
+                         Nos complace comunicarle que usted tiene una LÍNEA DE CRÉDITO PREAPROBADA otorgada por {dato[13]} 
+                         de $ {data['monto']} para que pueda realizar pagos a sus proveedores y/o empleados.
                         </p>
                         <br>
-                        <p>Para acceder a su Línea de Crédito para pago a proveedores haga click en el siguiente enlace:
-                        <a href='{config.API_FRONT_END_COOPCLIENTES}/pages/preApprovedCreditLine'>Link</a>
+                        <p>
+                        Para acceder a su Línea de Crédito y realizar pagos a sus proveedores y/o empleados, por favor haga click en el siguiente enlace:
+                        <a href='{config.API_FRONT_END_IFISCLIENTES}/pages/preApprovedCreditLine'>Link</a>
                         </p>
 
                         <p>Su código de ingreso es: {codigo}</p>

@@ -79,7 +79,7 @@ def enviarEmailAsignacionPassword(reset_password_token):
             url = config.API_FRONT_END + config.endpointEmailAsignacionPassword + "?token=" + reset_password_token.key + "&email=" + reset_password_token.user.email
         # url=config.API_FRONT_END+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
         print(url)
-        subject, from_email, to = 'CREACIÓN DE CUENTA CREDICOMPRA-BIG PUNTOS', "08d77fe1da-d09822@inbox.mailtrap.io", reset_password_token.user.email
+        subject, from_email, to = 'CREACIÓN DE CUENTA CREDICOMPRA-BIG PUNTOS', "credicompra.bigpuntos@corporacionomniglobal.com", reset_password_token.user.email
         txt_content = f"""
                 REGISTRO DE CUENTA
                 Para completar su registro Haga click en el siguiente enlace: {url}
@@ -118,7 +118,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
             url = config.API_FRONT_END_CREDIT + config.endpointEmailReseteoPassword + "?token=" + reset_password_token.key + "&email=" + reset_password_token.user.email
         else:
             url = config.API_FRONT_END + config.endpointEmailAsignacionPassword + "?token=" + reset_password_token.key + "&email=" + reset_password_token.user.email
-        subject, from_email, to = 'RESETEO DE CONTRASEÑA DE CREDICOMPRA-BIG PUNTOS', "08d77fe1da-d09822@inbox.mailtrap.io", reset_password_token.user.email
+        subject, from_email, to = 'RESETEO DE CONTRASEÑA DE CREDICOMPRA-BIG PUNTOS', "credicompra.bigpuntos@corporacionomniglobal.com", reset_password_token.user.email
         txt_content = f"""
                 RESETEO DE CONTRASEÑA
                 
@@ -160,7 +160,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
 def enviarEmailCreacionPersona(email):
     try:
         # enviar por email
-        subject, from_email, to = 'Creación de usuario Global Red Pymes Personas', "08d77fe1da-d09822@inbox.mailtrap.io", email
+        subject, from_email, to = 'Creación de usuario Global Red Pymes Personas', "credicompra.bigpuntos@corporacionomniglobal.com", email
         txt_content = """
                 Registro de usuario Global Red Pymes Personas
                 Felicidades usted se acaba de registrar a la plataforma de Global Red Pymes Personas.

@@ -191,6 +191,11 @@ def publish(data):
         data.pop('imagenComercial')
         if data['imagenComercial'] == 'None':
             data.pop('imagenComercial')
+    if 'autorizacion' in data:
+        autorizacion = data.pop('autorizacion')
+        data['autorizacion'] = str(autorizacion).replace('https://globalredpymes.s3.amazonaws.com/', '')
+        if data['autorizacion'] == 'None':
+            data.pop('autorizacion')
 
     response = snsClient.publish(
         TopicArn=topicArn,

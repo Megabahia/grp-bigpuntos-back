@@ -37,6 +37,10 @@ class PersonasSerializer(serializers.ModelSerializer):
             representation['pais'] = desencriptar(eval(representation['pais']))
         if representation['direccion']:
             representation['direccion'] = desencriptar(eval(representation['direccion']))
+        if representation['email']:
+            representation['email'] = desencriptar(eval(representation['email']))
+        if representation['emailAdicional']:
+            representation['emailAdicional'] = desencriptar(eval(representation['emailAdicional']))
         if representation['telefono']:
             representation['telefono'] = desencriptar(eval(representation['telefono']))
         if representation['whatsapp']:
@@ -61,6 +65,8 @@ class PersonasSerializer(serializers.ModelSerializer):
             representation['celular'] = desencriptar(eval(representation['celular']))
         if representation['codigoUsuario']:
             representation['codigoUsuario'] = desencriptar(eval(representation['codigoUsuario']))
+        if representation['garante']:
+            representation['garante'] = json.loads(desencriptar(eval(representation['garante'])))
         return representation
 
     def to_internal_value(self, data):
@@ -86,6 +92,10 @@ class PersonasSerializer(serializers.ModelSerializer):
             data['pais'] = encriptar(data.get('pais'))
         if 'direccion' in data and data.get('direccion'):
             data['direccion'] = encriptar(data.get('direccion'))
+        if 'email' in data and data.get('email'):
+            data['email'] = encriptar(str(data.get('email')))
+        if 'emailAdicional' in data and data.get('emailAdicional'):
+            data['emailAdicional'] = encriptar(str(data.get('emailAdicional')))
         if 'telefono' in data and data.get('telefono'):
             data['telefono'] = encriptar(data.get('telefono'))
         if 'whatsapp' in data and data.get('whatsapp'):
@@ -110,6 +120,8 @@ class PersonasSerializer(serializers.ModelSerializer):
             data['celular'] = encriptar(data.get('celular'))
         if 'codigoUsuario' in data and data.get('codigoUsuario'):
             data['codigoUsuario'] = encriptar(data.get('codigoUsuario'))
+        if 'garante' in data and data.get('garante'):
+            data['garante'] = encriptar(json.dumps(data.get('garante')))
         return data
 
 class PersonasUpdateSerializer(serializers.ModelSerializer):
@@ -142,6 +154,10 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
             representation['pais'] = desencriptar(eval(representation['pais']))
         if representation['direccion']:
             representation['direccion'] = desencriptar(eval(representation['direccion']))
+        if representation['email']:
+            representation['email'] = desencriptar(eval(representation['email']))
+        if representation['emailAdicional']:
+            representation['emailAdicional'] = desencriptar(eval(representation['emailAdicional']))
         if representation['telefono']:
             representation['telefono'] = desencriptar(eval(representation['telefono']))
         if representation['whatsapp']:
@@ -166,6 +182,8 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
             representation['celular'] = desencriptar(eval(representation['celular']))
         if representation['codigoUsuario']:
             representation['codigoUsuario'] = desencriptar(eval(representation['codigoUsuario']))
+        if representation['garante']:
+            representation['garante'] = json.loads(desencriptar(eval(representation['garante'])))
         return representation
 
     def to_internal_value(self, data):
@@ -191,6 +209,10 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
             data['pais'] = encriptar(data.get('pais'))
         if 'direccion' in data and data.get('direccion'):
             data['direccion'] = encriptar(data.get('direccion'))
+        if 'email' in data and data.get('email'):
+            data['email'] = encriptar(str(data.get('email')))
+        if 'emailAdicional' in data and data.get('emailAdicional'):
+            data['emailAdicional'] = encriptar(str(data.get('emailAdicional')))
         if 'telefono' in data and data.get('telefono'):
             data['telefono'] = encriptar(data.get('telefono'))
         if 'whatsapp' in data and data.get('whatsapp'):
@@ -215,6 +237,8 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
             data['celular'] = encriptar(data.get('celular'))
         if 'codigoUsuario' in data and data.get('codigoUsuario'):
             data['codigoUsuario'] = encriptar(data.get('codigoUsuario'))
+        if 'garante' in data and data.get('garante'):
+            data['garante'] = encriptar(json.dumps(data.get('garante')))
         return data
 
 
@@ -247,6 +271,10 @@ class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
             representation['pais'] = desencriptar(eval(representation['pais']))
         if representation['direccion']:
             representation['direccion'] = desencriptar(eval(representation['direccion']))
+        if representation['email']:
+            representation['email'] = desencriptar(eval(representation['email']))
+        if representation['emailAdicional']:
+            representation['emailAdicional'] = desencriptar(eval(representation['emailAdicional']))
         if representation['telefono']:
             representation['telefono'] = desencriptar(eval(representation['telefono']))
         if representation['whatsapp']:
@@ -271,6 +299,8 @@ class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
             representation['celular'] = desencriptar(eval(representation['celular']))
         if representation['codigoUsuario']:
             representation['codigoUsuario'] = desencriptar(eval(representation['codigoUsuario']))
+        if representation['garante']:
+            representation['garante'] = json.loads(desencriptar(eval(representation['garante'])))
         return representation
 
     def to_internal_value(self, data):
@@ -296,6 +326,10 @@ class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
             data['pais'] = encriptar(data.get('pais'))
         if 'direccion' in data and data.get('direccion'):
             data['direccion'] = encriptar(data.get('direccion'))
+        if 'email' in data and data.get('email'):
+            data['email'] = encriptar(str(data.get('email')))
+        if 'emailAdicional' in data and data.get('emailAdicional'):
+            data['emailAdicional'] = encriptar(str(data.get('emailAdicional')))
         if 'telefono' in data and data.get('telefono'):
             data['telefono'] = encriptar(data.get('telefono'))
         if 'whatsapp' in data and data.get('whatsapp'):
@@ -320,6 +354,8 @@ class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
             data['celular'] = encriptar(data.get('celular'))
         if 'codigoUsuario' in data and data.get('codigoUsuario'):
             data['codigoUsuario'] = encriptar(data.get('codigoUsuario'))
+        if 'garante' in data and data.get('garante'):
+            data['garante'] = encriptar(json.dumps(data.get('garante')))
         return data
 
 
@@ -365,6 +401,10 @@ class PersonasSearchSerializer(serializers.ModelSerializer):
             representation['pais'] = desencriptar(eval(representation['pais']))
         if representation['direccion']:
             representation['direccion'] = desencriptar(eval(representation['direccion']))
+        if representation['email']:
+            representation['email'] = desencriptar(eval(representation['email']))
+        if representation['emailAdicional']:
+            representation['emailAdicional'] = desencriptar(eval(representation['emailAdicional']))
         if representation['telefono']:
             representation['telefono'] = desencriptar(eval(representation['telefono']))
         if representation['whatsapp']:
@@ -389,6 +429,8 @@ class PersonasSearchSerializer(serializers.ModelSerializer):
             representation['celular'] = desencriptar(eval(representation['celular']))
         if representation['codigoUsuario']:
             representation['codigoUsuario'] = desencriptar(eval(representation['codigoUsuario']))
+        if representation['garante']:
+            representation['garante'] = json.loads(desencriptar(eval(representation['garante'])))
         return representation
 
     def to_internal_value(self, data):
@@ -414,6 +456,10 @@ class PersonasSearchSerializer(serializers.ModelSerializer):
             data['pais'] = encriptar(data.get('pais'))
         if 'direccion' in data and data.get('direccion'):
             data['direccion'] = encriptar(data.get('direccion'))
+        if 'email' in data and data.get('email'):
+            data['email'] = encriptar(str(data.get('email')))
+        if 'emailAdicional' in data and data.get('emailAdicional'):
+            data['emailAdicional'] = encriptar(str(data.get('emailAdicional')))
         if 'telefono' in data and data.get('telefono'):
             data['telefono'] = encriptar(data.get('telefono'))
         if 'whatsapp' in data and data.get('whatsapp'):
@@ -438,4 +484,6 @@ class PersonasSearchSerializer(serializers.ModelSerializer):
             data['celular'] = encriptar(data.get('celular'))
         if 'codigoUsuario' in data and data.get('codigoUsuario'):
             data['codigoUsuario'] = encriptar(data.get('codigoUsuario'))
+        if 'garante' in data and data.get('garante'):
+            data['garante'] = encriptar(json.dumps(data.get('garante')))
         return data

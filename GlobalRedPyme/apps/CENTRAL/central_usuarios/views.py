@@ -7,7 +7,7 @@ from apps.CENTRAL.central_infoUsuarios.models import InfoUsuarios
 from apps.CENTRAL.central_infoUsuarios.serializers import InfoUsuarioSerializer
 from apps.PERSONAS.personas_personas.models import Personas
 from apps.CORP.corp_empresas.models import Empresas
-from apps.PERSONAS.personas_personas.serializers import PersonasSerializer
+from ...PERSONAS.personas_personas.serializers import PersonasSerializer
 from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
 from apps.CENTRAL.central_roles.serializers import ListRolesSerializer
 from apps.CENTRAL.central_usuarios.serializers import UsuarioSerializer, UsuarioImagenSerializer, UsuarioRolSerializer, \
@@ -30,7 +30,7 @@ from django.utils.crypto import get_random_string
 from apps.CENTRAL.central_logs.methods import createLog, datosUsuarios, datosTipoLog
 from django_rest_passwordreset.views import ResetPasswordRequestToken
 # enviar email usuario creado
-from apps.CENTRAL.central_autenticacion.password_reset import resetPasswordNewUser, enviarEmailCreacionPersona
+from ..central_autenticacion.password_reset import resetPasswordNewUser, enviarEmailCreacionPersona
 # EMPLEADOS
 from apps.CORP.corp_empresas.models import Empleados
 
@@ -491,9 +491,15 @@ def usuario_create(request):
                         'whatsapp': empleado.whatsapp,
                         'user_id': str(account.pk)
                     }
-                    persona = Personas.objects.create(**datosPersona)
+                    # persona = Personas.objects.create(**datosPersona)
+                    persona = PersonasSerializer(data=datosPersona)
+                    if persona.is_valid():
+                        persona.save()
                 else:
-                    persona = Personas.objects.create(**dataPeronsa)
+                    # persona = Personas.objects.create(**dataPeronsa)
+                    persona = PersonasSerializer(data=dataPeronsa)
+                    if persona.is_valid():
+                        persona.save()
 
                 # data['response'] = 'Usuario creado correctamente'
                 # data['email'] = account.email
@@ -516,7 +522,7 @@ def usuario_create(request):
                         data['tokenEmail'] = str(resetPasswordNewUser(data['email']))
 
                 if 'empresa' not in request.data:
-                    personaSerializer = PersonasSerializer(persona).data
+                    personaSerializer = persona.data
 
                 data['infoUsuario'] = infoUsuario.data
 

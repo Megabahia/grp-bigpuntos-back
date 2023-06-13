@@ -84,6 +84,9 @@ def creditoPersonas_create(request):
             serializer = CreditoPersonasSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                if 'tipoCredito' in serializer.data and serializer.data['tipoCredito'] == 'null':
+                    usuario = serializer.data['user']
+                    enviarCorreoSolicitudGarante(usuario['email'], serializer.data['_id'])
                 createLog(logModel, serializer.data, logTransaccion)
                 # Crear objeto en firebase para las notificaciones
                 config.FIREBASE_DB.collection('creditosPersonas').document(serializer.data['_id']).set(serializer.data)
@@ -703,7 +706,7 @@ def pruebaConsumer(request):
 
 
 def enviarCorreoSolicitud(email):
-    subject, from_email, to = 'Generación de código para crédito aprobado', "08d77fe1da-d09822@inbox.mailtrap.io", \
+    subject, from_email, to = 'Generación de código para crédito aprobado', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
                         Su microcrédito línea de crédito para pago a proveedores ha sido NEGADO.
@@ -733,7 +736,7 @@ def enviarCorreoSolicitud(email):
 
 
 def enviarCorreoSolicitudEnviada(email):
-    subject, from_email, to = 'Estamos revisando sus documentos', "08d77fe1da-d09822@inbox.mailtrap.io", \
+    subject, from_email, to = 'Estamos revisando sus documentos', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
                         REVISIÓN DE DOCUMENTOS EN PROCESO
@@ -757,6 +760,112 @@ def enviarCorreoSolicitudEnviada(email):
                         <br>
                         <p>Le mantendremos informado a través de nuestros canales.</p>
                         <br>
+                        <br>
+                        Atentamente,
+                        <br>
+                        CrediCompra – Big Puntos
+                        <br>
+                    </body>
+                </html>
+                """
+    sendEmail(subject, txt_content, from_email, to, html_content)
+
+
+# ENCONTRAR UNO
+@api_view(['POST'])
+def creditoPersonas_listOne_sinAutenticar(request, pk):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'listOne/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    try:
+        if request.method == 'POST':
+            query = CreditoPersonas.objects.filter(pk=ObjectId(pk), tipoCredito=request.data['tipoCredito'], state=1).first()
+            if query is None:
+                err = {"error": "No existe"}
+                createLog(logModel, err, logExcepcion)
+                return Response(err, status=status.HTTP_404_NOT_FOUND)
+            # tomar el dato
+            serializer = CreditoPersonasSerializer(query)
+            createLog(logModel, serializer.data, logTransaccion)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            err = {"error": "No existe"}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ACTUALIZAR SIN AUTENTICAR
+@api_view(['POST'])
+def creditoPersonas_update_sinAutenticar(request, pk):
+    request.POST._mutable = True
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'update/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'ESCRIBIR',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    try:
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            query = CreditoPersonas.objects.filter(pk=ObjectId(pk), state=1).first()
+        except CreditoPersonas.DoesNotExist:
+            errorNoExiste = {'error': 'No existe'}
+            createLog(logModel, errorNoExiste, logExcepcion)
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        if request.method == 'POST':
+            now = timezone.localtime(timezone.now())
+            request.data['updated_at'] = str(now)
+            if 'created_at' in request.data:
+                request.data.pop('created_at')
+            if query.enviado == 0:
+                request.data['enviado'] = 1
+            if query.alcance is None:
+                request.data['alcance'] = 'OMNIGLOBAL'
+            serializer = CreditoPersonasSerializer(query, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                createLog(logModel, serializer.data, logTransaccion)
+                return Response(serializer.data)
+            createLog(logModel, serializer.errors, logExcepcion)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+def enviarCorreoSolicitudGarante(email, id):
+    subject, from_email, to = 'PAdrino - MAdrina', "credicompra.bigpuntos@corporacionomniglobal.com", \
+                              email
+    txt_content = f"""
+                        PAdrino - MAdrina
+                        {config.API_FRONT_END_CENTRAL}/pages/confirmacion-garante/{id}
+                        
+                        Atentamente,
+                        CrediCompra – Big Puntos
+    """
+    html_content = f"""
+                <html>
+                    <body>
+                        <h1>PAdrino - MAdrina</h1>
+                        <a href='{config.API_FRONT_END_CENTRAL}/pages/confirmacion-garante/{id}'>Link</a>
                         <br>
                         Atentamente,
                         <br>

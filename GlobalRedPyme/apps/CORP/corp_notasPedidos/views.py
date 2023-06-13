@@ -297,7 +297,7 @@ def factura_generar_codigos_envios(request):
             codigoUsuario = (''.join(random.choice(string.digits) for _ in range(int(longitud_codigo))))
             codigoCorp = (''.join(random.choice(string.digits) for _ in range(int(longitud_codigo))))
             # Correo de cliente
-            subject, from_email, to = 'Generacion de numero de autorización del cliente', "08d77fe1da-d09822@inbox.mailtrap.io",persona.email
+            subject, from_email, to = 'Generacion de numero de autorización del cliente', "credicompra.bigpuntos@corporacionomniglobal.com",persona.email
             txt_content="""
                     Se acaba de generar el codigo de autorizacion del crédito
                     Comuniquese con su asesor del credito, el codigo de autorización es """+codigoUsuario+"""
@@ -316,7 +316,7 @@ def factura_generar_codigos_envios(request):
             """
             sendEmail(subject, txt_content, from_email,to,html_content)
             # Correo de la corp
-            subject, from_email, to = 'Generacion de numero de autorización de la empresa CORP', "08d77fe1da-d09822@inbox.mailtrap.io",empresa.correo
+            subject, from_email, to = 'Generacion de numero de autorización de la empresa CORP', "credicompra.bigpuntos@corporacionomniglobal.com",empresa.correo
             txt_content="""
                     Se acaba de generar el codigo de autorizacion del crédito
                     Comuniquese con su asesor del credito, el codigo de autorización es """+codigoCorp+"""

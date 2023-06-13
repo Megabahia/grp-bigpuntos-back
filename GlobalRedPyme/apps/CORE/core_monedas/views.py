@@ -418,7 +418,7 @@ def insertarDato_creditoPreaprobado(dato):
 
 
 def enviarCorreoSolicitud(email, monedas):
-    subject, from_email, to = 'RECOMPENSA BIG PUNTOS', "08d77fe1da-d09822@inbox.mailtrap.io", \
+    subject, from_email, to = 'RECOMPENSA BIG PUNTOS', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
                         ¡FELICIDADES!

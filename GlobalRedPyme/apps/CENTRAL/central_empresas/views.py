@@ -214,6 +214,39 @@ def empresas_listOne_url(request, pk):
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
+# ENCONTRAR UNO
+@api_view(['GET'])
+def empresas_listOne_url_clientes(request, pk):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'listOne/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    try:
+        try:
+            url = config.API_FRONT_END_CENTRAL + '/pages/clientes/' + pk
+            query = Empresas.objects.get(urlClientes=url, state=1)
+        except Empresas.DoesNotExist:
+            err = {"error": "No existe"}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_200_OK)
+        # tomar el dato
+        if request.method == 'GET':
+            serializer = EmpresasSerializer(query)
+            createLog(logModel, serializer.data, logTransaccion)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
 # ACTUALIZAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
