@@ -11,7 +11,7 @@ from apps.CORP.corp_creditoPersonas.producer import publish
 # Consumir en sqs
 from .consumer import get_queue_url
 
-#include json library
+# include json library
 import json
 
 from rest_framework import status
@@ -86,7 +86,9 @@ def creditoPersonas_create(request):
                 serializer.save()
                 if 'tipoCredito' in serializer.data and serializer.data['tipoCredito'] == 'null':
                     usuario = serializer.data['user']
-                    enviarCorreoSolicitudGarante(usuario['email'], serializer.data['_id'])
+                    nombreGarante = usuario['garante']['nombres'] + ' ' + usuario['garante']['apellidos']
+                    nombreSolicitante = usuario['nombres'] + ' ' + usuario['apellidos']
+                    enviarCorreoSolicitudGarante(usuario['garante']['correoGarante'], serializer.data['_id'], nombreGarante, nombreSolicitante)
                 createLog(logModel, serializer.data, logTransaccion)
                 # Crear objeto en firebase para las notificaciones
                 config.FIREBASE_DB.collection('creditosPersonas').document(serializer.data['_id']).set(serializer.data)
@@ -787,7 +789,8 @@ def creditoPersonas_listOne_sinAutenticar(request, pk):
     }
     try:
         if request.method == 'POST':
-            query = CreditoPersonas.objects.filter(pk=ObjectId(pk), tipoCredito=request.data['tipoCredito'], state=1).first()
+            query = CreditoPersonas.objects.filter(pk=ObjectId(pk), tipoCredito=request.data['tipoCredito'],
+                                                   state=1).first()
             if query is None:
                 err = {"error": "No existe"}
                 createLog(logModel, err, logExcepcion)
@@ -851,27 +854,41 @@ def creditoPersonas_update_sinAutenticar(request, pk):
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
-def enviarCorreoSolicitudGarante(email, id):
-    subject, from_email, to = 'PAdrino - MAdrina', "credicompra.bigpuntos@corporacionomniglobal.com", \
+def enviarCorreoSolicitudGarante(email, id, garante, solicitante):
+    subject, from_email, to = 'Autorización de la Madrina/Padrino', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
-                        PAdrino - MAdrina
-                        {config.API_FRONT_END_CENTRAL}/pages/confirmacion-garante/{id}
-                        
-                        Atentamente,
-                        CrediCompra – Big Puntos
+        Autorización de Crédito de Consumo
+        
+        Estimad@ {garante}, {solicitante} desea que usted le apadrine para poder acceder a un Crédito de Consumo para realizar compras.
+
+        Para confirmar su aprobación como Garantía para acceder al Crédito, haga click en el siguiente enlace y confirme sus datos: 
+        {config.API_FRONT_END_CENTRAL}/pages/confirmacion-garante/{id}
+        
+        Atentamente,
+        CrediCompra – Big Puntos
     """
     html_content = f"""
-                <html>
-                    <body>
-                        <h1>PAdrino - MAdrina</h1>
-                        <a href='{config.API_FRONT_END_CENTRAL}/pages/confirmacion-garante/{id}'>Link</a>
-                        <br>
-                        Atentamente,
-                        <br>
-                        CrediCompra – Big Puntos
-                        <br>
-                    </body>
-                </html>
-                """
+        <html>
+            <body>
+                <h1>
+                Autorización de Crédito de Consumo
+                </h1>
+                <p>
+                Estimad@ {garante}, {solicitante} desea que usted le apadrine para poder acceder a un Crédito
+                 de Consumo para realizar compras.
+                </p>
+                <br>
+                <p>
+                Para confirmar su aprobación como Garantía para acceder al Crédito, haga click en el siguiente enlace
+                 y confirme sus datos: <a href='{config.API_FRONT_END_CENTRAL}/pages/confirmacion-garante/{id}'>ENLACE</a>
+                </p>
+                <br>
+                Atentamente,
+                <br>
+                CrediCompra – Big Puntos
+                <br>
+            </body>
+        </html>
+    """
     sendEmail(subject, txt_content, from_email, to, html_content)

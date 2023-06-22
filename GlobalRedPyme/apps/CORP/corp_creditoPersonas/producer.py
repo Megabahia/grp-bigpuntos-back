@@ -196,6 +196,36 @@ def publish(data):
         data['autorizacion'] = str(autorizacion).replace('https://globalredpymes.s3.amazonaws.com/', '')
         if data['autorizacion'] == 'None':
             data.pop('autorizacion')
+    if 'cedulaGarante' in data:
+        cedulaGarante = data.pop('cedulaGarante')
+        data['cedulaGarante'] = str(cedulaGarante).replace('https://globalredpymes.s3.amazonaws.com/', '')
+        if data['cedulaGarante'] == 'None':
+            data.pop('cedulaGarante')
+    if 'papeletaVotacionGarante' in data:
+        papeletaVotacionGarante = data.pop('papeletaVotacionGarante')
+        data['papeletaVotacionGarante'] = str(papeletaVotacionGarante).replace('https://globalredpymes.s3.amazonaws.com/', '')
+        if data['papeletaVotacionGarante'] == 'None':
+            data.pop('papeletaVotacionGarante')
+    if 'fotoGarante' in data:
+        fotoGarante = data.pop('fotoGarante')
+        data['fotoGarante'] = str(fotoGarante).replace('https://globalredpymes.s3.amazonaws.com/', '')
+        if data['fotoGarante'] == 'None':
+            data.pop('fotoGarante')
+    if 'impuestoPredialGarante' in data:
+        impuestoPredialGarante = data.pop('impuestoPredialGarante')
+        data['impuestoPredialGarante'] = str(impuestoPredialGarante).replace('https://globalredpymes.s3.amazonaws.com/', '')
+        if data['impuestoPredialGarante'] == 'None':
+            data.pop('impuestoPredialGarante')
+    if 'matriculaVehiculoGarante' in data:
+        matriculaVehiculoGarante = data.pop('matriculaVehiculoGarante')
+        data['matriculaVehiculoGarante'] = str(matriculaVehiculoGarante).replace('https://globalredpymes.s3.amazonaws.com/', '')
+        if data['matriculaVehiculoGarante'] == 'None':
+            data.pop('matriculaVehiculoGarante')
+    if 'planillaDomicilioGarante' in data:
+        planillaDomicilioGarante = data.pop('planillaDomicilioGarante')
+        data['planillaDomicilioGarante'] = str(planillaDomicilioGarante).replace('https://globalredpymes.s3.amazonaws.com/', '')
+        if data['planillaDomicilioGarante'] == 'None':
+            data.pop('planillaDomicilioGarante')
 
     response = snsClient.publish(
         TopicArn=topicArn,
