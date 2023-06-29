@@ -622,7 +622,7 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
                         <br>
                         <p>
                         Para acceder a su Línea de Crédito y realizar pagos a sus proveedores y/o empleados, por favor haga click en el siguiente enlace:
-                        <a href='{config.API_FRONT_END_IFISCLIENTES}/pages/preApprovedCreditLine'>Link</a>
+                        <a href='{config.API_FRONT_END_IFISCLIENTES}/pages/preApprovedCreditLine?email={dato[10]}&nombre={data['nombresCompleto']}'>Link</a>
                         </p>
 
                         <p>Su código de ingreso es: {codigo}</p>

@@ -54,6 +54,8 @@ def get_queue_url():
             # Busca en la bdd las sqs
             query = CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson), state=1).first()
             if query is None:
+                if type(jsonRequest['empresaInfo']) == str and jsonRequest['empresaInfo'] != '':
+                    jsonRequest['empresaInfo'] = json.loads(jsonRequest['empresaInfo'])
                 # Guardamos
                 credito = CreditoPersonas.objects.create(**jsonRequest)
             else:
