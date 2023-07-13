@@ -187,7 +187,10 @@ def creditoPersonas_update(request, pk):
                             email = usuario['email']
                         else:
                             email = serializer.data['empresaInfo']['correo']
-                        enviarCorreoSolicitudEnviada(email)
+                        if 'Pymes' in serializer.data['tipoCredito']:
+                            enviarCorreoSolicitudEnviadaLineaCredito(email)
+                        else:
+                            enviarCorreoSolicitudEnviada(email)
                     if request.data["estado"] == 'Completado':
                         # Se envia a la cola de bigpuntos
                         publish(serializer.data)
@@ -770,6 +773,44 @@ def enviarCorreoSolicitudEnviada(email):
                     </body>
                 </html>
                 """
+    sendEmail(subject, txt_content, from_email, to, html_content)
+
+
+def enviarCorreoSolicitudEnviadaLineaCredito(email):
+    subject, from_email, to = 'Estamos revisando sus documentos', "credicompra.bigpuntos@corporacionomniglobal.com", \
+                              email
+    txt_content = f"""
+        REVISIÓN DE DOCUMENTOS EN PROCESO
+        Sus documentos para acceder a una Línea de Crédito para realizar pagos a sus proveedores y/o
+         empleados, otorgada por una Cooperativa de Ahorro y Crédito regulada, están siendo revisados.
+
+        Le mantendremos informado a través de nuestros canales.
+
+        Atentamente,
+        Equipo Global Redpyme – Crédito Pagos
+    """
+    html_content = f"""
+        <html>
+            <body>
+                <h1>REVISIÓN DE DOCUMENTOS EN PROCESO</h1>
+                <p>
+                    Sus documentos para acceder a una Línea de Crédito para realizar pagos a sus proveedores 
+                    y/o empleados, otorgada por una Cooperativa de Ahorro y Crédito regulada, están siendo revisados.
+                 </p>
+                <br>
+                <br>
+                <p>
+                Le mantendremos informado a través de nuestros canales.
+                </p>
+                <br>
+                <br>
+                Atentamente,
+                <br>
+                Equipo Global Redpyme – Crédito Pagos
+                <br>
+            </body>
+        </html>
+    """
     sendEmail(subject, txt_content, from_email, to, html_content)
 
 

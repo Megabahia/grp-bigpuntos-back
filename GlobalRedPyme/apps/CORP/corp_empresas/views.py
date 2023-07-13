@@ -942,3 +942,38 @@ def empresas_delete_empleado(request, pk):
         err = {"error": 'Un error ha ocurrido: {}'.format(e)}
         createLog(logModel, err, logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+def empresas_listOne_empresa_empleado(request):
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'listOne/empresa/empleado/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            # Filtros
+            filters = {"state": "1"}
+
+            if "identificacion" in request.data:
+                if request.data["identificacion"] != '':
+                    filters['identificacion'] = request.data["identificacion"]
+
+            # Serializar los datos
+            query = Empleados.objects.filter(**filters).first()
+            serializer = EmpresasSerializer(query.empresa)
+            # envio de datos
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)

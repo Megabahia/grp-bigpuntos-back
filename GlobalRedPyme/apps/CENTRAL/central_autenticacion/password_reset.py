@@ -14,6 +14,15 @@ from django.urls import reverse
 from ...config import config
 from rest_framework.response import Response
 from rest_framework import status
+# Importar serializers empresa y base de datos empresa
+from ...CORP.corp_empresas.models import Empresas
+from ...CORP.corp_empresas.serializers import EmpresasSerializer
+from ..central_usuarios.models import UsuariosEmpresas
+# permisos
+from ...CENTRAL.central_roles.models import RolesUsuarios
+from ...CENTRAL.central_roles.serializers import ListRolesSerializer
+# ObjectId
+from bson import ObjectId
 
 
 def resetPasswordNewUser(emailUsuario):
@@ -80,28 +89,60 @@ def enviarEmailAsignacionPassword(reset_password_token):
         else:
             url = config.API_FRONT_END + config.endpointEmailAsignacionPassword + "?token=" + reset_password_token.key + "&email=" + reset_password_token.user.email
         # url=config.API_FRONT_END+config.endpointEmailAsignacionPassword+"?token="+reset_password_token.key+"&email="+reset_password_token.user.email
-        print(url)
-        subject, from_email, to = 'CREACIÓN DE CUENTA CREDICOMPRA-BIG PUNTOS', "credicompra.bigpuntos@corporacionomniglobal.com", reset_password_token.user.email
-        txt_content = f"""
+        if reset_password_token.user.tipoUsuario.nombre == 'corp':
+            empresa = UsuariosEmpresas.objects.filter(usuario=reset_password_token.user).first()
+            empresaSerializer = EmpresasSerializer(Empresas.objects.filter(_id=ObjectId(empresa.empresa_id)).first()).data
+            rolesUsuario = RolesUsuarios.objects.filter(usuario=reset_password_token.user, state=1)
+            roles = ListRolesSerializer(rolesUsuario, many=True).data
+            subject, from_email, to = f"""Creación de Cuenta CORP - {empresaSerializer['nombreEmpresa']}""", "credicompra.bigpuntos@corporacionomniglobal.com", reset_password_token.user.email
+            txt_content = f"""
                 REGISTRO DE CUENTA
+                Estimad@ 
+                Usted ha sido registrad@ por {empresaSerializer['nombreEmpresa']} para {roles[0]['descripcion']}
                 Para completar su registro Haga click en el siguiente enlace: {url}
                 Si el enlace no funciona, copie el siguiente link en una ventana del navegador: {url}
                 Atentamente,
                 CrediCompra-BigPuntos.
-        """
-        html_content = f"""
-        <html>
-            <body>
-                <h1>REGISTRO DE CUENTA</h1>
-                Para completar su registro Haga click en el siguiente enlace: <a href='{url}'>CLICK AQUÍ</a><br><br>
-                
-                Si el enlace no funciona, copie el siguiente link en una ventana del navegador: {url}<br><br>
-                
-                Atentamente,<br>
-                CrediCompra-BigPuntos.<br>
-            </body>
-        </html>
-        """
+            """
+            html_content = f"""
+                    <html>
+                        <body>
+                            <h1>REGISTRO DE CUENTA</h1>
+                            Estimad@ 
+                            
+                            Usted ha sido registrad@ por {empresaSerializer['nombreEmpresa']} para {roles[0]['descripcion']}
+                             
+                            Para completar su registro Haga click en el siguiente enlace: <a href='{url}'>CLICK AQUÍ</a><br><br>
+
+                            Si el enlace no funciona, copie el siguiente link en una ventana del navegador: {url}<br><br>
+
+                            Atentamente,<br>
+                            CrediCompra-BigPuntos.<br>
+                        </body>
+                    </html>
+                    """
+        else:
+            subject, from_email, to = 'CREACIÓN DE CUENTA CREDICOMPRA-BIG PUNTOS', "credicompra.bigpuntos@corporacionomniglobal.com", reset_password_token.user.email
+            txt_content = f"""
+                            REGISTRO DE CUENTA
+                            Para completar su registro Haga click en el siguiente enlace: {url}
+                            Si el enlace no funciona, copie el siguiente link en una ventana del navegador: {url}
+                            Atentamente,
+                            CrediCompra-BigPuntos.
+                    """
+            html_content = f"""
+                    <html>
+                        <body>
+                            <h1>REGISTRO DE CUENTA</h1>
+                            Para completar su registro Haga click en el siguiente enlace: <a href='{url}'>CLICK AQUÍ</a><br><br>
+
+                            Si el enlace no funciona, copie el siguiente link en una ventana del navegador: {url}<br><br>
+
+                            Atentamente,<br>
+                            CrediCompra-BigPuntos.<br>
+                        </body>
+                    </html>
+                    """
         if sendEmail(subject, txt_content, from_email, to, html_content):
             return True
         return False

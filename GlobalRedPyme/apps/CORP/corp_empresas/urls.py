@@ -17,6 +17,7 @@ from .views import(
 	empresas_uploadEmpleados,
 	empresas_listEmpleados,
 	empresas_listOne_empleado,
+	empresas_listOne_empresa_empleado,
 	empresas_update_empleado,
 	empresas_delete_empleado,
 )
@@ -40,6 +41,7 @@ urlpatterns = [
 	path('upload/empleados/', empresas_uploadEmpleados, name="empresas_uploadEmpleados"),
 	path('list/empleados/', empresas_listEmpleados, name="empresas_listEmpleados"),
 	path('listOne/empleado/<str:pk>', empresas_listOne_empleado, name="empresas_listOne_empleado"),
+	path('listOne/empresa/empleado/', empresas_listOne_empresa_empleado, name="empresas_listOne_empresa_empleado"),
 	path('actualizar/<str:pk>', empresas_update_empleado, name="empresas_update_empleado"),
 	path('empleado/delete/<str:pk>', empresas_delete_empleado, name="empresas_delete_empleado"),
 
