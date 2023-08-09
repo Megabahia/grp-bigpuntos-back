@@ -1,9 +1,10 @@
-from apps.CORP.corp_movimientoCobros.models import  MovimientoCobros
-from apps.CORP.corp_autorizaciones.models import Autorizaciones
-from apps.CORE.core_monedas.models import  Monedas
-from apps.CORP.corp_pagos.models import Pagos
-from apps.CORP.corp_monedasEmpresa.models import MonedasEmpresa
-from apps.CORP.corp_movimientoCobros.serializers import (
+from ...CENTRAL.central_catalogo.models import Catalogo
+from ...CORP.corp_movimientoCobros.models import  MovimientoCobros
+from ...CORP.corp_autorizaciones.models import Autorizaciones
+from ...CORE.core_monedas.models import Monedas
+from ...CORP.corp_pagos.models import Pagos
+from ...CORP.corp_monedasEmpresa.models import MonedasEmpresa
+from ...CORP.corp_movimientoCobros.serializers import (
     MovimientoCobrosSerializer
 )
 from rest_framework import status
@@ -18,6 +19,11 @@ from drf_yasg.utils import swagger_auto_schema
 from bson import ObjectId
 #logs
 from apps.CENTRAL.central_logs.methods import createLog,datosTipoLog, datosProductosMDP
+
+from ...PERSONAS.personas_personas.models import Personas
+from ...PERSONAS.personas_personas.security import desencriptar, encriptar
+from ...PERSONAS.personas_personas.serializers import PersonasSerializer
+
 #declaracion variables log
 datosAux=datosProductosMDP()
 datosTipoLogAux=datosTipoLog()
@@ -150,6 +156,20 @@ def movimientoCobros_create(request):
                     'descripcion': 'Cobro de monedas generado por comprobante de compra.'
                 }
                 Monedas.objects.create(**dataEmpresa)
+                referido = Personas.objects.filter(codigoUsuario=encriptar(request.data['codigoReferido'])).first()
+                if referido:
+                    referidoSerializer = PersonasSerializer(referido).data
+                    monedasReferido = Monedas.objects.filter(empresa_id=None, user_id=str(referidoSerializer['_id']), autorizador_id=None).order_by('-created_at').first()
+                    catalogoReferencia = Catalogo.objects.filter(nombre='BP_REFERNCIA_COMPARTIDO',tipo='GANAR_BP_REFERNCIA').first()
+                    dataReferido = {
+                        'user_id': str(referidoSerializer['_id']),
+                        'tipo': 'Recompensa',
+                        'estado': 'aprobado',
+                        'credito': float(catalogoReferencia.valor),
+                        'saldo': float(catalogoReferencia.valor) if monedasReferido is None else float(monedasReferido.saldo) + float(catalogoReferencia.valor),
+                        'descripcion': 'Recompensa de monedas por compartir publicacion.'
+                    }
+                    Monedas.objects.create(**dataReferido)
                 # saldo = monedasUsuario.saldo - float(request.data['montoSupermonedas'])
                 # Monedas.objects.create(user_id=request.data['user_id'],empresa_id=request.data['empresa_id'],tipo='Debito',debito=request.data['montoSupermonedas'],saldo=saldo)
                 createLog(logModel,serializer.data,logTransaccion)

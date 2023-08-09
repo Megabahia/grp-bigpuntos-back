@@ -20,8 +20,8 @@ class MovimientoCobrosSerializer(serializers.ModelSerializer):
         persona = Personas.objects.filter(user_id=instance.user_id).first()
         personaSerializer = PersonasSerializer(persona).data
         if personaSerializer:
-            data.update({"nombres": personaSerializer.nombres})
-            data.update({"apellidos": personaSerializer.apellidos})
-            data.update({"identificacion": personaSerializer.identificacion})
-            data.update({"email": personaSerializer.email})
+            data.update({"nombres": personaSerializer['nombres']})
+            data.update({"apellidos": personaSerializer['apellidos']})
+            data.update({"identificacion": personaSerializer['identificacion']})
+            data.update({"email": personaSerializer['email']})
         return data

@@ -21,6 +21,9 @@ python manage.py runserver
 
 # Como utilizar este repositorio en Ambiente DEV con Docker
 
+## Pasos previos
+cambiar en el archivo config que variable de entorno compilar
+
 ## 1.Construir la imagen para windows y otro para mac
 ```shell
 sudo docker build -t james46007/grp-backend:dev .
@@ -36,12 +39,22 @@ sudo docker push james46007/grp-backend:dev
 ```
 
 ## 3.En el servidor debe estar instalado y configurado Docker
-## 4.Bajar la imagen del server a deployar
+## 4.Bajar la imagen del docker a deployar en el servidor que se desea ejectuar
 ```shell
 sudo docker pull james46007/grp-backend:dev
 ```
 
-## 5.Construir el contenedor , este comando deja corriebdo el contenedor
+## 5. Detener la imagen que vamos a deployar
+```shell
+sudo docker stop grp-backend
+```
+
+## 6. Borrar la imagen que vamos a deployar
+```shell
+sudo docker rm grp-backend
+```
+
+## 7.Construir el contenedor , este comando deja corriebdo el contenedor
 ```shell
 sudo docker run -d -p 8000:8000 -it --log-opt max-size=10m --log-opt max-file=3 --name grp-backend --restart always james46007/grp-backend:dev
 ```

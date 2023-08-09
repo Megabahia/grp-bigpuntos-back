@@ -389,6 +389,8 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
                 </p>
 
                 Su código de ingreso es: {codigo}<br>
+                <br>
+                Si su enlace no funciona, copia el siguiente link en una ventana del navegador: {config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer
 
                 Saludos,<br>
                 Equipo Global Red Pymes.<br>
@@ -409,12 +411,12 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
         if (not utils.__validar_ced_ruc(str(dato[7]), 0)):
             return f"""El usuario {dato[8]} {dato[9]} tiene la cédula incorrecta."""
 
-        empleado = Empleados.objects.filter(identificacion=str(dato[7])).first()
-        if empleado is None:
-            return f"""El usuario {dato[8]} {dato[9]} no está registrado, por favor registre al usuario en la opción EMPLEADOS DE EMPRESAS."""
-        else:
-            if empleado.empresa._id != ObjectId(empresa_comercial):
-                return f"""Lo sentimos, el empleado {dato[8]} {dato[9]} se repite, por favor verifique los datos y vuelva a intentarlo"""
+        # empleado = Empleados.objects.filter(identificacion=str(dato[7])).first()
+        # if empleado is None:
+        #     return f"""El usuario {dato[8]} {dato[9]} no está registrado, por favor registre al usuario en la opción EMPLEADOS DE EMPRESAS."""
+        # else:
+        #     if empleado.empresa._id != ObjectId(empresa_comercial):
+        #         return f"""Lo sentimos, el empleado {dato[8]} {dato[9]} se repite, por favor verifique los datos y vuelva a intentarlo"""
 
         timezone_now = timezone.localtime(timezone.now())
         data = {}
@@ -460,7 +462,9 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
                         </p>
         
                         Su código de ingreso es: {codigo}<br>
-
+                        <br>
+                        Si su enlace no funciona, copia el siguiente link en una ventana del navegador: {config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer
+                        <br>
                         Saludos,<br>
                         Equipo Global Red Pymes.<br>
                     </body>

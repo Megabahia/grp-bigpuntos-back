@@ -56,6 +56,18 @@ def get_queue_url():
             if query is None:
                 if type(jsonRequest['empresaInfo']) == str and jsonRequest['empresaInfo'] != '':
                     jsonRequest['empresaInfo'] = json.loads(jsonRequest['empresaInfo'])
+                if 'tipoCredito' in jsonRequest and jsonRequest['tipoCredito'] == '':
+                    jsonRequest['tipoCredito'] = jsonRequest['canal']
+                if 'solicitudCredito' in jsonRequest:
+                    jsonRequest.pop('solicitudCredito')
+                if 'buroCreditoIfis' in jsonRequest:
+                    jsonRequest.pop('buroCreditoIfis')
+                if 'pagare' in jsonRequest:
+                    jsonRequest.pop('pagare')
+                if 'contratosCuenta' in jsonRequest:
+                    jsonRequest.pop('contratosCuenta')
+                if 'tablaAmortizacion' in jsonRequest:
+                    jsonRequest.pop('tablaAmortizacion')
                 # Guardamos
                 credito = CreditoPersonas.objects.create(**jsonRequest)
             else:

@@ -3,7 +3,7 @@ from apps.CORP.corp_pagos.models import Pagos
 from apps.PERSONAS.personas_personas.models import Personas
 from apps.CORE.core_monedas.models import Monedas
 from apps.CORE.core_monedas.serializers import MonedasGuardarSerializer
-from apps.PERSONAS.personas_personas.serializers import PersonasSearchSerializer
+from ...PERSONAS.personas_personas.serializers import PersonasSearchSerializer
 from apps.CORP.corp_pagos.serializers import (
     PagosSerializer
 )

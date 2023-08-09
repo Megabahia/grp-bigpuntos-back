@@ -271,7 +271,7 @@ else:
     AWS_REGION_NAME = env.str('AWS_REGION_NAME')
     AWS_QUEUE_NAME = env.str('AWS_QUEUE_NAME')
     # CORS
-    CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS'))
+    CORS_ALLOWED_ORIGINS = tuple(env.list('CORS_ALLOWED_ORIGINS', default=['*']))
     # databases
     DATABASES = {
         'default': {

@@ -17,7 +17,7 @@ class PersonasSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         if representation['identificacion']:
             representation['identificacion'] = desencriptar(eval(representation['identificacion']))
-        if representation['nombres']:
+        if 'nombres' in representation and representation['nombres']:
             representation['nombres'] = desencriptar(eval(representation['nombres']))
         if representation['apellidos']:
             representation['apellidos'] = desencriptar(eval(representation['apellidos']))
@@ -385,51 +385,51 @@ class PersonasSearchSerializer(serializers.ModelSerializer):
             representation['nombres'] = desencriptar(eval(representation['nombres']))
         if representation['apellidos']:
             representation['apellidos'] = desencriptar(eval(representation['apellidos']))
-        if representation['nombresCompleto']:
+        if 'nombresCompleto' in representation and representation['nombresCompleto']:
             representation['nombresCompleto'] = desencriptar(eval(representation['nombresCompleto']))
-        if representation['genero']:
+        if 'genero' in representation and representation['genero']:
             representation['genero'] = desencriptar(eval(representation['genero']))
-        if representation['fechaNacimiento']:
+        if 'fechaNacimiento' in representation and representation['fechaNacimiento']:
             representation['fechaNacimiento'] = desencriptar(eval(representation['fechaNacimiento']))
-        if representation['edad']:
+        if 'edad' in representation and representation['edad']:
             representation['edad'] = int(desencriptar(eval(representation['edad'])))
-        if representation['ciudad']:
+        if 'ciudad' in representation and representation['ciudad']:
             representation['ciudad'] = desencriptar(eval(representation['ciudad']))
-        if representation['provincia']:
+        if 'provincia' in representation and representation['provincia']:
             representation['provincia'] = desencriptar(eval(representation['provincia']))
-        if representation['pais']:
+        if 'pais' in representation and representation['pais']:
             representation['pais'] = desencriptar(eval(representation['pais']))
-        if representation['direccion']:
+        if 'direccion' in representation and representation['direccion']:
             representation['direccion'] = desencriptar(eval(representation['direccion']))
-        if representation['email']:
+        if 'email' in representation and representation['email']:
             representation['email'] = desencriptar(eval(representation['email']))
-        if representation['emailAdicional']:
+        if 'emailAdicional' in representation and representation['emailAdicional']:
             representation['emailAdicional'] = desencriptar(eval(representation['emailAdicional']))
-        if representation['telefono']:
+        if 'telefono' in representation and representation['telefono']:
             representation['telefono'] = desencriptar(eval(representation['telefono']))
-        if representation['whatsapp']:
+        if 'whatsapp' in representation and representation['whatsapp']:
             representation['whatsapp'] = desencriptar(eval(representation['whatsapp']))
-        if representation['referenciaDomicilio']:
+        if 'referenciaDomicilio' in representation and representation['referenciaDomicilio']:
             representation['referenciaDomicilio'] = json.loads(desencriptar(eval(representation['referenciaDomicilio'])))
-        if representation['ocupacionSolicitante']:
+        if 'ocupacionSolicitante' in representation and representation['ocupacionSolicitante']:
             representation['ocupacionSolicitante'] = json.loads(desencriptar(eval(representation['ocupacionSolicitante'])))
-        if representation['referenciasSolicitante']:
+        if 'referenciasSolicitante' in representation and representation['referenciasSolicitante']:
             representation['referenciasSolicitante'] = json.loads(desencriptar(eval(representation['referenciasSolicitante'])))
-        if representation['ingresosSolicitante']:
+        if 'ingresosSolicitante' in representation and representation['ingresosSolicitante']:
             representation['ingresosSolicitante'] = json.loads(desencriptar(eval(representation['ingresosSolicitante'])))
-        if representation['gastosSolicitante']:
+        if 'gastosSolicitante' in representation and representation['gastosSolicitante']:
             representation['gastosSolicitante'] = json.loads(desencriptar(eval(representation['gastosSolicitante'])))
-        if representation['estadoCivil']:
+        if 'estadoCivil' in representation and representation['estadoCivil']:
             representation['estadoCivil'] = desencriptar(eval(representation['estadoCivil']))
-        if representation['tipoIdentificacion']:
+        if 'tipoIdentificacion' in representation and representation['tipoIdentificacion']:
             representation['tipoIdentificacion'] = desencriptar(eval(representation['tipoIdentificacion']))
-        if representation['tipoPersona']:
+        if 'tipoPersona' in representation and representation['tipoPersona']:
             representation['tipoPersona'] = desencriptar(eval(representation['tipoPersona']))
-        if representation['celular']:
+        if 'celular' in representation and representation['celular']:
             representation['celular'] = desencriptar(eval(representation['celular']))
-        if representation['codigoUsuario']:
+        if 'codigoUsuario' in representation and representation['codigoUsuario']:
             representation['codigoUsuario'] = desencriptar(eval(representation['codigoUsuario']))
-        if representation['garante']:
+        if 'garante' in representation and representation['garante']:
             representation['garante'] = json.loads(desencriptar(eval(representation['garante'])))
         return representation
 

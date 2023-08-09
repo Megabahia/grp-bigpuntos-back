@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.CORP.corp_pagos.models import (
+from .models import (
     Pagos
 )
 
