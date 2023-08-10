@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from ..central_usuarios.models import Usuarios, UsuariosEmpresas
+from ...CORP.corp_creditoPersonas.models import CreditoPersonas
 # Importar base de datos personas
 from ...PERSONAS.personas_personas.models import Personas
 # Importar serializers empresa y base de datos empresa
@@ -83,6 +84,13 @@ class login(ObtainAuthToken):
                             Empresas.objects.filter(_id=ObjectId(empresa.empresa_id)).first()).data
                     except Exception as e:
                         empresaSerializer = {}
+                    try:
+                        credito = True if CreditoPersonas.objects.filter(user_id=user._id,
+                                                              estado__in=['Nuevo', 'Enviado', 'Por Completar']
+                                                              ) else False
+
+                    except Exception as e:
+                        personaSerializer = {}
 
                     data = {
                         'token': token.key,
@@ -92,7 +100,8 @@ class login(ObtainAuthToken):
                         'email': user.email,
                         'tokenExpiracion': expires_in(token),
                         'roles': roles,
-                        'estado': user.estado
+                        'estado': user.estado,
+                        'noPuedeSolicitar': credito
                     }
                     createLog(logModel, data, logTransaccion)
                     return Response(data, status=status.HTTP_200_OK)
@@ -116,7 +125,7 @@ def loginFacebookView(request):
             emailUser = request.data['username']
             user = User.objects.get(email__exact=emailUser)
             token = Token.objects.create(user=user)
-           # user.token = token
+            # user.token = token
             rolesUsuario = RolesUsuarios.objects.filter(usuario=user, state=1)
             roles = ListRolesSerializer(rolesUsuario, many=True).data
             try:
@@ -131,7 +140,6 @@ def loginFacebookView(request):
                     Empresas.objects.filter(_id=ObjectId(empresa.empresa_id)).first()).data
             except Exception as e:
                 empresaSerializer = {}
-
 
             data = {
                 'token': token.key,
