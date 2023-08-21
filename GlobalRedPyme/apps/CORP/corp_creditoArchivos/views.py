@@ -361,7 +361,6 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         # persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
         # data['user_id'] = persona.user_id
         data['numeroIdentificacion'] = dato[8]
-        data['email'] = dato[16]
         data['nombres'] = dato[9].replace('"', "") if dato[9] != "NULL" else None
         data['apellidos'] = dato[10].replace('"', "") if dato[10] != "NULL" else None
         data['nombresCompleto'] = data['nombres'] + ' ' + data['apellidos']
@@ -373,7 +372,33 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
         data['created_at'] = str(timezone_now)
         # inserto el dato con los campos requeridos
         CreditoPersonas.objects.create(**data)
+        subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "credicompra.bigpuntos@corporacionomniglobal.com", \
+                                  dato[16]
+        txt_content = codigo
+        html_content = f"""
+        <html>
+            <body>
+                <h1>PRE-CALIFICACIÓN DE CRÉDITO DE CONSUMO</h1>
 
+                <p>
+                 Usted Tiene un crédito Pre-Aprobado de $ {data['monto']} para que realice compras en los mejores Locales Comerciales del país.
+                </p>
+                <br>
+                <p>Ingrese al siguiente link y acceda a su crédito: 
+                <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
+                </p>
+
+                Su código de ingreso es: {codigo}<br>
+                <br>
+                Si su enlace no funciona, copia el siguiente link en una ventana del navegador: {config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer
+
+                Saludos,<br>
+                Equipo Global Red Pymes.<br>
+            </body>
+        </html>
+        """
+        # CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
+        sendEmail(subject, txt_content, from_email, to, html_content)
         return 'Dato insertado correctamente'
     except Exception as e:
         return str(e)
@@ -435,7 +460,7 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
                         <p>Ingrese al siguiente link y acceda a su crédito: 
                         <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
                         </p>
-        
+
                         Su código de ingreso es: {codigo}<br>
                         <br>
                         Si su enlace no funciona, copia el siguiente link en una ventana del navegador: {config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer
@@ -576,15 +601,15 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
                                   dato[10]
         txt_content = f"""
         FELICIDADES!
-        
+
         Estimad@ {data['nombresCompleto']}
-        
+
         Nos complace comunicarle que usted tiene una LÍNEA DE CRÉDITO PREAPROBADA otorgada por {dato[13]} de $ {data['monto']}
         para que pueda realizar pagos a sus proveedores y/o empleados.
-        
+
         Para acceder a su Línea de Crédito y realizar pagos a sus proveedores y/o empleados, por favor haga click en
          el siguiente enlace: LINK
-         
+
         {codigo}
         """
         html_content = f"""
