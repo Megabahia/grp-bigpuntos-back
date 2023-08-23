@@ -219,7 +219,7 @@ def uploadEXCEL_creditosPreaprobados(request, pk):
             with tempfile.TemporaryDirectory() as d:
                 ruta = d + 'creditosPreAprobados.xlsx'
                 s3 = boto3.resource('s3')
-                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
 
             first = True  # si tiene encabezado
             #             uploaded_file = request.FILES['documento']
@@ -290,7 +290,7 @@ def uploadEXCEL_creditosPreaprobados_empleados(request, pk):
             with tempfile.TemporaryDirectory() as d:
                 ruta = d + 'creditosPreAprobados.xlsx'
                 s3 = boto3.resource('s3')
-                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
 
             first = True  # si tiene encabezado
             #             uploaded_file = request.FILES['documento']
@@ -499,7 +499,7 @@ def uploadEXCEL_creditosPreaprobados_negocios(request, pk):
             with tempfile.TemporaryDirectory() as d:
                 ruta = d + 'creditosPreAprobados.xlsx'
                 s3 = boto3.resource('s3')
-                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
 
             first = True  # si tiene encabezado
             #             uploaded_file = request.FILES['documento']
@@ -626,7 +626,7 @@ def viewEXCEL_creditosPreaprobados_negocios(request, pk):
             with tempfile.TemporaryDirectory() as d:
                 ruta = d + 'creditosPreAprobados.xlsx'
                 s3 = boto3.resource('s3')
-                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
 
             first = True  # si tiene encabezado
             #             uploaded_file = request.FILES['documento']
