@@ -48,40 +48,41 @@ def get_queue_url():
         for message in queue.receive_messages(MaxNumberOfMessages=max_queue_messages):
             # process message body
             body = json.loads(message.body)
-            jsonRequest = json.loads(body['Message'])
-            _idCredidPerson = json.loads(body['Message'])['external_id']
-            jsonRequest.pop('_id')
-            # Busca en la bdd las sqs
-            query = CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson), state=1).first()
-            if query is None:
-                if type(jsonRequest['empresaInfo']) == str and jsonRequest['empresaInfo'] != '':
-                    jsonRequest['empresaInfo'] = json.loads(jsonRequest['empresaInfo'])
-                if 'tipoCredito' in jsonRequest and jsonRequest['tipoCredito'] == '':
-                    jsonRequest['tipoCredito'] = jsonRequest['canal']
-                if 'solicitudCredito' in jsonRequest:
-                    jsonRequest.pop('solicitudCredito')
-                if 'buroCreditoIfis' in jsonRequest:
-                    jsonRequest.pop('buroCreditoIfis')
-                if 'pagare' in jsonRequest:
-                    jsonRequest.pop('pagare')
-                if 'contratosCuenta' in jsonRequest:
-                    jsonRequest.pop('contratosCuenta')
-                if 'tablaAmortizacion' in jsonRequest:
-                    jsonRequest.pop('tablaAmortizacion')
-                # Guardamos
-                credito = CreditoPersonas.objects.create(**jsonRequest)
-            else:
-                CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson)).update(**jsonRequest)
-                credito = query
-            # Crear objeto en firebase para las notificaciones
-            config.FIREBASE_DB.collection('creditosPersonas').document(str(credito._id)).set(jsonRequest)
-            if jsonRequest['email'] == 'Aprobado':
-                usuario = jsonRequest['user']
-                email = usuario['email'] if usuario else jsonRequest['email']
-                if email == '' or email is None:
-                    email = jsonRequest['empresaInfo']['correo']
-                # Enviar correo de aprobado
-                enviarCorreoSolicitud(email)
+            if body['Subject'] != 'IFIS':
+                jsonRequest = json.loads(body['Message'])
+                _idCredidPerson = json.loads(body['Message'])['external_id']
+                jsonRequest.pop('_id')
+                # Busca en la bdd las sqs
+                query = CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson), state=1).first()
+                if query is None:
+                    if type(jsonRequest['empresaInfo']) == str and jsonRequest['empresaInfo'] != '':
+                        jsonRequest['empresaInfo'] = json.loads(jsonRequest['empresaInfo'])
+                    if 'tipoCredito' in jsonRequest and jsonRequest['tipoCredito'] == '':
+                        jsonRequest['tipoCredito'] = jsonRequest['canal']
+                    if 'solicitudCredito' in jsonRequest:
+                        jsonRequest.pop('solicitudCredito')
+                    if 'buroCreditoIfis' in jsonRequest:
+                        jsonRequest.pop('buroCreditoIfis')
+                    if 'pagare' in jsonRequest:
+                        jsonRequest.pop('pagare')
+                    if 'contratosCuenta' in jsonRequest:
+                        jsonRequest.pop('contratosCuenta')
+                    if 'tablaAmortizacion' in jsonRequest:
+                        jsonRequest.pop('tablaAmortizacion')
+                    # Guardamos
+                    credito = CreditoPersonas.objects.create(**jsonRequest)
+                else:
+                    CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson)).update(**jsonRequest)
+                    credito = query
+                # Crear objeto en firebase para las notificaciones
+                config.FIREBASE_DB.collection('creditosPersonas').document(str(credito._id)).set(jsonRequest)
+                if jsonRequest['email'] == 'Aprobado':
+                    usuario = jsonRequest['user']
+                    email = usuario['email'] if usuario else jsonRequest['email']
+                    if email == '' or email is None:
+                        email = jsonRequest['empresaInfo']['correo']
+                    # Enviar correo de aprobado
+                    enviarCorreoSolicitud(email)
             # Borramos SQS
             message.delete()
     except Exception as e:
