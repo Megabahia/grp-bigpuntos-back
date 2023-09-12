@@ -648,3 +648,148 @@ def viewEXCEL_creditosPreaprobados_negocios(request, pk):
     except Exception as e:
         err = {"error": 'Error verifique el archivo, un error ha ocurrido: {}'.format(e)}
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def uploadEXCEL_creditosPreaprobados_automotriz_empleados(request, pk):
+    contValidos = 0
+    contInvalidos = 0
+    contTotal = 0
+    errores = []
+    try:
+        if request.method == 'POST':
+            archivo = PreAprobados.objects.filter(pk=pk, state=1).first()
+            # environ init
+            env = environ.Env()
+            environ.Env.read_env()  # LEE ARCHIVO .ENV
+            client_s3 = boto3.client(
+                's3',
+                aws_access_key_id=env.str('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key=env.str('AWS_SECRET_ACCESS_KEY')
+            )
+            with tempfile.TemporaryDirectory() as d:
+                ruta = d + 'creditosPreAprobados.xlsx'
+                s3 = boto3.resource('s3')
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
+
+            first = True  # si tiene encabezado
+            #             uploaded_file = request.FILES['documento']
+            # you may put validations here to check extension or file size
+            wb = openpyxl.load_workbook(ruta)
+            # getting a particular sheet by name out of many sheets
+            worksheet = wb["Clientes"]
+            lines = list()
+        for row in worksheet.iter_rows():
+            row_data = list()
+            for cell in row:
+                row_data.append(str(cell.value))
+            lines.append(row_data)
+
+        for dato in lines:
+            contTotal += 1
+            if first:
+                first = False
+                continue
+            else:
+                if len(dato) == 22:
+                    resultadoInsertar = insertarDato_creditoPreaprobado_automotriz_empleado(dato, archivo.empresa_financiera,
+                                                                                 archivo.empresa_comercial)
+                    if resultadoInsertar != 'Dato insertado correctamente':
+                        contInvalidos += 1
+                        errores.append({"error": "Error en la línea " + str(contTotal) + ": " + str(resultadoInsertar)})
+                    else:
+                        contValidos += 1
+                else:
+                    contInvalidos += 1
+                    errores.append({"error": "Error en la línea " + str(
+                        contTotal) + ": la fila tiene un tamaño incorrecto (" + str(len(dato)) + ")"})
+
+        result = {"mensaje": "La Importación se Realizo Correctamente",
+                  "correctos": contValidos,
+                  "incorrectos": contInvalidos,
+                  "errores": errores
+                  }
+        os.remove(ruta)
+        # archivo.state = 0
+        archivo.estado = "Cargado"
+        archivo.save()
+        return Response(result, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        err = {"error": 'Error verifique el archivo, un error ha ocurrido: {}'.format(e)}
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+def insertarDato_creditoPreaprobado_automotriz_empleado(dato, empresa_financiera, empresa_comercial):
+    print('entro')
+    try:
+        if (not utils.__validar_ced_ruc(str(dato[7]), 0)):
+            return f"""El usuario {dato[8]} {dato[9]} tiene la cédula incorrecta."""
+
+        # empleado = Empleados.objects.filter(identificacion=str(dato[7])).first()
+        # if empleado is None:
+        #     return f"""El usuario {dato[8]} {dato[9]} no está registrado, por favor registre al usuario en la opción EMPLEADOS DE EMPRESAS."""
+        # else:
+        #     if empleado.empresa._id != ObjectId(empresa_comercial):
+        #         return f"""Lo sentimos, el empleado {dato[8]} {dato[9]} se repite, por favor verifique los datos y vuelva a intentarlo"""
+
+        timezone_now = timezone.localtime(timezone.now())
+        data = {}
+        data['vigencia'] = dato[0].replace('"', "")[0:10] if dato[0] != "NULL" else None
+        data['concepto'] = dato[1].replace('"', "") if dato[1] != "NULL" else None
+        data['monto'] = dato[2].replace('"', "") if dato[2] != "NULL" else None
+        data['plazo'] = dato[3].replace('"', "") if dato[3] != "NULL" else None
+        data['interes'] = dato[4].replace('"', "") if dato[4] != "NULL" else None
+        data['estado'] = 'Nuevo'
+        data['tipoCredito'] = ''
+        data['tipoPersona'] = 'Empleado-PreAprobado'
+        data['canal'] = 'Credito Automotriz Empleado-PreAprobado'
+        # persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
+        # data['user_id'] = persona.user_id
+        data['numeroIdentificacion'] = dato[7]
+        data['nombres'] = dato[8].replace('"', "") if dato[8] != "NULL" else None
+        data['apellidos'] = dato[9].replace('"', "") if dato[9] != "NULL" else None
+        data['nombresCompleto'] = data['nombres'] + ' ' + data['apellidos']
+        data['empresaIfis_id'] = empresa_financiera
+        data['empresasAplican'] = dato[21]
+        # Genera el codigo
+        codigo = (''.join(random.choice(string.digits) for _ in range(int(6))))
+        data['codigoPreaprobado'] = codigo
+        data['cargarOrigen'] = 'BIGPUNTOS'
+        data['created_at'] = str(timezone_now)
+        # inserto el dato con los campos requeridos
+        CreditoPersonas.objects.create(**data)
+        subject, from_email, to = 'Crédito de consumo Pre-Aprobado', "credicompra.bigpuntos@corporacionomniglobal.com", \
+                                  dato[15]
+        txt_content = codigo
+        html_content = f"""
+                <html>
+                    <body>
+                        <h1>PRE-CALIFICACIÓN DE CRÉDITO DE CONSUMO AUTOMOTRIZ</h1>
+
+                        <p>
+                        Estimad@ {data['nombresCompleto']} la Cooperativa de Ahorro y Crédito {dato[20]} 
+                        le ha PREAPROBADO un crédito de consumo por $ {data['monto']} para que 
+                        realice compras en los mejores Locales Comerciales del país.
+                        </p>
+                        <br>
+                        <p>Ingrese al siguiente link y acceda a su crédito: 
+                        <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
+                        </p>
+
+                        Su código de ingreso es: {codigo}<br>
+                        <br>
+                        Si su enlace no funciona, copia el siguiente link en una ventana del navegador: {config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer
+                        <br>
+                        Saludos,<br>
+                        Equipo Global Red Pymes.<br>
+                    </body>
+                </html>
+                """
+        # CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
+        sendEmail(subject, txt_content, from_email, to, html_content)
+        # publish(data)
+        return "Dato insertado correctamente"
+    except Exception as e:
+        return str(e)

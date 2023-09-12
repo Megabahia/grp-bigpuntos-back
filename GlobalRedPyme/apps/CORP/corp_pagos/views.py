@@ -1,10 +1,11 @@
 from apps.CENTRAL.central_catalogo.models import Catalogo
-from apps.CORP.corp_pagos.models import Pagos
+from .models import Pagos
 from apps.PERSONAS.personas_personas.models import Personas
 from apps.CORE.core_monedas.models import Monedas
-from apps.CORE.core_monedas.serializers import MonedasGuardarSerializer
-from ...PERSONAS.personas_personas.serializers import PersonasSearchSerializer
-from apps.CORP.corp_pagos.serializers import (
+from ...CORE.core_monedas.serializers import MonedasGuardarSerializer
+from ...PERSONAS.personas_personas.security import encriptar
+from ...PERSONAS.personas_personas.serializers import PersonasSearchSerializer, PersonasSerializer
+from ...CORP.corp_pagos.serializers import (
     PagosSerializer
 )
 from .producer import publish
@@ -79,7 +80,7 @@ def pagos_create(request):
                 monedasSerializer = MonedasGuardarSerializer(data=request.data)
                 if monedasSerializer.is_valid():
                     monedasSerializer.save()
-                publish(serializer.data)
+                # publish(serializer.data)
 
                 createLog(logModel, serializer.data, logTransaccion)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -223,29 +224,43 @@ def pagos_list(request):
     if request.method == 'POST':
         try:
             logModel['dataEnviada'] = str(request.data)
+            if "codigoCobro" in request.data and request.data['codigoCobro'] == '' and "codigoReferido" in request.data and request.data['codigoReferido'] == '':
+                new_serializer_data = {'error': 'Ingrese valores de busqueda.'}
+                return Response(new_serializer_data, status=status.HTTP_200_OK)
             # Filtros
             filters = {"state": "1"}
 
-            if "codigoCobro" in request.data:
-                if request.data["codigoCobro"] != '':
+            if "codigoCobro" in request.data and request.data["codigoCobro"] != '':
                     filters['codigoCobro'] = str(request.data["codigoCobro"])
 
-            if "empresa_id" in request.data:
-                if request.data["empresa_id"] != '':
+            user_id = ''
+            if "codigoReferido" in request.data and request.data["codigoReferido"] != '':
+                codigoReferido = encriptar(request.data['codigoReferido'])
+                user_id = Personas.objects.filter(codigoUsuario=codigoReferido).first()
+
+            if "empresa_id" in request.data and request.data["empresa_id"] != '':
                     filters['empresa_id'] = str(request.data["empresa_id"])
 
             # Serializar los datos
-            query = Pagos.objects.filter(**filters).order_by('-created_at').first()
-            if query is None:
-                new_serializer_data = {'error': {'message': 'No existe el codigo'}}
-            else:
-                if query.duracion >= timezone_now:
-                    persona = Personas.objects.filter(user_id=query.user_id).first()
-                    serializer = PersonasSearchSerializer(persona)
-                    new_serializer_data = serializer.data
-                    new_serializer_data['monto'] = query.monto
+            new_serializer_data = {}
+            if "codigoCobro" in request.data and request.data["codigoCobro"] != '':
+                query = Pagos.objects.filter(**filters).order_by('-created_at').first()
+                if query is None:
+                    new_serializer_data['error'] = {'message': 'No existe el codigo'}
                 else:
-                    new_serializer_data = {'error': {'tiempo': 'Se le termino el tiempo', 'estado': 'Inactivo'}}
+                    if query.duracion >= timezone_now:
+                        persona = Personas.objects.filter(user_id=query.user_id).first()
+                        serializer = PersonasSearchSerializer(persona)
+                        new_serializer_data = serializer.data
+                        new_serializer_data['monto'] = query.monto
+                    else:
+                        new_serializer_data['error'] = {'tiempo': 'Se le termino el tiempo', 'estado': 'Inactivo'}
+            if user_id != '' and user_id is not None:
+                monto = Catalogo.objects.filter(tipo='MONTO_CODIGO_REFERIDO_DESCUENTO').first()
+                new_serializer_data['monto'] = float(monto.valor) + float(new_serializer_data['monto']) if 'monto' in new_serializer_data else float(monto.valor)
+                new_serializer_data['usuarioReferido_id'] = str(user_id.pk)
+            if not new_serializer_data:
+                new_serializer_data['error'] = {'message': 'No existe el codigo'}
             # envio de datos
             return Response(new_serializer_data, status=status.HTTP_200_OK)
         except Exception as e:

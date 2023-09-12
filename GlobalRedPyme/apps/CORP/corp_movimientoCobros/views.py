@@ -120,62 +120,71 @@ def movimientoCobros_create(request):
     }
     if request.method == 'POST':
         try:
-            monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id'], state=1).order_by('-created_at').first()
-            if float(monedasUsuario.saldo) < float(request.data['montoSupermonedas']):
-                data={'error':'Supera las monedas de su cuenta.'}
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            serializer = None
+            if 'user_id' in request.data:
+                monedasUsuario = Monedas.objects.filter(user_id=request.data['user_id'], state=1).order_by('-created_at').first()
+                print('monedasUsuario', monedasUsuario)
+                if float(monedasUsuario.saldo) < float(request.data['montoSupermonedas']):
+                    data={'error':'Supera las monedas de su cuenta.'}
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-            logModel['dataEnviada'] = str(request.data)
-            request.data['created_at'] = str(timezone_now)
-            if 'updated_at' in request.data:
-                request.data.pop('updated_at')
+                logModel['dataEnviada'] = str(request.data)
+                request.data['created_at'] = str(timezone_now)
+                if 'updated_at' in request.data:
+                    request.data.pop('updated_at')
 
-            serializer = MovimientoCobrosSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                Pagos.objects.filter(codigoCobro=request.data['codigoCobro']).update(state=0)
-                request.data['nombreCompleto'] = request.data['nombres'] + ' ' + request.data['apellidos']
-                datos = {
-                    'montoSupermonedas': request.data['montoSupermonedas'],
-                    'montoTotalFactura': request.data['montoTotalFactura'],
-                    'nombreCompleto': request.data['nombreCompleto'],
-                    'nombres': request.data['nombres'],
-                    'apellidos': request.data['apellidos'],
-                    'identificacion': request.data['identificacion'],
-                    'whatsapp': request.data['whatsapp'],
-                    'empresa_id': request.data['empresa_id']
-                }
-                MonedasEmpresa.objects.create(**datos)
-                monedasEmpresa = Monedas.objects.filter(empresa_id=str(request.data['empresa_id']),user_id=None,autorizador_id=None).order_by('-created_at').first()
-                dataEmpresa = {
-                    'empresa_id': str(request.data['empresa_id']),
-                    'tipo': 'Credito',
-                    'estado': 'aprobado',
-                    'credito': float(request.data['montoSupermonedas']),
-                    'saldo': float(request.data['montoSupermonedas']) if monedasEmpresa is None else monedasEmpresa.saldo + float(request.data['montoSupermonedas']),
-                    'descripcion': 'Cobro de monedas generado por comprobante de compra.'
-                }
-                Monedas.objects.create(**dataEmpresa)
-                referido = Personas.objects.filter(codigoUsuario=encriptar(request.data['codigoReferido'])).first()
-                if referido:
-                    referidoSerializer = PersonasSerializer(referido).data
-                    monedasReferido = Monedas.objects.filter(empresa_id=None, user_id=str(referidoSerializer['_id']), autorizador_id=None).order_by('-created_at').first()
-                    catalogoReferencia = Catalogo.objects.filter(nombre='BP_REFERNCIA_COMPARTIDO',tipo='GANAR_BP_REFERNCIA').first()
-                    dataReferido = {
-                        'user_id': str(referidoSerializer['_id']),
-                        'tipo': 'Recompensa',
-                        'estado': 'aprobado',
-                        'credito': float(catalogoReferencia.valor),
-                        'saldo': float(catalogoReferencia.valor) if monedasReferido is None else float(monedasReferido.saldo) + float(catalogoReferencia.valor),
-                        'descripcion': 'Recompensa de monedas por compartir publicacion.'
+                serializer = MovimientoCobrosSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    Pagos.objects.filter(codigoCobro=request.data['codigoCobro']).update(state=0)
+                    request.data['nombreCompleto'] = request.data['nombres'] + ' ' + request.data['apellidos']
+                    datos = {
+                        'montoSupermonedas': request.data['montoSupermonedas'],
+                        'montoTotalFactura': request.data['montoTotalFactura'],
+                        'nombreCompleto': request.data['nombreCompleto'],
+                        'nombres': request.data['nombres'],
+                        'apellidos': request.data['apellidos'],
+                        'identificacion': request.data['identificacion'],
+                        'whatsapp': request.data['whatsapp'],
+                        'empresa_id': request.data['empresa_id']
                     }
-                    Monedas.objects.create(**dataReferido)
+                    MonedasEmpresa.objects.create(**datos)
+                    monedasEmpresa = Monedas.objects.filter(empresa_id=str(request.data['empresa_id']),user_id=None,autorizador_id=None).order_by('-created_at').first()
+                    dataEmpresa = {
+                        'empresa_id': str(request.data['empresa_id']),
+                        'tipo': 'Credito',
+                        'estado': 'aprobado',
+                        'credito': float(request.data['montoSupermonedas']),
+                        'saldo': float(request.data['montoSupermonedas']) if monedasEmpresa is None else monedasEmpresa.saldo + float(request.data['montoSupermonedas']),
+                        'descripcion': 'Cobro de monedas generado por comprobante de compra.'
+                    }
+                    Monedas.objects.create(**dataEmpresa)
+            referido = Personas.objects.filter(codigoUsuario=encriptar(request.data['codigoReferido'])).first()
+            if referido:
+                referidoSerializer = PersonasSerializer(referido).data
+                print('referido', referidoSerializer)
+                monedasReferido = Monedas.objects.filter(empresa_id=None, user_id=str(referidoSerializer['user_id']), autorizador_id=None).order_by('-created_at').first()
+                catalogoReferencia = Catalogo.objects.filter(nombre='BP_REFERNCIA_COMPARTIDO',tipo='GANAR_BP_REFERNCIA').first()
+                dataReferido = {
+                    'user_id': str(referidoSerializer['user_id']),
+                    'empresa_id': '63d015aff27fe24973c6a5af',
+                    'tipo': 'Recompensa',
+                    'estado': 'aprobado',
+                    'credito': float(catalogoReferencia.valor),
+                    'saldo': float(catalogoReferencia.valor) if monedasReferido is None else float(monedasReferido.saldo) + float(catalogoReferencia.valor),
+                    'descripcion': 'Recompensa de monedas por compartir publicacion.'
+                }
+                Monedas.objects.create(**dataReferido)
                 # saldo = monedasUsuario.saldo - float(request.data['montoSupermonedas'])
                 # Monedas.objects.create(user_id=request.data['user_id'],empresa_id=request.data['empresa_id'],tipo='Debito',debito=request.data['montoSupermonedas'],saldo=saldo)
-                createLog(logModel,serializer.data,logTransaccion)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            createLog(logModel,serializer.errors,logExcepcion)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                if serializer:
+                    createLog(logModel,serializer.data,logTransaccion)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                else:
+                    createLog(logModel, dataReferido, logTransaccion)
+                    return Response(dataReferido, status=status.HTTP_201_CREATED)
+            createLog(logModel, serializer.data, logTransaccion)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e: 
             err={"error":'Un error ha ocurrido: {}'.format(e)}  
             createLog(logModel,err,logExcepcion)

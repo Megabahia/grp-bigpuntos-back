@@ -152,8 +152,8 @@ def publicaciones_create(request):
 
 
 # ENCONTRAR UNO
+#@permission_classes([IsAuthenticated])
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def publicaciones_listOne(request, pk):
     timezone_now = timezone.localtime(timezone.now())
     logModel = {

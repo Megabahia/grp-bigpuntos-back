@@ -17,6 +17,9 @@ from drf_yasg.utils import swagger_auto_schema
 from bson import ObjectId
 # Utils
 from apps.utils import utils
+
+from ...PERSONAS.personas_personas.security import encriptar
+from ...config import config
 # IMPORTAR ENVIO CONFIGURACION CORREO
 from apps.config.util2 import sendEmail
 #excel
@@ -389,10 +392,13 @@ def insertarDato_creditoPreaprobado(dato):
         if (not utils.__validar_ced_ruc(dato[0], 0)):
             return 'Cedula incorrecta'
         data={}
-        persona = Personas.objects.filter(identificacion=dato[0],state=1).first()
+        hash_identificacion = encriptar(dato[0])
+        persona = Personas.objects.filter(identificacion=hash_identificacion,state=1).first()
         if persona is not None:
             data['user_id'] = persona.user_id
         empresa = Empresas.objects.filter(ruc=dato[4],state=1).first()
+        if empresa is None:
+            return 'El ruc de la empresa no esta registrada'
         data['identificacion'] = dato[0]
         data['nombres'] = dato[1]
         data['apellidos'] = dato[2]
@@ -424,7 +430,7 @@ def enviarCorreoSolicitud(email, monedas):
                         ¡FELICIDADES!
                         USTED ACABA DE RECIBIR {monedas} para que realice compras en los establecimientos 
                         afiliados pagando menos dinero en efectivo
-                        Regístrese a través de nuestro portal https://credicompra.bigpuntos.com y reciba sus
+                        Regístrese a través de nuestro portal {config.API_FRONT_END_CENTRAL} y reciba sus
                         Big Puntos de recompensa en su cuenta
                         Atentamente,
                         CrediCompra - Big Puntos
@@ -438,7 +444,7 @@ def enviarCorreoSolicitud(email, monedas):
                         afiliados pagando menos dinero en efectivo</p>
                         <br>
                         <br>
-                        <p>Regístrese a través de nuestro portal https://credicompra.bigpuntos.com y reciba sus
+                        <p>Regístrese a través de nuestro portal {config.API_FRONT_END_CENTRAL} y reciba sus
                         Big Puntos de recompensa en su cuenta</p>
                         <br>
                         <br>
