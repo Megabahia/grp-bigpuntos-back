@@ -39,37 +39,31 @@ def catalogo_list(request):
         'dataRecibida': '{}'
     }
     if request.method == 'POST':
-        # try:
-        logModel['dataEnviada'] = str(request.data)
-        # paginacion
-        page_size = int(request.data['page_size'])
-        page = int(request.data['page'])
-        offset = page_size * page
-        limit = offset + page_size
-        # Filtros
-        filters = {"state": "1"}
-        if 'nombre' in request.data:
-            if request.data['nombre'] != '':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            # paginacion
+            page_size = int(request.data['page_size'])
+            page = int(request.data['page'])
+            offset = page_size * page
+            limit = offset + page_size
+            # Filtros
+            filters = {"state": "1"}
+            if 'nombre' in request.data and request.data['nombre'] != '':
                 filters['nombre__icontains'] = str(request.data['nombre'])
-        if 'tipo' in request.data:
-            if request.data['tipo'] != '':
+            if 'tipo' in request.data and request.data['tipo'] != '':
                 filters['tipo__icontains'] = str(request.data['tipo'])
-
-        if 'descripcion' in request.data:
-            if request.data['descripcion'] != '':
+            if 'descripcion' in request.data and request.data['descripcion'] != '':
                 filters['descripcion__icontains'] = str(request.data['descripcion'])
-
-        # Serializar los datos
-        query = Catalogo.objects.filter(**filters).order_by('-created_at')
-        serializer = CatalogoListaSerializer(query[offset:limit], many=True)
-        new_serializer_data = {'cont': query.count(),
-                               'info': serializer.data}
-        # envio de datos
-        return Response(new_serializer_data, status=status.HTTP_200_OK)
-    # except Exception as e:
-    #     err={"error":'Un error ha ocurrido: {}'.format(e)}
-    #     createLog(logModel,err,logExcepcion)
-    #     return Response(err, status=status.HTTP_400_BAD_REQUEST)
+            # Serializar los datos
+            query = Catalogo.objects.filter(**filters).order_by('-created_at')
+            serializer = CatalogoListaSerializer(query[offset:limit], many=True)
+            new_serializer_data = {'cont': query.count(), 'info': serializer.data}
+            # envio de datos
+            return Response(new_serializer_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            err={"error":'Un error ha ocurrido: {}'.format(e)}
+            createLog(logModel,err,logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
 # CREAR

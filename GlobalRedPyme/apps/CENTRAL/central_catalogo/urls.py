@@ -2,14 +2,10 @@ from django.urls import path, include
 from .views import (
     catalogo_list, catalogo_create, catalogo_findOne, catalogo_update, catalogo_delete,
     estado_list, pais_list, tipo_list, catalogo_list_hijo, catalogo_list_hijoNombre, catalogo_list_hijos,
-    catalogo_list_parametrosTipo, catalogo_listSinPaginacion,
-    catalogo_filter_name, catalogo_filter_listOne_name_tipo,
-    catalogo_filter_listOne_tipo, catalogo_list_parametrosTipo_sintoken,
-    catalogo_export,
+    catalogo_list_parametrosTipo, catalogo_listSinPaginacion, catalogo_filter_name, catalogo_filter_listOne_name_tipo,
+    catalogo_filter_listOne_tipo, catalogo_list_parametrosTipo_sintoken, catalogo_export,
     catalogo_filter_listOne_tipo_todo,
 )
-
-from rest_framework.authtoken.views import obtain_auth_token
 
 app_name = 'catalogo'
 
