@@ -1,4 +1,9 @@
-from apps.CENTRAL.central_catalogo.models import Catalogo
+"""NUBE DE BIGPUNTOS
+PORTALES: CENTER, CORP, PERSONAS, IFIS, CREDIT
+Este archivo contiene la logica de negocio respecto de los catalogos
+"""
+
+from .models import Catalogo
 from .serializers import CatalogoSerializer, CatalogoHijoSerializer, \
     CatalogoListaSerializer, CatalogoFiltroSerializer, CatalogoTipoSerializer, CatalogoResource
 from rest_framework import status
@@ -10,7 +15,7 @@ from django.utils import timezone
 # ObjectId
 from bson import ObjectId
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosCatalogo, datosTipoLog
+from ..central_logs.methods import createLog, datosCatalogo, datosTipoLog
 
 # declaracion variables log
 datosAux = datosCatalogo()
@@ -23,10 +28,15 @@ logTransaccion = datosTipoLogAux['transaccion']
 logExcepcion = datosTipoLogAux['excepcion']
 
 
-# CRUD catalogo
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_list(request):
+    """
+    Este metodo se utiliza para listar todos las parametrizacones
+    @type request: Es una variable que se utiliza para obtener los campos de la peticion que realiza el frontend
+    se puede filtar por nombre, tipo, descripcion
+    @rtype: Devuelve dos campos cont y info si la peticion es exitosa y si sale mal se devuelve el error que se produjo
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -61,8 +71,8 @@ def catalogo_list(request):
             # envio de datos
             return Response(new_serializer_data, status=status.HTTP_200_OK)
         except Exception as e:
-            err={"error":'Un error ha ocurrido: {}'.format(e)}
-            createLog(logModel,err,logExcepcion)
+            err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+            createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -70,6 +80,11 @@ def catalogo_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_create(request):
+    """
+    Este metodo se utiliza para crear las parametrizaciones
+    @type request: recibe los campos del modelo de la tabla de catalogos de la base de datos bigpuntos
+    @rtype: Retorna el objeto que se acaba de guardar si sale bien caso contrario devuelve los errores
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'create/',
@@ -92,25 +107,33 @@ def catalogo_create(request):
                 if request.data['idPadre'] == '' or request.data['idPadre'] == 0:
                     request.data.pop('idPadre')
                 else:
+                    # Convierte el campo idPadre en ObjectId
                     request.data['idPadre'] = ObjectId(request.data['idPadre'])
 
             serializer = CatalogoSerializer(data=request.data)
+            # Valida los campos antes de guardar
             if serializer.is_valid():
                 serializer.save()
                 createLog(logModel, serializer.data, logTransaccion)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Retorna los errores de los campos que fallo
             createLog(logModel, serializer.errors, logExcepcion)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             err = {"error": 'Un error ha ocurrido: {}'.format(e)}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
-        # ENCONTRAR UNO
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def catalogo_findOne(request, pk):
+    """
+    Este metodo consulta por id los catalogos
+    @type pk: El parametro es id que se va consultar
+    @type request: no recibe nada
+    @rtype: DEvuelve el catalogo que se esta buscando, caso contrario devuelve no existe
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -141,12 +164,16 @@ def catalogo_findOne(request, pk):
         createLog(logModel, err, logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
-    # ACTUALIZAR
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_update(request, pk):
+    """
+    Este metodo atualiza el catalogo
+    @type pk: Este campo de id es el cual se va actualizar
+    @type request: Este campo recibe los campos de la tabla de catalogo de base de datos
+    @rtype: Devuelve los campos actualizados, caso contrario devuelve los errores de los campos que estan mal
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/',
@@ -197,6 +224,12 @@ def catalogo_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def catalogo_delete(request, pk):
+    """
+    Este metodo se utiliza para borrar el catalogo de la base de datos
+    @type pk: El campo pk recibe el id del catalogo que se va eliminar
+    @type request: No recibe nada
+    @rtype: DEvuelve el objeto que se acaba de borrar, caso contrario devuelve el error por el cual fallo el borrado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -217,7 +250,6 @@ def catalogo_delete(request, pk):
             err = {"error": "No existe"}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
         # tomar el dato
         if request.method == 'DELETE':
             serializer = CatalogoSerializer(catalogo, data={'state': '0', 'updated_at': str(nowDate)}, partial=True)
@@ -237,6 +269,11 @@ def catalogo_delete(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def estado_list(request):
+    """
+    Este metodo filta por estado del catalogo
+    @type request: REcibe el tipo de estado
+    @rtype: DEvuelve el catalogo filtrado, caso contrario devuelve el error
+    """
     if request.method == 'GET':
         try:
             catalogo = Catalogo.objects.filter(state=1, tipo="ESTADO")
@@ -252,6 +289,11 @@ def estado_list(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def pais_list(request):
+    """
+    Este metodo de filtrar por pais en la tabla de catalogo en la bases de datos de catalogo
+    @type request: El request no recibe nada
+    @rtype: DEvuelve el catalogo filtrado por pais, caso contrario devuelve el error
+    """
     if request.method == 'GET':
         try:
             catalogo = Catalogo.objects.filter(state=1, tipo="PAIS")
@@ -267,6 +309,11 @@ def pais_list(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def tipo_list(request):
+    """
+    Este metodo sirve para listar los catalogos por el campo tipo
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve los catalogos filtrados, caso contrario devuelve el error
+    """
     if request.method == 'GET':
         try:
             catalogo = Catalogo.objects.filter(state=1).values('tipo').distinct()
@@ -282,6 +329,12 @@ def tipo_list(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def catalogo_list_hijo(request, pk):
+    """
+    Este metodo sirve listar los hijos de los catalogos que posea el padre, de la tabla de catalogo de la base de datos central
+    @type pk: El campo pk es el id del padre
+    @type request: no se envia nada por el request
+    @rtype: la respuesta devuelve una lista de los catalogos de los hijos del padre, caso constrario devuelve el error
+    """
     if request.method == 'GET':
         try:
             # Creo un ObjectoId porque la primaryKey de mongo es ObjectId
@@ -293,12 +346,15 @@ def catalogo_list_hijo(request, pk):
             err = {"error": 'Un error ha ocurrido: {}'.format(e)}
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
-        # TODAS LAS PARAMETRIZACIONES DE ACUERDO AL TIPO
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_list_parametrosTipo(request):
+    """
+    Este metodo sirve para filtrar por el campo tipo en la tabla de catalogos de la base de datos central
+    @type request: Recibe el campo tipo por el cual se va filtrar
+    @rtype: Devuelve la lista de los catalogos filtrados, caso contrario devuelve el error
+    """
     if request.method == 'POST':
         try:
             catalogo = Catalogo.objects.filter(state=1, tipo=request.data['tipo'])
@@ -314,6 +370,11 @@ def catalogo_list_parametrosTipo(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_list_hijoNombre(request):
+    """
+    Este metodo puede filtrar por el id del padre los catalogos de la base de datos central
+    @type request: el campo request recibe el campo nombre del padre del catalogo
+    @rtype: Devuelve una lista de los catalogos filtrados, caso contrario devuelve un error
+    """
     if request.method == 'POST':
         try:
             catalogo = Catalogo.objects.filter(state=1, idPadre__nombre=request.data['nombre'])
@@ -323,12 +384,15 @@ def catalogo_list_hijoNombre(request):
             err = {"error": 'Un error ha ocurrido: {}'.format(e)}
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
-        # GET TIPO DE PARAMETRIZACIONES/CATÁLOGO
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_list_hijos(request):
+    """
+    Este metodo filtra por tipo del padre en la tabla catalogo de la base de datos central
+    @type request: El campo request recibe el campo tipo
+    @rtype: Devuelve una lista de catalogos del filtro, caso contrario devuelve un errror
+    """
     if request.method == 'POST':
         try:
             catalogo = Catalogo.objects.filter(state=1, idPadre__tipo=str(request.data['tipo']))
@@ -342,6 +406,11 @@ def catalogo_list_hijos(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_listSinPaginacion(request):
+    """
+    Este metodo filtra por parametros nombre y tipo los catalogos sin paginar de la tabla catalogos, de la base de datos central
+    @type request: El campo request recibe nombre y tipo
+    @rtype: object
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listSinPaginacion/',
@@ -377,12 +446,15 @@ def catalogo_listSinPaginacion(request):
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
-        # POST FILTRO Y NOMBRE
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_filter_name(request):
+    """
+    Este metodo filtra por nombre y tipo en la tabla de catalogo, de la base de datos central
+    @type request: El campo request recibe el campo nombre y tipo
+    @rtype: Devuelve un catalogo, caso contrario devuelve el error
+    """
     if request.method == 'POST':
         try:
             idpadre = Catalogo.objects.filter(nombre=request.data['nombre'], tipo=request.data['tipo'], state=1).first()
@@ -400,6 +472,11 @@ def catalogo_filter_name(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_filter_listOne_name_tipo(request):
+    """
+    Este metodo filtra por nombre y tipo de la tabla catalogo de la base de datos central
+    @type request: El campo requets recibe nombre y tipo
+    @rtype: Devuelve un catalogo que coicidad con los valores, caso constario d vuelve un error
+    """
     if request.method == 'POST':
         try:
             query = Catalogo.objects.get(state=1, nombre=request.data['nombre'], tipo=request.data['tipo'])
@@ -414,6 +491,11 @@ def catalogo_filter_listOne_name_tipo(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_filter_listOne_tipo(request):
+    """
+    Este metodo devuelve un catalogo que coincida con el tipo de la tabla catalogo de la base de datos central
+    @type request: El campo request recibe el campo tipo
+    @rtype: Devuelve un catalogo que coincida, caso contrario devuelve un error
+    """
     if request.method == 'POST':
         try:
             query = Catalogo.objects.filter(state=1, tipo=request.data['tipo']).first()
@@ -427,6 +509,11 @@ def catalogo_filter_listOne_tipo(request):
 # TODAS LAS PARAMETRIZACIONES DE ACUERDO AL TIPO SIN TOKEN
 @api_view(['POST'])
 def catalogo_list_parametrosTipo_sintoken(request):
+    """
+    Este metodo filtra por campo tipo en la tabla catalogo, de la base de datos central
+    @type request: El campo request recibe tipo
+    @rtype: Devuelve una lista de catalogos con los filtros, caso contrario devuelve un error
+    """
     if request.method == 'POST':
         try:
             catalogo = Catalogo.objects.filter(state=1, tipo=request.data['tipo'])
@@ -440,6 +527,10 @@ def catalogo_list_parametrosTipo_sintoken(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def catalogo_export(request):
+    """
+    Este metodo realiza una exportacion de todos los catalogos en excel de la tabla catalogo, de la base de datos central
+    @rtype: DEvuelve un archivo excel
+    """
     person_resource = CatalogoResource()
     dataset = person_resource.export()
     response = HttpResponse(dataset.xls, content_type="application/ms-excel")
@@ -450,6 +541,11 @@ def catalogo_export(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def catalogo_filter_listOne_tipo_todo(request):
+    """
+    Este metodo filtra por el campo tipo de la tabla catalogo, de la base de datos central
+    @type request: El campo request recibe el campo tipo
+    @rtype: Devuelve una lista de los catalogos que cumpla el filtro, caso contrario un error
+    """
     if request.method == 'POST':
         try:
             query = Catalogo.objects.filter(state=1, tipo=request.data['tipo'])

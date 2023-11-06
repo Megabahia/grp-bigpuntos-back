@@ -11,8 +11,10 @@ from .views import (
     pruebaConsumer,
 )
 
+# Esta variable se utiliza para colocar el nombre aplicacion de facturas
 app_name = 'personas_personas'
 
+# La variable urlpatterns se utiliza para exportar las diferentes rutas a las que pueden acceder el front
 urlpatterns = [
     path('create/', personas_create, name="personas_create"),
     path('listOne/<str:pk>', personas_listOne, name="personas_listOne"),

@@ -3,10 +3,18 @@ from django.utils import timezone
 
 
 def upload_path(instance, filname):
+    """
+    Este metodo se utiliza para subir los archivos
+    @type filname: el campo filname es el nombre del archivo
+    @type instance: el campo instance es el registro que se esta guardando
+    @rtype: Devuelve la ruta del archivo donde se guardo
+    """
     return '/'.join(['CORP/documentosCreditosArchivos', str(timezone.localtime(timezone.now())) + "_" + filname])
 
 
-# Create your models here.
+# Mundo: bigpuntos
+# Portales: PERSONAS, coop, center
+# Esta clase sirve para conectar con la tabla PreAprobados de la base datos corp
 class PreAprobados(models.Model):
     fechaCargaArchivo = models.DateField(null=True)
     campania = models.CharField(max_length=255, null=True, blank=True)
@@ -23,6 +31,3 @@ class PreAprobados(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
-
-    def save(self, *args, **kwargs):
-        return super(PreAprobados, self).save(*args, **kwargs)

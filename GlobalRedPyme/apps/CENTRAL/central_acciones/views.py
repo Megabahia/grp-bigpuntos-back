@@ -1,25 +1,38 @@
-from apps.CENTRAL.central_acciones.models import Acciones, AccionesPermitidas, AccionesPorRol
-from apps.CENTRAL.central_acciones.serializers import AccionesSerializer, AccionesPermitidasSerializer, \
-    AccionesPorRolSerializer
+from .models import Acciones, AccionesPermitidas, AccionesPorRol
+from .serializers import AccionesSerializer, AccionesPermitidasSerializer, AccionesPorRolSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
+
+
 # CRUD ACCIONES
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def acciones_list(request):
+    """
+    Este metodo sirve para obtener una lista
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el una lista encontrado, caso contrario devuelve el error generado
+    """
     if request.method == 'GET':
         acciones = Acciones.objects.filter(idAccionPadre__isnull=False, state=1)
         serializer = AccionesSerializer(acciones, many=True)
         return Response(serializer.data)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#CREAR
+
+
+# CREAR
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def acciones_create(request):
+    """
+    Este metodo sirve para crear un registro
+    @type request: El campo request recibe los campos de la tabla
+    @rtype: DEvuelve el registro creado, caso contrario devuelve el error generado
+    """
     now = timezone.localtime(timezone.now())
     request.data['created_at'] = str(now)
     if 'updated_at' in request.data:
@@ -30,10 +43,18 @@ def acciones_create(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 # ENCONTRAR UNO
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def acciones_findOne(request, pk):
+    """
+    Este metodo sirve para obtener un registro
+    @type pk: El campo pk recibe el id
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro encontrado, caso contrario devuelve el error generado
+    """
     try:
         acciones = Acciones.objects.get(pk=pk, state=1)
     except Acciones.DoesNotExist:
@@ -50,6 +71,12 @@ def acciones_findOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def acciones_update(request, pk):
+    """
+    Este metodo sirve para actualizar
+    @type pk: El campo pk recibe el id
+    @type request: El campo request recibe el campo de la tabla accionesporrol
+    @rtype: DEvuelve el registro actualizado, caso contrario devuelve el errr generado
+    """
     try:
         acciones = Acciones.objects.get(pk=pk, state=1)
     except Acciones.DoesNotExist:
@@ -72,6 +99,12 @@ def acciones_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def acciones_delete(request, pk):
+    """
+    Este metodo sirve para obtener un registro
+    @type pk: El campo pk recibe el id
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro encontrado, caso contrario devuelve el error generado
+    """
     try:
         acciones = Acciones.objects.get(pk=pk, state=1)
     except Acciones.DoesNotExist:
@@ -91,6 +124,11 @@ def acciones_delete(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_list(request):
+    """
+    Este metodo sirve para obtener una lista
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el una lista encontrado, caso contrario devuelve el error generado
+    """
     if request.method == 'GET':
         accionesPermitidas = AccionesPermitidas.objects.filter(state=1)
         serializer = AccionesPermitidasSerializer(accionesPermitidas, many=True)
@@ -103,6 +141,11 @@ def accionesPermitidas_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_create(request):
+    """
+    Este metodo sirve para crear un registro
+    @type request: El campo request recibe los campos de la tabla
+    @rtype: DEvuelve el registro creado, caso contrario devuelve el error generado
+    """
     if request.method == 'POST':
         now = timezone.localtime(timezone.now())
         request.data['created_at'] = str(now)
@@ -119,6 +162,12 @@ def accionesPermitidas_create(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_findOne(request, pk):
+    """
+    Este metodo sirve para obtener un registro
+    @type pk: El campo pk recibe el id
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro encontrado, caso contrario devuelve el error generado
+    """
     try:
         acciones = AccionesPermitidas.objects.get(pk=pk, state=1)
     except AccionesPermitidas.DoesNotExist:
@@ -135,6 +184,12 @@ def accionesPermitidas_findOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_update(request, pk):
+    """
+    Este metodo sirve para actualizar
+    @type pk: El campo pk recibe el id
+    @type request: El campo request recibe el campo de la tabla accionesporrol
+    @rtype: DEvuelve el registro actualizado, caso contrario devuelve el errr generado
+    """
     try:
         accionesPermitidas = AccionesPermitidas.objects.get(pk=pk, state=1)
     except AccionesPermitidas.DoesNotExist:
@@ -157,6 +212,12 @@ def accionesPermitidas_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def accionesPermitidas_delete(request, pk):
+    """
+    Este metodo sirve para obtener un registro
+    @type pk: El campo pk recibe el id
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro encontrado, caso contrario devuelve el error generado
+    """
     try:
         accionesPermitidas = AccionesPermitidas.objects.get(pk=pk, state=1)
     except AccionesPermitidas.DoesNotExist:
@@ -177,6 +238,11 @@ def accionesPermitidas_delete(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_list(request):
+    """
+    Este metodo sirve para obtener una lista
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el una lista encontrado, caso contrario devuelve el error generado
+    """
     if request.method == 'GET':
         accionesPorRol = AccionesPorRol.objects.filter(state=1)
         serializer = AccionesPorRolSerializer(accionesPorRol, many=True)
@@ -189,6 +255,11 @@ def accionesPorRol_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_create(request):
+    """
+    Este metodo sirve para crear un registro
+    @type request: El campo request recibe los campos de la tabla
+    @rtype: DEvuelve el registro creado, caso contrario devuelve el error generado
+    """
     if request.method == 'POST':
         now = timezone.localtime(timezone.now())
         request.data['created_at'] = str(now)
@@ -205,6 +276,12 @@ def accionesPorRol_create(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_findOne(request, pk):
+    """
+    Este metodo sirve para obtener un registro
+    @type pk: El campo pk recibe el id
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro encontrado, caso contrario devuelve el error generado
+    """
     try:
         acciones = AccionesPorRol.objects.get(pk=pk, state=1)
     except AccionesPorRol.DoesNotExist:
@@ -221,6 +298,12 @@ def accionesPorRol_findOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_update(request, pk):
+    """
+    Este metodo sirve para actualizar
+    @type pk: El campo pk recibe el id
+    @type request: El campo request recibe el campo de la tabla accionesporrol
+    @rtype: DEvuelve el registro actualizado, caso contrario devuelve el errr generado
+    """
     try:
         accionesPorRol = AccionesPorRol.objects.get(pk=pk, state=1)
     except AccionesPorRol.DoesNotExist:
@@ -243,6 +326,12 @@ def accionesPorRol_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def accionesPorRol_delete(request, pk):
+    """
+    Este metodo sirve para eliminar
+    @type pk: El campo pk recibe el id
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro eliminado, caso contrario
+    """
     try:
         accionesPorRol = AccionesPorRol.objects.get(pk=pk, state=1)
     except AccionesPorRol.DoesNotExist:

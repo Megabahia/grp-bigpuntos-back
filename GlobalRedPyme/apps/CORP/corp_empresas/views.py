@@ -2,7 +2,7 @@ from .models import Empresas, EmpresasConvenio, Empleados
 from .serializers import (
     EmpresasSerializer, EmpresasFiltroSerializer, EmpresasFiltroIfisSerializer, EmpresasConvenioSerializer,
     EmpresasConvenioCreateSerializer,
-    EmpresasLogosSerializer, EmpleadosSerializer,EmpresasImagenB64Serialazer
+    EmpresasLogosSerializer, EmpleadosSerializer, EmpresasImagenB64Serialazer
 )
 from django.db.models import Q
 from rest_framework import status
@@ -24,7 +24,7 @@ from apps.utils import utils
 # ObjectId
 from bson import ObjectId
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+from ...CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 
 # declaracion variables log
 datosAux = datosProductosMDP()
@@ -52,9 +52,13 @@ logExcepcion = datosTipoLogAux['excepcion']
                      operation_description='Uninstall a version of Site',
                      responses={200: EmpresasSerializer(many=True)})
 @api_view(['POST'])
-#@permission_classes([IsAuthenticated])
-
+# @permission_classes([IsAuthenticated])
 def empresas_list(request):
+    """
+    ESte metodo sirve para listar las empresas de la tabla empresas de la base datos corp
+    @type request: El campo request recibe nombreComercial, tipoEmpresa, estado, page, page_size
+    @rtype: Devuelve una lista de empresas con los filtros que coincidan, caso contrario devuele el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -92,8 +96,7 @@ def empresas_list(request):
             # Serializar los datos
             query = Empresas.objects.filter(**filters).order_by('-created_at')
             serializer = EmpresasImagenB64Serialazer(query[offset:limit], many=True)
-            new_serializer_data = {'cont': query.count(),
-                                   'info': serializer.data}
+            new_serializer_data = {'cont': query.count(), 'info': serializer.data}
             # envio de datos
             return Response(new_serializer_data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -116,6 +119,11 @@ def empresas_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_list_filtro(request):
+    """
+    Este metodo sirve para filtrar empresas en la tabla de empresas de la tabla corp
+    @type request: El campo request recibe el campo ruc
+    @rtype: Devuelve una lista de empresas que coincidad, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -143,7 +151,8 @@ def empresas_list_filtro(request):
                     filters['ruc__icontains'] = str(request.data["ruc"])
 
             # Serializar los datos
-            query = Empresas.objects.filter(Q(ruc__icontains=str(request.data["ruc"]), state=1) | Q(nombreEmpresa__icontains=str(request.data["ruc"]), state=1)).order_by('-created_at')
+            query = Empresas.objects.filter(Q(ruc__icontains=str(request.data["ruc"]), state=1) | Q(
+                nombreEmpresa__icontains=str(request.data["ruc"]), state=1)).order_by('-created_at')
             serializer = EmpresasFiltroSerializer(query[offset:limit], many=True)
             new_serializer_data = {'cont': query.count(),
                                    'info': serializer.data}
@@ -161,6 +170,11 @@ def empresas_list_filtro(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_create(request):
+    """
+    Este metodo sirve para crear la empresa en la tabla empresas de la base datos corp
+    @type request: El campo request recibe los campos de la tabla empresas
+    @rtype: Devuelve el registro de la empresa creada, caso contrario devuelve el error generado
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -202,6 +216,12 @@ def empresas_create(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def empresas_listOne(request, pk):
+    """
+    Este metodo sirve para obtener la empresa por el id de la tabla empresas de la base datos corp
+    @type pk: El campo pk recibe el id de la empresa
+    @type request: El campo request no recibe nada
+    @rtype: devuelve el registro de la empresa obtenido, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -239,6 +259,12 @@ def empresas_listOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_update(request, pk):
+    """
+    Este metodo sirve para actualizar la empresa de la tabla empresas de la base datos corp
+    @type pk: El campo pk recibe el id de la empresa
+    @type request: El campo request recibe los campos de la tabla empresa
+    @rtype: Devuelve el registro actualizado de la empresa, caso contrario devuelve el error generado
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -289,6 +315,12 @@ def empresas_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def empresas_delete(request, pk):
+    """
+    Este metodo sirve para eliminar una empresa de la tabla empresa de la base datos corp
+    @type pk: El campo pk recibe el id de la empresa
+    @type request: El campo request no recibe nada
+    @rtype: devuelve el registro eliminado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -309,7 +341,6 @@ def empresas_delete(request, pk):
             err = {"error": "No existe"}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
         # tomar el dato
         if request.method == 'DELETE':
             serializer = EmpresasSerializer(persona, data={'state': '0', 'updated_at': str(nowDate)}, partial=True)
@@ -328,6 +359,11 @@ def empresas_delete(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_list_comercial(request):
+    """
+    Este metodo sirve para listar la empresas comerciales de la tabla empresas de la base datos corp
+    @type request: El campo request recibe los campos ciudad, tipoCategoria
+    @rtype: Devuelve una lista de la empresas comerciales, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/ifis',
@@ -376,6 +412,11 @@ def empresas_list_comercial(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_list_all(request):
+    """
+    Este metodo sirve para listar todas las empresas de la tabla empresas de la base datos corp
+    @type request: El campo request recibe el campo ciudad, tipoCategoria
+    @rtype: Devuelve una lista de empresas que coicidan, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/ifis',
@@ -422,6 +463,11 @@ def empresas_list_all(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_list_ifis(request):
+    """
+    Este metodo sirve para listar todas las empresas ifis de la tabla empresas de la base datos corp
+    @type request: El campo request recibe el campo ciudad, tipoCategoria
+    @rtype: Devuelve una lista de empresas que coicidan, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/ifis',
@@ -470,6 +516,11 @@ def empresas_list_ifis(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_list_convenio(request):
+    """
+    Este metodo sirve para listar todas las empresas que tienen convenio de la tabla empresasConvenio de la base datos corp
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve una lista de empresas que coicidan, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/convenio/',
@@ -508,6 +559,11 @@ def empresas_list_convenio(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_create_convenio(request):
+    """
+    Este metodo sirve para crear empresas convenio de la tabla empresasconvenio de la base datos corp
+    @type request: El campo request recibe los campos de la tabla empresa convenio
+    @rtype: Devuelve la empresa que se guardo, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'create/convenio',
@@ -544,6 +600,11 @@ def empresas_create_convenio(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_listOne_filtros(request):
+    """
+    Este metodo sirve para listar una empresa de la tabla empresas de la base datos corp
+    @type request: El campo request recibe el campo nombreComercial, nombreEmpresa, ruc
+    @rtype: Devuelve una empresa que coicidan, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -587,6 +648,11 @@ def empresas_listOne_filtros(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_list_logos(request):
+    """
+    Este metodo lista los logos de la empresa de la tabla empresas de la base datos corp
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve una lista de los logos de las empresas, caso contrario devuelve error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/convenio/',
@@ -620,6 +686,11 @@ def empresas_list_logos(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_list_array(request):
+    """
+    Este metodo sirve para listar las empresas de la tabla empresas de la base datos corp
+    @type request: El campo request recibe una lista de empresas
+    @rtype: Devuelve una lista de empresas, caso contrario devuelve los errores generados
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/empresas/array/',
@@ -655,6 +726,11 @@ def empresas_list_array(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_uploadEmpleados(request):
+    """
+    Este metodo sirve para cargar los empleados de la empresa en la tabla empleados de la base datos corp
+    @type request: El campo request recibe el archivo de los empleados
+    @rtype: Devuelve una lista de los registros correctos, incorrectos, caso contrario devuelve los errores generados
+    """
     contValidos = 0
     contInvalidos = 0
     contTotal = 0
@@ -706,6 +782,12 @@ def empresas_uploadEmpleados(request):
 
 # INSERTAR DATOS EN LA BASE INDIVIDUAL
 def insertarDato_empleado(dato, empresaRuc):
+    """
+    Este metodo sirve para insertar el empleado en la tabla empleados de la base de datos corp
+    @type empresaRuc: El campo empresaRuc recibe el id de la empresa a la cual pertence
+    @type dato: El campo dato recibe la fila del excel
+    @rtype: Devuelve el esta de dato ingresado, caso contrario los errores del registro
+    """
     try:
         if (empresaRuc != dato[0]):
             return 'No tiene el mismo ruc'
@@ -780,6 +862,11 @@ def insertarDato_empleado(dato, empresaRuc):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_listEmpleados(request):
+    """
+    Este metodo sirve para listar los empleados de la empresa
+    @type request: El campo request recibe page, page_size, empresa
+    @rtype: Devuelve una lista de las empleados de la empresa, caso contrario devuelve los errores generados
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -824,6 +911,12 @@ def empresas_listEmpleados(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def empresas_listOne_empleado(request, pk):
+    """
+    Este metodo sirve para lista un empleado de la tabla empleados de la base datos corp
+    @type pk: el campo pk recibe el id del empleado
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve el empleado, caso contrario devuelve los errores generados
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/empleado',
@@ -859,6 +952,12 @@ def empresas_listOne_empleado(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_update_empleado(request, pk):
+    """
+    Este metodo sirve para actualizar un empleado de la tabla empleados de la base datos corp
+    @type pk: El campo pk recibe el id del empleado
+    @type request: El campo request recibe los campos de la tabla empleados
+    @rtype: Devuelve el registro del empleado actualizado, caso contrario devuelve los errores generados
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -908,6 +1007,12 @@ def empresas_update_empleado(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def empresas_delete_empleado(request, pk):
+    """
+    Este metodo sirve para borrar el empleado de la tabla empleados de la base datos corp
+    @type pk: El campo pk recibe el id del empleado
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve el registro eliminado, caso contrario devuelve el error generado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'empleado/delete/',
@@ -928,7 +1033,6 @@ def empresas_delete_empleado(request, pk):
             err = {"error": "No existe"}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
         # tomar el dato
         if request.method == 'DELETE':
             serializer = EmpleadosSerializer(persona, data={'state': '0', 'updated_at': str(nowDate)}, partial=True)
@@ -947,6 +1051,11 @@ def empresas_delete_empleado(request, pk):
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def empresas_listOne_empresa_empleado(request):
+    """
+    Este metodo se usa para obtener un empleado de una empresa de la tabla de empleados de la base datos corp
+    @type request: El campo request recibe el campo identificacion
+    @rtype: DEvuelve el registro del empleado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/empresa/empleado/',

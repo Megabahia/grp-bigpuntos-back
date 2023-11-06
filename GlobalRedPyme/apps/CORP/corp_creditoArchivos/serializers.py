@@ -2,19 +2,27 @@ from rest_framework import serializers
 # ObjectId
 from bson import ObjectId
 
-from apps.CORP.corp_creditoArchivos.models import (
+from .models import (
     PreAprobados,
 )
 
-from apps.CORP.corp_empresas.models import Empresas 
+from ..corp_empresas.models import Empresas
+
 
 class CreditoArchivosSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla ArchivosFirmados
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = PreAprobados
-       	fields = '__all__'
+        fields = '__all__'
         read_only_fields = ['_id']
 
     def to_representation(self, instance):
+        """
+        Este metod sirve para modificar los datos que se devulveran a frontend
+        @type instance: El campo instance contiene el registro de la base datos
+        @rtype: Devuelve la informacion modificada
+        """
         data = super(CreditoArchivosSerializer, self).to_representation(instance)
         # tomo el campo persona y convierto de OBJECTID a string
         empresa_financiera = data.pop('empresa_financiera')

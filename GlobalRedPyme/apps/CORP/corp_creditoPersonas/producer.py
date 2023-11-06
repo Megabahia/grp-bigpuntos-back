@@ -9,6 +9,11 @@ from .s3 import replicate
 
 
 def publish(data):
+    """
+    Este metodo sirve para publiar en la cola de aws
+    @type data: REcibe los datos que se van a publicar
+    @rtype: No devuelve nada
+    """
     topicArn = config.AWS_TOPIC_ARN
     snsClient = boto3.client(
         'sns',

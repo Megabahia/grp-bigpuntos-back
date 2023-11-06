@@ -46,6 +46,11 @@ logExcepcion = datosTipoLogAux['excepcion']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_create(request):
+    """
+    ESte metodo sirve para crear los datos de la persona en la tabla persona de la base datos persona
+    @type request: El campo request recibe los campos de la tabla personas
+    @rtype: Devuelve el registro creado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'create/',
@@ -103,6 +108,12 @@ def personas_create(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def personas_listOne(request, pk):
+    """
+    ESte metdo sirve para obtener una persona de la tabla personas de la base datos personas
+    @type pk: El campo pk recibe el id de la tabla personas
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro obtenido, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -138,6 +149,12 @@ def personas_listOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_update(request, pk):
+    """
+    Este metodo sirve para actualizar el registro persona de la tabla persona de la base datos personas
+    @type pk: El campo pk recibe el id de la tabla persona
+    @type request: El campo request recibe los campos de la tabla personas
+    @rtype: DEvuelve el registro actualizado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/',
@@ -244,6 +261,12 @@ def personas_update(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_update_sin_imagen(request, pk):
+    """
+    Este metodo sirve para actualizar la imagen de la persona de la tabla personas de la base datos personas
+    @type pk: El campo pk recibe el id de la persona
+    @type request: El campo request recibe el archivo
+    @rtype: DEvuelve el regitro actualizado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/',
@@ -288,6 +311,12 @@ def personas_update_sin_imagen(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def personas_delete(request, pk):
+    """
+    Este metodo sirve para borrar la persona de la tabla personas de la base datos personas
+    @type pk: El campo pk recibe el id de la personas
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro eliminado, caso contrario devuelve el error generado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -306,7 +335,6 @@ def personas_delete(request, pk):
             err = {"error": "No existe"}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
         # tomar el dato
         if request.method == 'DELETE':
             serializer = PersonasSerializer(query, data={'state': '0', 'updated_at': str(nowDate)}, partial=True)
@@ -329,7 +357,12 @@ def personas_delete(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_imagenUpdate(request, pk):
-    '''id de persona'''
+    '''
+    ESte metodo sirva para actualizar la imagen de la personas de la tabla personas de la base datos personas
+    @param pk: El campo pk recibe el id de la tabla personas
+    @type request: El campo request recibe el archivo
+    @rtype: DEvuelve el registro actualizado, caso contrario devuelve el error generado
+    '''
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/imagen/',
@@ -374,6 +407,11 @@ def personas_imagenUpdate(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_validarCodigo(request):
+    """
+    Este metodo sirve para validar el codigo de la cuenta de la tabla validar cuenta de la base datos personas
+    @type request: El campo request recibe el campo codigo, user_id
+    @rtype: DEvuelve el registro de la persona, caso contrario devuelve el error generado
+    """
     nowDate = timezone.localtime(timezone.now())
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -420,6 +458,11 @@ def personas_validarCodigo(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def personas_listOne_cedula(request):
+    """
+    Este metodo sirve para obtener una persona de la tabla personas de la base datos personas
+    @type request: El campo request recibe la identificacion
+    @rtype: DEvuelve el registro de la persona, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/cedula/',
@@ -452,6 +495,10 @@ def personas_listOne_cedula(request):
 
 @api_view(['GET'])
 def pruebaConsumer(request):
+    """
+    Este metodo sirve para actualizar el codigo de credito preaprobado de la base datos personas
+    @rtype: El campo request no recibe nada
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',

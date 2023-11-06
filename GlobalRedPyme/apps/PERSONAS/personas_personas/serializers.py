@@ -8,12 +8,19 @@ from .models import (
 
 
 class PersonasSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Facturas
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = Personas
         fields = '__all__'
         read_only_fields = ['_id']
 
     def to_representation(self, instance):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         representation = super().to_representation(instance)
         if representation['identificacion']:
             representation['identificacion'] = desencriptar(eval(representation['identificacion']))
@@ -46,13 +53,17 @@ class PersonasSerializer(serializers.ModelSerializer):
         if representation['whatsapp']:
             representation['whatsapp'] = desencriptar(eval(representation['whatsapp']))
         if representation['referenciaDomicilio']:
-            representation['referenciaDomicilio'] = json.loads(desencriptar(eval(representation['referenciaDomicilio'])))
+            representation['referenciaDomicilio'] = json.loads(
+                desencriptar(eval(representation['referenciaDomicilio'])))
         if representation['ocupacionSolicitante']:
-            representation['ocupacionSolicitante'] = json.loads(desencriptar(eval(representation['ocupacionSolicitante'])))
+            representation['ocupacionSolicitante'] = json.loads(
+                desencriptar(eval(representation['ocupacionSolicitante'])))
         if representation['referenciasSolicitante']:
-            representation['referenciasSolicitante'] = json.loads(desencriptar(eval(representation['referenciasSolicitante'])))
+            representation['referenciasSolicitante'] = json.loads(
+                desencriptar(eval(representation['referenciasSolicitante'])))
         if representation['ingresosSolicitante']:
-            representation['ingresosSolicitante'] = json.loads(desencriptar(eval(representation['ingresosSolicitante'])))
+            representation['ingresosSolicitante'] = json.loads(
+                desencriptar(eval(representation['ingresosSolicitante'])))
         if representation['gastosSolicitante']:
             representation['gastosSolicitante'] = json.loads(desencriptar(eval(representation['gastosSolicitante'])))
         if representation['estadoCivil']:
@@ -70,6 +81,11 @@ class PersonasSerializer(serializers.ModelSerializer):
         return representation
 
     def to_internal_value(self, data):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         if 'identificacion' in data and data.get('identificacion'):
             data['identificacion'] = encriptar(data['identificacion'])
         if 'nombres' in data and data.get('nombres'):
@@ -124,13 +140,21 @@ class PersonasSerializer(serializers.ModelSerializer):
             data['garante'] = encriptar(json.dumps(data.get('garante')))
         return data
 
+
 class PersonasUpdateSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Facturas
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = Personas
         fields = '__all__'
         read_only_fields = ['user_id']
 
     def to_representation(self, instance):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         representation = super().to_representation(instance)
         if representation['identificacion']:
             representation['identificacion'] = desencriptar(eval(representation['identificacion']))
@@ -163,13 +187,17 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
         if representation['whatsapp']:
             representation['whatsapp'] = desencriptar(eval(representation['whatsapp']))
         if representation['referenciaDomicilio']:
-            representation['referenciaDomicilio'] = json.loads(desencriptar(eval(representation['referenciaDomicilio'])))
+            representation['referenciaDomicilio'] = json.loads(
+                desencriptar(eval(representation['referenciaDomicilio'])))
         if representation['ocupacionSolicitante']:
-            representation['ocupacionSolicitante'] = json.loads(desencriptar(eval(representation['ocupacionSolicitante'])))
+            representation['ocupacionSolicitante'] = json.loads(
+                desencriptar(eval(representation['ocupacionSolicitante'])))
         if representation['referenciasSolicitante']:
-            representation['referenciasSolicitante'] = json.loads(desencriptar(eval(representation['referenciasSolicitante'])))
+            representation['referenciasSolicitante'] = json.loads(
+                desencriptar(eval(representation['referenciasSolicitante'])))
         if representation['ingresosSolicitante']:
-            representation['ingresosSolicitante'] = json.loads(desencriptar(eval(representation['ingresosSolicitante'])))
+            representation['ingresosSolicitante'] = json.loads(
+                desencriptar(eval(representation['ingresosSolicitante'])))
         if representation['gastosSolicitante']:
             representation['gastosSolicitante'] = json.loads(desencriptar(eval(representation['gastosSolicitante'])))
         if representation['estadoCivil']:
@@ -187,6 +215,11 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
         return representation
 
     def to_internal_value(self, data):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         if 'identificacion' in data and data.get('identificacion'):
             data['identificacion'] = encriptar(data['identificacion'])
         if 'nombres' in data and data.get('nombres'):
@@ -243,11 +276,18 @@ class PersonasUpdateSerializer(serializers.ModelSerializer):
 
 
 class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Facturas
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = Personas
         exclude = ['imagen']
 
     def to_representation(self, instance):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         representation = super().to_representation(instance)
         if representation['identificacion']:
             representation['identificacion'] = desencriptar(eval(representation['identificacion']))
@@ -280,13 +320,17 @@ class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
         if representation['whatsapp']:
             representation['whatsapp'] = desencriptar(eval(representation['whatsapp']))
         if representation['referenciaDomicilio']:
-            representation['referenciaDomicilio'] = json.loads(desencriptar(eval(representation['referenciaDomicilio'])))
+            representation['referenciaDomicilio'] = json.loads(
+                desencriptar(eval(representation['referenciaDomicilio'])))
         if representation['ocupacionSolicitante']:
-            representation['ocupacionSolicitante'] = json.loads(desencriptar(eval(representation['ocupacionSolicitante'])))
+            representation['ocupacionSolicitante'] = json.loads(
+                desencriptar(eval(representation['ocupacionSolicitante'])))
         if representation['referenciasSolicitante']:
-            representation['referenciasSolicitante'] = json.loads(desencriptar(eval(representation['referenciasSolicitante'])))
+            representation['referenciasSolicitante'] = json.loads(
+                desencriptar(eval(representation['referenciasSolicitante'])))
         if representation['ingresosSolicitante']:
-            representation['ingresosSolicitante'] = json.loads(desencriptar(eval(representation['ingresosSolicitante'])))
+            representation['ingresosSolicitante'] = json.loads(
+                desencriptar(eval(representation['ingresosSolicitante'])))
         if representation['gastosSolicitante']:
             representation['gastosSolicitante'] = json.loads(desencriptar(eval(representation['gastosSolicitante'])))
         if representation['estadoCivil']:
@@ -304,6 +348,11 @@ class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
         return representation
 
     def to_internal_value(self, data):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         if 'identificacion' in data and data.get('identificacion'):
             data['identificacion'] = encriptar(data['identificacion'])
         if 'nombres' in data and data.get('nombres'):
@@ -360,12 +409,16 @@ class PersonasUpdateSinImagenSerializer(serializers.ModelSerializer):
 
 
 class PersonasImagenSerializer(serializers.HyperlinkedModelSerializer):
+    # La clase meta se relaciona con la tabla Facturas
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = Personas
         fields = ['imagen', 'updated_at']
 
 
 class ValidarCuentaSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Facturas
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = ValidarCuenta
         fields = '__all__'
@@ -373,11 +426,18 @@ class ValidarCuentaSerializer(serializers.ModelSerializer):
 
 
 class PersonasSearchSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Facturas
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = Personas
         fields = ['_id', 'identificacion', 'nombres', 'apellidos', 'user_id', 'whatsapp']
 
     def to_representation(self, instance):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         representation = super().to_representation(instance)
         if representation['identificacion']:
             representation['identificacion'] = desencriptar(eval(representation['identificacion']))
@@ -410,13 +470,17 @@ class PersonasSearchSerializer(serializers.ModelSerializer):
         if 'whatsapp' in representation and representation['whatsapp']:
             representation['whatsapp'] = desencriptar(eval(representation['whatsapp']))
         if 'referenciaDomicilio' in representation and representation['referenciaDomicilio']:
-            representation['referenciaDomicilio'] = json.loads(desencriptar(eval(representation['referenciaDomicilio'])))
+            representation['referenciaDomicilio'] = json.loads(
+                desencriptar(eval(representation['referenciaDomicilio'])))
         if 'ocupacionSolicitante' in representation and representation['ocupacionSolicitante']:
-            representation['ocupacionSolicitante'] = json.loads(desencriptar(eval(representation['ocupacionSolicitante'])))
+            representation['ocupacionSolicitante'] = json.loads(
+                desencriptar(eval(representation['ocupacionSolicitante'])))
         if 'referenciasSolicitante' in representation and representation['referenciasSolicitante']:
-            representation['referenciasSolicitante'] = json.loads(desencriptar(eval(representation['referenciasSolicitante'])))
+            representation['referenciasSolicitante'] = json.loads(
+                desencriptar(eval(representation['referenciasSolicitante'])))
         if 'ingresosSolicitante' in representation and representation['ingresosSolicitante']:
-            representation['ingresosSolicitante'] = json.loads(desencriptar(eval(representation['ingresosSolicitante'])))
+            representation['ingresosSolicitante'] = json.loads(
+                desencriptar(eval(representation['ingresosSolicitante'])))
         if 'gastosSolicitante' in representation and representation['gastosSolicitante']:
             representation['gastosSolicitante'] = json.loads(desencriptar(eval(representation['gastosSolicitante'])))
         if 'estadoCivil' in representation and representation['estadoCivil']:
@@ -434,6 +498,11 @@ class PersonasSearchSerializer(serializers.ModelSerializer):
         return representation
 
     def to_internal_value(self, data):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         if 'identificacion' in data and data.get('identificacion'):
             data['identificacion'] = encriptar(data['identificacion'])
         if 'nombres' in data and data.get('nombres'):

@@ -29,6 +29,11 @@ logExcepcion = datosTipoLogAux['excepcion']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def productos_list(request):
+    """
+    Este metodo se usa para listar todos los productos de la tabla productos, de la base datos central
+    @type request: El campo request recibe tipo, empresa_id
+    @rtype: Devuelve una lista de los productos segun el filtrado, caso contrario devuelve el error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -73,6 +78,11 @@ def productos_list(request):
 # LISTAR TODOS SIN AUTENTICARSE
 @api_view(['POST'])
 def productos_list_free(request):
+    """
+    Este metodo se lista los productos gratis segun el tipo de la tabla productos de la base de datos central
+    @type request: En campo request recibe tipo
+    @rtype: Devuelve una lista de los productos, caso contrario devuelve un error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -111,6 +121,11 @@ def productos_list_free(request):
 # LISTAR TODOS SIN AUTENTICARSE
 @api_view(['POST'])
 def productos_list_free_landing(request):
+    """
+    Este metodo lista los productos gratis del landing pages, de la tabla productos de la base datos central
+    @type request: El campo request recibe el campo tipo, empresa_id
+    @rtype: DEvuelve una lista de productos, caso contrario devuelve error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -153,6 +168,11 @@ def productos_list_free_landing(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def productos_create(request):
+    """
+    Este metodo se usa para crear un producto en la tabla productos de la base datos central
+    @type request: El campo request recibe los campos de la tabla de productos
+    @rtype: Devuelve el registro que se guardo, caso contrario devuelve error
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -189,6 +209,11 @@ def productos_create(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def productos_create_landing(request):
+    """
+    Este metodo se usa para crear producto de la tabla producto de la base de datos central
+    @type request: El campo request recibe los campos de la tabla productos
+    @rtype: Devuelve el registro de la tabla de productos, caso contrario devuelve error
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -225,6 +250,12 @@ def productos_create_landing(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def productos_listOne(request, pk):
+    """
+    Este metodo se usa para listar un producto de la tabla producto de la base datos central
+    @type pk: El campo pk es el id de la tabla productos
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve un producto en base al id, caso contrario devuelve un error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -259,6 +290,12 @@ def productos_listOne(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def productos_listOne_landing(request, pk):
+    """
+    Este metodo se usa para obtener un producto de la tabla productos de la base datos central
+    @type pk: El compo pk es el id
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve un producto que conicida con el id, caso contrario devuelve un error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne-landing/',
@@ -294,6 +331,12 @@ def productos_listOne_landing(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def productos_update(request, pk):
+    """
+    Este metodo se usa para actualizar el producto de la tabla productos de la base datos central
+    @type pk: El campo pk es el id del producto
+    @type request: El campo request recibe los campos de la tabla productos
+    @rtype: Devuelve el registro actualizado, caso contrario devuelve los errores del registro
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -343,6 +386,12 @@ def productos_update(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def productos_update_landing(request, pk):
+    """
+    Este metodo se usa para actualizar el producto de la tabla producto de la base datos central
+    @type pk: El campo pk recibe el id del producto
+    @type request: El campo request recibe los campos de productos
+    @rtype: Devuelve el registro actualizado, caso contrario devuelve los errores del registro
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -392,6 +441,12 @@ def productos_update_landing(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def productos_delete(request, pk):
+    """
+    Este metodo se usa para borrar un producto de la tabla productos de la base datos central
+    @type pk: El campo pk es el id del producto
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve el registro eliminado, caso contrario devuelve el error generado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -431,6 +486,12 @@ def productos_delete(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def productos_delete_landing(request, pk):
+    """
+    Este metodo se usa para borrar un producto de la tabla productos de la base datos central
+    @type pk: El campo pk es el id del producto
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve el registro eliminado, caso contrario devuelve el error generado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -451,7 +512,6 @@ def productos_delete_landing(request, pk):
             err = {"error": "No existe"}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
         # tomar el dato
         if request.method == 'DELETE':
             serializer = ProductosLandingSerializer(persona, data={'state': '0', 'updated_at': str(nowDate)},
@@ -471,6 +531,12 @@ def productos_delete_landing(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def productos_imagenUpdate(request, pk):
+    """
+    Este metodo se usa pra actualizar la imagen del producto de la tabla productos de la base datos central
+    @type pk: El campo pk recibe el id del producto
+    @type request: El campo request recibe los campos de los productos
+    @rtype: Devuelve el registro actualizado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/imagen/',
@@ -516,6 +582,11 @@ def productos_imagenUpdate(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def productos_list_vigencia(request):
+    """
+    Este metodo consulta los productos en vigencia de la tabla productos de la base datos central
+    @type request: El campo request recibe el campo tipo
+    @rtype: Devuelve una lista de productos en vigencia desde el dia actual, caso contrario devuelve un error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',

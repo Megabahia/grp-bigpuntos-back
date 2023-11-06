@@ -26,7 +26,7 @@ from dateutil.relativedelta import relativedelta
 # ObjectId
 from bson import ObjectId
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+from ...CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 
 # declaracion variables log
 datosAux = datosProductosMDP()
@@ -46,6 +46,11 @@ logExcepcion = datosTipoLogAux['excepcion']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def pagos_create(request):
+    """
+    ESTE metodo sirve para crear pagos en la tabla pagos de la base datos corp
+    @type request: El campo request recibe los campos de la tabla pagos
+    @rtype: DEvuelve el pago creado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'create/',
@@ -96,6 +101,12 @@ def pagos_create(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def pagos_listOne(request, pk):
+    """
+    Este metodo obtiene el pago por id de la tabla pagos de la base datos corp
+    @type pk: El campos pk recibe el id del pago
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el pago, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -131,6 +142,12 @@ def pagos_listOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def pagos_update(request, pk):
+    """
+    Este metodo actualiza el pago de la tabla de pagos de la base datos corp
+    @type pk: El campo pk recibe el id de la tabla pagos
+    @type request: El campo request recibe los campos de la tabla pagos
+    @rtype: Devuelve el registro actualizado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/',
@@ -173,6 +190,12 @@ def pagos_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def pagos_delete(request, pk):
+    """
+    Este metodo sirve para eliminar pagos de la tabla pagos de la base datos
+    @type pk: El campo pk recibe el id del pago
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro eliminado, caso contrario no devuelve nada
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -210,6 +233,11 @@ def pagos_delete(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def pagos_list(request):
+    """
+    Este metodo sirve para listar los pagos de la tabla pagos de la base datos corp
+    @type request: El campo request recibe codigoCobro, codigoReferido, empresa_id
+    @rtype: object
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -224,14 +252,15 @@ def pagos_list(request):
     if request.method == 'POST':
         try:
             logModel['dataEnviada'] = str(request.data)
-            if "codigoCobro" in request.data and request.data['codigoCobro'] == '' and "codigoReferido" in request.data and request.data['codigoReferido'] == '':
+            if "codigoCobro" in request.data and request.data[
+                'codigoCobro'] == '' and "codigoReferido" in request.data and request.data['codigoReferido'] == '':
                 new_serializer_data = {'error': 'Ingrese valores de busqueda.'}
                 return Response(new_serializer_data, status=status.HTTP_200_OK)
             # Filtros
             filters = {"state": "1"}
 
             if "codigoCobro" in request.data and request.data["codigoCobro"] != '':
-                    filters['codigoCobro'] = str(request.data["codigoCobro"])
+                filters['codigoCobro'] = str(request.data["codigoCobro"])
 
             user_id = ''
             if "codigoReferido" in request.data and request.data["codigoReferido"] != '':
@@ -239,7 +268,7 @@ def pagos_list(request):
                 user_id = Personas.objects.filter(codigoUsuario=codigoReferido).first()
 
             if "empresa_id" in request.data and request.data["empresa_id"] != '':
-                    filters['empresa_id'] = str(request.data["empresa_id"])
+                filters['empresa_id'] = str(request.data["empresa_id"])
 
             # Serializar los datos
             new_serializer_data = {}
@@ -257,7 +286,8 @@ def pagos_list(request):
                         new_serializer_data['error'] = {'tiempo': 'Se le termino el tiempo', 'estado': 'Inactivo'}
             if user_id != '' and user_id is not None:
                 monto = Catalogo.objects.filter(tipo='MONTO_CODIGO_REFERIDO_DESCUENTO').first()
-                new_serializer_data['monto'] = float(monto.valor) + float(new_serializer_data['monto']) if 'monto' in new_serializer_data else float(monto.valor)
+                new_serializer_data['monto'] = float(monto.valor) + float(
+                    new_serializer_data['monto']) if 'monto' in new_serializer_data else float(monto.valor)
                 new_serializer_data['usuarioReferido_id'] = str(user_id.pk)
             if not new_serializer_data:
                 new_serializer_data['error'] = {'message': 'No existe el codigo'}

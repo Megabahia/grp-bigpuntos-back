@@ -1,24 +1,24 @@
 from rest_framework import status, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from apps.CENTRAL.central_usuarios.models import Usuarios, UsuariosEmpresas
-from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
-from apps.CENTRAL.central_infoUsuarios.models import InfoUsuarios
-from apps.CENTRAL.central_infoUsuarios.serializers import InfoUsuarioSerializer
-from apps.PERSONAS.personas_personas.models import Personas
-from apps.CORP.corp_empresas.models import Empresas
+from .models import Usuarios, UsuariosEmpresas
+from ..central_tipoUsuarios.models import TipoUsuario
+from ..central_infoUsuarios.models import InfoUsuarios
+from ..central_infoUsuarios.serializers import InfoUsuarioSerializer
+from ...PERSONAS.personas_personas.models import Personas
+from ...CORP.corp_empresas.models import Empresas
 from ...PERSONAS.personas_personas.serializers import PersonasSerializer
-from apps.CENTRAL.central_roles.models import Roles, RolesUsuarios
-from apps.CENTRAL.central_roles.serializers import ListRolesSerializer
-from apps.CENTRAL.central_usuarios.serializers import UsuarioSerializer, UsuarioImagenSerializer, UsuarioRolSerializer, \
+from ..central_roles.models import Roles, RolesUsuarios
+from ..central_roles.serializers import ListRolesSerializer
+from ..central_usuarios.serializers import UsuarioSerializer, UsuarioImagenSerializer, UsuarioRolSerializer, \
     UsuarioCrearSerializer, UsuarioFiltroSerializer, UsuarioEmpresaSerializer
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth import logout
-from apps.CENTRAL.central_autenticacion.models import Token
-from apps.CENTRAL.central_autenticacion.auth import token_expire_handler, expires_in, deleteExpiredTokens
+from ..central_autenticacion.models import Token
+from ..central_autenticacion.auth import token_expire_handler, expires_in, deleteExpiredTokens
 # ObjectId
 from bson import ObjectId
 # Swagger
@@ -27,12 +27,12 @@ from drf_yasg.utils import swagger_auto_schema
 # contraeña
 from django.utils.crypto import get_random_string
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosUsuarios, datosTipoLog
+from ..central_logs.methods import createLog, datosUsuarios, datosTipoLog
 from django_rest_passwordreset.views import ResetPasswordRequestToken
 # enviar email usuario creado
 from ..central_autenticacion.password_reset import resetPasswordNewUser, enviarEmailCreacionPersona
 # EMPLEADOS
-from apps.CORP.corp_empresas.models import Empleados
+from ...CORP.corp_empresas.models import Empleados
 
 # declaracion variables log
 datosAux = datosUsuarios()
@@ -49,6 +49,11 @@ logExcepcion = datosTipoLogAux['excepcion']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def usuario_list(request):
+    """
+    ESte metodo sirve para listar usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe page, page_size, estado, tipoUsuario
+    @rtype: DEvuelve una lista de usuarios, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -117,6 +122,11 @@ def usuario_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def usuario_list_corp(request):
+    """
+    ESte metodo sirve para listar usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe page, page_size, tipoUsuario
+    @rtype: DEvuelve una lista de usuarios, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/corp/',
@@ -167,6 +177,11 @@ def usuario_list_corp(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def usuario_listExport(request):
+    """
+    ESte metodo sirve para listar usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe page, page_size, estado, roles
+    @rtype: DEvuelve una lista de usuarios, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -205,6 +220,11 @@ def usuario_listExport(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def usuario_findOne(request, pk):
+    """
+    ESte metodo sirve un usuario de la tabla usuario de la base datos central
+    @type request: El campo request no recibe nada
+    @rtype: DEvuelve el registro obtenido, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -239,6 +259,11 @@ def usuario_findOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def usuario_update(request, pk):
+    """
+    ESte metodo sirve para actualizar usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe los campos de la tabla usuarios
+    @rtype: DEvuelve el registro actualizado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/',
@@ -311,6 +336,12 @@ def usuario_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def usuario_delete(request, pk):
+    """
+    ESte metodo sirve para borrar usuario de la tabla usuario de la base datos central
+    @type pk: El campo pk recibe el id del usuario
+    @type request: El campo request no recibe
+    @rtype: DEvuelve el registro eliminado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -350,6 +381,11 @@ def usuario_delete(request, pk):
 
 @api_view(['POST'])
 def usuario_core_create(request):
+    """
+    ESte metodo sirve para crear usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe los campos de la tabla usuarios
+    @rtype: DEvuelve el registro creado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'create/',
@@ -422,6 +458,11 @@ def usuario_core_create(request):
 # CREAR USUARIO
 @api_view(['POST'])
 def usuario_create(request):
+    """
+    ESte metodo sirve para crear usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe los campos de la tabla usuarios
+    @rtype: DEvuelve el registro creado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'create/',
@@ -539,6 +580,11 @@ def usuario_create(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def usuarioImagen_update(request, pk):
+    """
+    ESte metodo sirve para actualizar la imagen usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe el archivo
+    @rtype: DEvuelve el registro actualizado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/imagen/',
@@ -580,6 +626,11 @@ def usuarioImagen_update(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def vendedor_list(request):
+    """
+    ESte metodo sirve para listar usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe el nombre del rol
+    @rtype: DEvuelve una lista de usuario, caso contrario devuelve el error generado
+    """
     if request.method == 'GET':
         try:
             query = Usuarios.objects.filter(state=1, idRol__nombre="Vendedor")
@@ -593,6 +644,11 @@ def vendedor_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def usuarios_list_rol(request):
+    """
+    ESte metodo sirve para listar usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe el nombre del rol
+    @rtype: DEvuelve una lista de usuario, caso contrario devuelve el error generado
+    """
     if request.method == 'POST':
         try:
             query = Usuarios.objects.filter(state=1, idRol__nombre=request.data['rol'])
@@ -605,6 +661,11 @@ def usuarios_list_rol(request):
 
 @api_view(['POST'])
 def usuario_update_by_email(request):
+    """
+    ESte metodo sirve para crear usuario de la tabla usuario de la base datos central
+    @type request: El campo request recibe los campos de la tabla usuarios
+    @rtype: DEvuelve el registro creado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/',

@@ -1,3 +1,7 @@
+"""Nube Bigpuntos
+PORTALES: CENTER, PERSONAS, CORP, IFIS
+"""
+
 from apps.config import config
 from .models import Empresas
 from .serializers import (
@@ -29,6 +33,11 @@ logExcepcion = datosTipoLogAux['excepcion']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_list(request):
+    """
+    Esta metodo se usa para listar las empresas segun los filtros de la tabla de empresas, de la base datos central
+    @type request: El campo request recibe nombreComercial, tipoEmpresa, page, page_size
+    @rtype: Devuelve una lista de las empresas con los filtros aplicados, caso contrario devuelve un error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -76,6 +85,11 @@ def empresas_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_create(request):
+    """
+    Este metodo se usa para guardar una empresa en la tabla de empresas, de la base datos central
+    @type request: El campo request recibe los parametros de la tabla de empresas
+    @rtype: Devuelve el registro que se acaba de registrar, caso contrario devuelve los errores generados
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -94,7 +108,7 @@ def empresas_create(request):
             request.data['created_at'] = str(timezone_now)
             if 'updated_at' in request.data:
                 request.data.pop('updated_at')
-            filters = { 'estado': 'Activo', 'state':1}
+            filters = {'estado': 'Activo', 'state': 1}
 
             if 'type' in request.data:
                 if request.data['type'] != '':
@@ -150,6 +164,12 @@ def empresas_create(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def empresas_listOne(request, pk):
+    """
+    Este metodo se usa para listar una empresa por el id de la tabla de empresas de la base de datos central
+    @type pk: El campo pk es el id
+    @type request: No recibe datos por el request
+    @rtype: Devuelve una empresa si encuentra, caso contrario devuelve error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -184,6 +204,12 @@ def empresas_listOne(request, pk):
 # ENCONTRAR UNO
 @api_view(['GET'])
 def empresas_listOne_url(request, pk):
+    """
+    Este metodo consulta por la url a la tabla de la empresa de la base de datos central
+    @type pk: En la pk recibe el id de la empresa
+    @type request: No recibe nada en el request
+    @rtype: Devuelve la empresa que coincide con la url caso contrario devuelve error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -217,6 +243,13 @@ def empresas_listOne_url(request, pk):
 # ENCONTRAR UNO
 @api_view(['GET'])
 def empresas_listOne_url_clientes(request, pk):
+    """
+    Este metodo consulta por url para las empresas que los clientes puedan visualizar la informacion de la empresa
+    de la tabla de empresa de la base de datos central
+    @type pk: El campo pk recibe el id de la empresa que desea consultar
+    @type request: No recibe nada el campo request
+    @rtype: DEvuelve la empresa que coincida con la url, caso contrario devuelve un error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -251,6 +284,12 @@ def empresas_listOne_url_clientes(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def empresas_update(request, pk):
+    """
+    Este metodo permite actualizar las empresas de la tabla empresas de la base de datos central
+    @type pk: El campo pk recibe el id
+    @type request: El campo request recibe los datos de la tabla empresa
+    @rtype: devuelve el registro actualizado, caso contrario devuelve los error que tenga el registro
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -312,7 +351,8 @@ def empresas_update(request, pk):
                     'nombre'].replace(" ",
                                       "-")
 
-                empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).exclude(_id=pk).first()
+                empresa = Empresas.objects.filter(url=request.data['url'], estado='Activo', state=1).exclude(
+                    _id=pk).first()
                 if empresa is not None:
                     data = {'error': 'La url ya esta registrado.'}
                     createLog(logModel, data, logExcepcion)
@@ -335,6 +375,12 @@ def empresas_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def empresas_delete(request, pk):
+    """
+    Este metodo elimina la empresa de la tabla empresa de la base de datos central
+    @type pk: El campo pk recibe el id de la empresa que se desea eliminar
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve el registro eliminado, caso contrario devuelve el error que se produzca
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',

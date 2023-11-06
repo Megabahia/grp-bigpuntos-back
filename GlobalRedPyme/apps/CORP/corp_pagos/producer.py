@@ -5,6 +5,11 @@ from apps.config import config
 
 
 def publish(data):
+    """
+    Este metodo sirve para enviar a la cola de aws de los pagos
+    @type data: El campo data recibe el registro de pago
+    @rtype: Noo devuelve nada
+    """
     topicArn = config.AWS_TOPIC_ARN_PAGOS
     snsClient = boto3.client(
         'sns',

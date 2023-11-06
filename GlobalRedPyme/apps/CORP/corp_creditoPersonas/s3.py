@@ -15,6 +15,10 @@ s3bkt = s3.Bucket(env.str('AWS_STORAGE_BUCKET_NAME'))
 s3bktreplay = s3.Bucket(env.str('AWS_STORAGE_BUCKET_NAME_COOP'))
 
 def replicate(file):
+    """
+    Este metodo sirve para replicar los documentos a bucket de AWS S3
+    @rtype: No devuelve nada
+    """
         # for s3_file in s3bkt.objects.all():
     copy_source = {"Bucket": env.str('AWS_STORAGE_BUCKET_NAME'), "Key": file}
 

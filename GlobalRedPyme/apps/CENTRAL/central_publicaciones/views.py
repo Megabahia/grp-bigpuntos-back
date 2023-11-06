@@ -49,6 +49,11 @@ logExcepcion = datosTipoLogAux['excepcion']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_list(request):
+    """
+    Este metodo se usa para listar las publicaciones de la tabla publicaciones de la base datos central
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve una lista de publicaciones ordenado por fecha, caso contrario devuelve un error
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -115,6 +120,11 @@ def publicaciones_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_create(request):
+    """
+    Este metodo se usa para crear una publicacion en la tabla de publicaciones de la base datos central
+    @type request: El campo request recibe los campos de la tabla de publicaciones
+    @rtype: Devuelve el registro creado, caso contrario devuelve los errores generados
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -152,9 +162,15 @@ def publicaciones_create(request):
 
 
 # ENCONTRAR UNO
-#@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def publicaciones_listOne(request, pk):
+    """
+    Este metodo se usa para listar una publicacion de la tabla de publicacion de la base datos central
+    @type pk: El campo pk es el id de la publicacion
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve una publicacion, caso contrario no devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -192,6 +208,12 @@ def publicaciones_listOne(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_update(request, pk):
+    """
+    Este metodo actualiza la publicacion de la tabla de publicaciones de la base datos central
+    @type pk: El campo pk recibe el id de la publicacion
+    @type request: El campo request recibe los campos de la tabla publicaciones
+    @rtype: Devuelve el registro actualizado, caso contrario devuelve los errores generados
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -242,6 +264,12 @@ def publicaciones_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def publicaciones_delete(request, pk):
+    """
+    Este metodo se usa para eliminar una publicacion de la tabla de publicaciones de la base datos central
+    @type pk: el campo pk recibe el id de la publicacion
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve el campo eliminado, caso contrario devuelve el error generado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -262,7 +290,6 @@ def publicaciones_delete(request, pk):
             err = {"error": "No existe"}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
         # tomar el dato
         if request.method == 'DELETE':
             serializer = PublicacionesSerializer(persona, data={'state': '0', 'updated_at': str(nowDate)}, partial=True)
@@ -281,6 +308,12 @@ def publicaciones_delete(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_imagenUpdate(request, pk):
+    """
+    Este metodo se usa para actualizar la imagen de publicacion de la tabla de publicaciones de base datos central
+    @type pk: El campo pk recibe el campo id de la publicacion
+    @type request: El campo request recibe el archivo que se desea actualizar
+    @rtype: Devuelve el registro de la publicacion actualizado, caso contrario devuelve los errores generados
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'update/imagen/',
@@ -327,6 +360,11 @@ def publicaciones_imagenUpdate(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_compartir(request):
+    """
+    Este metodo se usa para registrar el usuario que publicacion comparte, en la tabla de compatir publicaciones en la base datos central
+    @type request: El campo request recibe el campo del usuario y de la publicacion
+    @rtype: Devuelve el registro del usuario que compartio, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'compartir/',
@@ -381,6 +419,11 @@ def publicaciones_compartir(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_usuario(request):
+    """
+    Este metodo se usa para listar las publicaciones de un usuario en especifico
+    @type request: El campo request user, page, page_size
+    @rtype: Devuelve una lista de las publicaciones del usuario, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'usuario/',
@@ -421,6 +464,11 @@ def publicaciones_usuario(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_list_full(request):
+    """
+    Este metodo se usa para listar todas la publicaciones sin paginar de la tabla publicaciones de la base datos central
+    @type request: El campo request no recibe nada
+    @rtype: Devuelve una lista de publicaciones, caso contrario devuele los errores generados
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -455,6 +503,11 @@ def publicaciones_list_full(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def publicaciones_reporte(request):
+    """
+    Este metodo se usa para consultar los registros y generar el reporte de la tabla de compartir publicaciones de base datos central
+    @type request: El campo request recibe los campos page, page_size
+    @rtype: Devuelve una lista de las comparticiones de los usuarios, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',

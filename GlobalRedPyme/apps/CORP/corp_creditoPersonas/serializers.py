@@ -4,21 +4,29 @@ from rest_framework import serializers
 # ObjectId
 from bson import ObjectId
 
-from apps.CORP.corp_creditoPersonas.models import (
+from .models import (
     CreditoPersonas,
 )
 
-from apps.CORP.corp_empresas.models import Empresas
-from apps.PERSONAS.personas_personas.models import Personas
-from apps.CORP.corp_empresas.serializers import EmpresasInfoBasicaSerializer
+from ..corp_empresas.models import Empresas
+from ...PERSONAS.personas_personas.models import Personas
+from ..corp_empresas.serializers import EmpresasInfoBasicaSerializer
+
 
 class CreditoPersonasSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla CreditoPersonas
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = CreditoPersonas
-       	fields = '__all__'
+        fields = '__all__'
         read_only_fields = ['_id']
 
     def to_representation(self, instance):
+        """
+        Este metod sirve para modificar los datos que se devulveran a frontend
+        @type instance: El campo instance contiene el registro de la base datos
+        @rtype: Devuelve la informacion modificada
+        """
         data = super(CreditoPersonasSerializer, self).to_representation(instance)
         # tomo el campo persona y convierto de OBJECTID a string
         # empresaIfis_id = data.pop('empresaIfis_id')
@@ -48,13 +56,21 @@ class CreditoPersonasSerializer(serializers.ModelSerializer):
         #     data.update({"emailPersona": persona.email})
         return data
 
+
 class CreditoPersonasPersonaSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla CreditoPersonas
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = CreditoPersonas
-       	fields = ['_id','monto','plazo','user_id','empresaIfis_id']
+        fields = ['_id', 'monto', 'plazo', 'user_id', 'empresaIfis_id']
         read_only_fields = ['_id']
 
     def to_representation(self, instance):
+        """
+        Este metod sirve para modificar los datos que se devulveran a frontend
+        @type instance: El campo instance contiene el registro de la base datos
+        @rtype: Devuelve la informacion modificada
+        """
         data = super(CreditoPersonasPersonaSerializer, self).to_representation(instance)
         # tomo el campo persona y convierto de OBJECTID a string
         empresaIfis_id = data.pop('empresaIfis_id')
@@ -64,7 +80,7 @@ class CreditoPersonasPersonaSerializer(serializers.ModelSerializer):
         empresaSerializer = EmpresasInfoBasicaSerializer(entidadFinanciera).data
         data['imagen'] = empresaSerializer['imagen']
         # Informacion persona
-        persona = Personas.objects.filter(user_id=str(instance.user_id),state=1).first()
+        persona = Personas.objects.filter(user_id=str(instance.user_id), state=1).first()
         if persona is not None:
             data.update({"identificacion": persona.identificacion})
             data.update({"nombres": persona.nombres})

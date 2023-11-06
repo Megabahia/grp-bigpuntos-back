@@ -1,6 +1,8 @@
 from djongo import models
 
-# Create your models here.
+# Nube: Bigpuntos
+#Portales: Central, Corp
+#Esta clase hace referencia la tabla de datos MonedasEmpresa de la base datos corp
 class MonedasEmpresa(models.Model):
     _id = models.ObjectIdField()
     fechaCobro = models.DateField(auto_now_add=True,null=True, blank=True)

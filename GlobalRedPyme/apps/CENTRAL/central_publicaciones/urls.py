@@ -12,8 +12,10 @@ from .views import (
     publicaciones_reporte,
 )
 
+# Esta variable se utiliza para colocar el nombre aplicacion de puvblicaciones
 app_name = 'central_publicaciones'
 
+# La variable urlpatterns se utiliza para exportar las diferentes rutas a las que pueden acceder el front
 urlpatterns = [
     path('create/', publicaciones_create, name="publicaciones_create"),
     path('list/', publicaciones_list, name="publicaciones_list"),

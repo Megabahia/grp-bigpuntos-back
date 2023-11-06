@@ -2,10 +2,13 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from djongo import models
 
-from apps.CENTRAL.central_usuarios.models import Usuarios
-from apps.CENTRAL.central_tipoUsuarios.models import TipoUsuario
+from ..central_usuarios.models import Usuarios
+from ..central_tipoUsuarios.models import TipoUsuario
 
-# Create your models here.
+
+# Nube: Bigpuntos
+# Portales: Central, personas, corp, ifis, credit
+# La clase Roles hace referencia a la tabla roles de la base datos central
 class Roles(models.Model):
     _id = models.ObjectIdField()
     codigo = models.CharField(unique=True,max_length=150,null=True)
@@ -19,8 +22,12 @@ class Roles(models.Model):
     tipoUsuario = models.ForeignKey(TipoUsuario, null=True, on_delete=models.CASCADE)  # Relacion Tipo usuario
 
     def __str__(self):
+        # El metodo se usa para identificar el registro al momento de consultar
         return self.nombre
 
+# Nube: Bigpuntos
+# Portales: Central, personas, corp, ifis, credit
+# La clase RolesUsuarios hace referencia a la tabla roles de la base datos central
 class RolesUsuarios(models.Model):
     _id = models.ObjectIdField()
     rol = models.ForeignKey(Roles, null=False, on_delete=models.CASCADE)  # Relacion Rol

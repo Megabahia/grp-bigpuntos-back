@@ -7,8 +7,10 @@ from .views import (
     catalogo_filter_listOne_tipo_todo,
 )
 
+# Esta variable se utiliza para colocar el nombre aplicacion de catalogo
 app_name = 'catalogo'
 
+# La variable urlpatterns se utiliza para exportar las diferentes rutas a las que pueden acceder el front
 urlpatterns = [
     # catalogo
     path('list/', catalogo_list, name="catalogo_list"),

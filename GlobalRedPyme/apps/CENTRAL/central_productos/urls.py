@@ -15,8 +15,10 @@ from .views import (
     productos_delete_landing,
 )
 
+# Esta variable se utiliza para colocar el nombre aplicacion de catalogo
 app_name = 'central_productos'
 
+# La variable urlpatterns se utiliza para exportar las diferentes rutas a las que pueden acceder el front
 urlpatterns = [
     path('create/', productos_create, name="productos_create"),
     path('create-landing/', productos_create_landing, name="productos_create_landing"),

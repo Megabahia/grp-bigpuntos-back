@@ -19,6 +19,10 @@ logTransaccion=datosTipoLogAux['transaccion']
 logExcepcion=datosTipoLogAux['excepcion']
 
 def codigoCreditoPreaprobado():
+    """
+    ESte metodo sirve para consultar la cola de aws de los codigos de creditos preaprobados
+    @rtype: No devuelve nada
+    """
     print('entro')
     timezone_now = timezone.localtime(timezone.now())
     logModel = {

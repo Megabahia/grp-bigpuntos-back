@@ -5,7 +5,7 @@ import json
 from apps.config import config
 from bson import ObjectId
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+from ...CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 
 from ...CORP.corp_empresas.models import Empresas
 from ...PERSONAS.personas_personas.models import Personas
@@ -22,6 +22,7 @@ logTransaccion = datosTipoLogAux['transaccion']
 logExcepcion = datosTipoLogAux['excepcion']
 
 
+# ESte metodo realiza la tarea de consultar las monedas de la cola de aws para registrar el movimiento de las monedas
 def hi():
     print('entro')
     logModel = {
@@ -53,7 +54,8 @@ def hi():
                 jsonRequest = json.loads(body['Message'])
                 print('message', jsonRequest['user_id'])
                 # Busca en la bdd las sqs
-                monedasUsuario = Monedas.objects.filter(user_id=str(jsonRequest['user_id']), state=1).order_by('-created_at').first()
+                monedasUsuario = Monedas.objects.filter(user_id=str(jsonRequest['user_id']), state=1).order_by(
+                    '-created_at').first()
                 data = {
                     'user_id': jsonRequest['user_id'],
                     'empresa_id': jsonRequest['empresa_id'],
@@ -70,7 +72,8 @@ def hi():
             else:
                 jsonRequest = json.loads(body['Message'])
                 # Busca en la bdd las sqs
-                monedasUsuario = Monedas.objects.filter(identificacion=str(jsonRequest[1]), email=str(jsonRequest[5]), state=1).order_by(
+                monedasUsuario = Monedas.objects.filter(identificacion=str(jsonRequest[1]), email=str(jsonRequest[5]),
+                                                        state=1).order_by(
                     '-created_at').first()
                 hash_identificacion = encriptar(jsonRequest[1])
                 hash_email = encriptar(jsonRequest[5])

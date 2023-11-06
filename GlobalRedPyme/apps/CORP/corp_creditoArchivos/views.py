@@ -57,6 +57,11 @@ logExcepcion = datosTipoLogAux['excepcion']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def creditoArchivos_create(request):
+    """
+    El metodo sirve para crear
+    @type request: REcibe los campos de la tabla credito archivo
+    @rtype: DEvuelve el registro creado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'create/',
@@ -91,6 +96,11 @@ def creditoArchivos_create(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def creditoArchivos_list(request):
+    """
+    Este metodo sirve para listar
+    @type request: Recibe page, page_size, minimoCarga, maximoCarga, minimoCreacion, maximaCreacion, user_id, campania, tipoCredito
+    @rtype: DEvuelve una lista, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -162,6 +172,12 @@ def creditoArchivos_list(request):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def creditoArchivos_delete(request, pk):
+    """
+    Este metodo sirve para eliminar
+    @type pk: recibe el id de la tabla credito archivos
+    @type request: no recibe nada
+    @rtype: Devuelve el registro eliminado, caso contrario devuelve el error generado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -180,7 +196,6 @@ def creditoArchivos_delete(request, pk):
             err = {"error": "No existe"}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
         # tomar el dato
         if request.method == 'DELETE':
             serializer = CreditoArchivosSerializer(query, data={'state': '0', 'updated_at': str(nowDate)}, partial=True)
@@ -201,6 +216,12 @@ def creditoArchivos_delete(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def uploadEXCEL_creditosPreaprobados(request, pk):
+    """
+    ESte metodo sirve para cargar el archivo de credito preaprobados
+    @type pk: el id de la tabla creditopreaprobado
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
     contValidos = 0
     contInvalidos = 0
     contTotal = 0
@@ -272,6 +293,12 @@ def uploadEXCEL_creditosPreaprobados(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def uploadEXCEL_creditosPreaprobados_empleados(request, pk):
+    """
+    ESte metodo sirve para cargar el archivo de credito preaprobados empleados
+    @type pk: el id de la tabla creditopreaprobado empleados
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
     contValidos = 0
     contInvalidos = 0
     contTotal = 0
@@ -342,6 +369,12 @@ def uploadEXCEL_creditosPreaprobados_empleados(request, pk):
 
 # INSERTAR DATOS EN LA BASE INDIVIDUAL
 def insertarDato_creditoPreaprobado(dato, empresa_financiera):
+    """
+    Este metodo sirve para insertar en la tabla credito preaprobado
+    @type empresa_financiera: recibe el id de la empresa financiera
+    @type dato: recibe la fila del excel
+    @rtype: no devuelve nada
+    """
     try:
         timezone_now = timezone.localtime(timezone.now())
         data = {}
@@ -406,7 +439,12 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
 
 # INSERTAR DATOS EN LA BASE INDIVIDUAL
 def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_comercial):
-    print('entro')
+    """
+    Este metodo sirve para insertar en la tabla credito preaprobado
+    @type empresa_financiera: recibe el id de la empresa financiera
+    @type dato: recibe la fila del excel
+    @rtype: no devuelve nada
+    """
     try:
         if (not utils.__validar_ced_ruc(str(dato[7]), 0)):
             return f"""El usuario {dato[8]} {dato[9]} tiene la cédula incorrecta."""
@@ -481,6 +519,12 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def uploadEXCEL_creditosPreaprobados_negocios(request, pk):
+    """
+    ESte metodo sirve para cargar el archivo de credito preaprobados empleados
+    @type pk: el id de la tabla creditopreaprobado empleados
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
     contValidos = 0
     contInvalidos = 0
     contTotal = 0
@@ -554,6 +598,13 @@ def uploadEXCEL_creditosPreaprobados_negocios(request, pk):
 
 # INSERTAR DATOS EN LA BASE INDIVIDUAL
 def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empresa_comercial):
+    """
+    ESte metodo sirve para enviar el correo
+    @param dato: recibe la fila del excel
+    @param empresa_financiera: recibe la empresa
+    @param empresa_comercial: recibe la empresa
+    @rtype: No devuelve nada
+    """
     try:
         if (not utils.__validar_ced_ruc(str(dato[8]), 0)):
             return f"""El usuario {dato[5]} {dato[6]} tiene la identificación incorrecta."""
@@ -608,6 +659,12 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 def viewEXCEL_creditosPreaprobados_negocios(request, pk):
+    """
+    ESte metodo sirve para cargar el archivo de credito preaprobados empleados
+    @type pk: el id de la tabla creditopreaprobado empleados
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
     contValidos = 0
     contInvalidos = 0
     contTotal = 0
@@ -653,6 +710,12 @@ def viewEXCEL_creditosPreaprobados_negocios(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def uploadEXCEL_creditosPreaprobados_automotriz_empleados(request, pk):
+    """
+    ESte metodo sirve para cargar el archivo de credito preaprobados empleados
+    @type pk: el id de la tabla creditopreaprobado empleados
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
     contValidos = 0
     contInvalidos = 0
     contTotal = 0
@@ -693,8 +756,9 @@ def uploadEXCEL_creditosPreaprobados_automotriz_empleados(request, pk):
                 continue
             else:
                 if len(dato) == 22:
-                    resultadoInsertar = insertarDato_creditoPreaprobado_automotriz_empleado(dato, archivo.empresa_financiera,
-                                                                                 archivo.empresa_comercial)
+                    resultadoInsertar = insertarDato_creditoPreaprobado_automotriz_empleado(dato,
+                                                                                            archivo.empresa_financiera,
+                                                                                            archivo.empresa_comercial)
                     if resultadoInsertar != 'Dato insertado correctamente':
                         contInvalidos += 1
                         errores.append({"error": "Error en la línea " + str(contTotal) + ": " + str(resultadoInsertar)})
@@ -722,7 +786,13 @@ def uploadEXCEL_creditosPreaprobados_automotriz_empleados(request, pk):
 
 
 def insertarDato_creditoPreaprobado_automotriz_empleado(dato, empresa_financiera, empresa_comercial):
-    print('entro')
+    """
+    ESte metodo sirve para enviar el correo
+    @param dato: recibe la fila del excel
+    @param empresa_financiera: recibe la empresa
+    @param empresa_comercial: recibe la empresa
+    @rtype: No devuelve nada
+    """
     try:
         if (not utils.__validar_ced_ruc(str(dato[7]), 0)):
             return f"""El usuario {dato[8]} {dato[9]} tiene la cédula incorrecta."""

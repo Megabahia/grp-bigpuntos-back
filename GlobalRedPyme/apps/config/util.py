@@ -1,11 +1,17 @@
 # lib email
 from django.core.mail import EmailMultiAlternatives
-from apps.CENTRAL.central_catalogo.models import Catalogo
+from ..CENTRAL.central_catalogo.models import Catalogo
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import get_connection
 
 
+# ESta funcion sirve para enviar correos
+# subject recibe el asunto
+# txt_content recibe el texto de contenido del correo
+# from_email recibe el email de la persona que envia
+# to recibe el email para enviar
+# html_content recibe el html del correo
 def sendEmail(subject, txt_content, from_email, to, html_content):
     try:
         # Realizo la consulta a la bd antes de enviar el email, es lo que ocasiona tener parametrizado el servidor....

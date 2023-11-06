@@ -9,23 +9,34 @@ from ...PERSONAS.personas_personas.serializers import PersonasSerializer
 
 
 class PublicacionesSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Publicaciones
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = Publicaciones
         fields = '__all__'
 
 
 class PublicacionesImagenSerializer(serializers.HyperlinkedModelSerializer):
+    # La clase meta se relaciona con la tabla Publicaciones
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = Publicaciones
         fields = ['imagen', 'updated_at']
 
 
 class CompartirPublicacionesSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Publicaciones
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = CompartirPublicaciones
         fields = '__all__'
 
     def to_representation(self, instance):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         data = super(CompartirPublicacionesSerializer, self).to_representation(instance)
         # publicacion
         publicacion = str(data.pop('publicacion'))
@@ -39,11 +50,18 @@ class CompartirPublicacionesSerializer(serializers.ModelSerializer):
 class ListCompartirPublicacionesSerializer(serializers.ModelSerializer):
     publicacion = PublicacionesSerializer(many=False, read_only=True)
 
+    # La clase meta se relaciona con la tabla Publicaciones
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = CompartirPublicaciones
         fields = '__all__'
 
     def to_representation(self, instance):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         data = super(ListCompartirPublicacionesSerializer, self).to_representation(instance)
         # user
         data.pop('user')
@@ -53,11 +71,18 @@ class ListCompartirPublicacionesSerializer(serializers.ModelSerializer):
 class PublicacionesSinCompartirSerializer(serializers.ModelSerializer):
     publicacion = PublicacionesSerializer(many=False, read_only=True)
 
+    # La clase meta se relaciona con la tabla Publicaciones
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = CompartirPublicaciones
         fields = ['publicacion', 'created_at', '_id']
 
     def to_representation(self, instance):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         data = super(PublicacionesSinCompartirSerializer, self).to_representation(instance)
         # publicacion
         publicacion = data.pop('publicacion')
@@ -74,11 +99,18 @@ class PublicacionesSinCompartirSerializer(serializers.ModelSerializer):
 
 
 class CompartirPublicacionesReporteSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Publicaciones
+    # el campo fields indica los campos que se devolveran
     class Meta:
         model = CompartirPublicaciones
         fields = ['user', 'publicacion', 'created_at']
 
     def to_representation(self, instance):
+        """
+        Este metodo se usa para modificar la respuesta de los campos
+        @type instance: El campo instance contiene el registro con los campos
+        @rtype: DEvuelve los valores modificados
+        """
         data = super(CompartirPublicacionesReporteSerializer, self).to_representation(instance)
         # publicacion
         publicacion = Publicaciones.objects.get(pk=data.pop('publicacion'))

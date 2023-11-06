@@ -1,13 +1,10 @@
-from apps.CENTRAL.central_catalogo.models import Catalogo
 from .models import CreditoPersonas, CodigoCreditoPreaprobado
-from apps.PERSONAS.personas_personas.models import Personas
-from apps.CORP.corp_empresas.models import Empresas
-from apps.PERSONAS.personas_personas.serializers import PersonasSearchSerializer
+from ...PERSONAS.personas_personas.models import Personas
 from .serializers import (
     CreditoPersonasSerializer, CreditoPersonasPersonaSerializer
 )
 # Publicar en sns
-from apps.CORP.corp_creditoPersonas.producer import publish
+from .producer import publish
 # Consumir en sqs
 from .consumer import get_queue_url
 
@@ -37,7 +34,7 @@ import boto3
 import re
 from apps.config import config
 # logs
-from apps.CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
+from ...CENTRAL.central_logs.methods import createLog, datosTipoLog, datosProductosMDP
 # IMPORTAR ENVIO CONFIGURACION CORREO
 from apps.config.util2 import sendEmail
 
@@ -59,6 +56,11 @@ logExcepcion = datosTipoLogAux['excepcion']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def creditoPersonas_create(request):
+    """
+    Este metod sirve para crear un creditopersona
+    @type request: recibe los campos de la tabla credito persona
+    @rtype: DEvuelve el registro creado, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'create/',
@@ -88,7 +90,8 @@ def creditoPersonas_create(request):
                     usuario = serializer.data['user']
                     nombreGarante = usuario['garante']['nombres'] + ' ' + usuario['garante']['apellidos']
                     nombreSolicitante = usuario['nombres'] + ' ' + usuario['apellidos']
-                    enviarCorreoSolicitudGarante(usuario['garante']['correoGarante'], serializer.data['_id'], nombreGarante, nombreSolicitante)
+                    enviarCorreoSolicitudGarante(usuario['garante']['correoGarante'], serializer.data['_id'],
+                                                 nombreGarante, nombreSolicitante)
                 createLog(logModel, serializer.data, logTransaccion)
                 # Crear objeto en firebase para las notificaciones
                 config.FIREBASE_DB.collection('creditosPersonas').document(serializer.data['_id']).set(serializer.data)
@@ -105,6 +108,12 @@ def creditoPersonas_create(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def creditoPersonas_listOne(request, pk):
+    """
+    Este metod sirve para obtener un creditopersona
+    @type pk: recibe el id de la tabla credito persona
+    @type request: no recibe
+    @rtype: DEvuelve el registro obtenido, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -140,6 +149,12 @@ def creditoPersonas_listOne(request, pk):
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def creditoPersonas_update(request, pk):
+    """
+    Este metod sirve para actualizar un creditopersona
+    @type pk: recibe el id de la tabla credito persona
+    @type request: recibe los campos de la tabla credito personas
+    @rtype: DEvuelve el registro obtenido, caso contrario devuelve el error generado
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -208,6 +223,12 @@ def creditoPersonas_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def creditoPersonas_delete(request, pk):
+    """
+    Este metod sirve para eliminar un creditopersona
+    @type pk: recibe el id de la tabla credito persona
+    @type request: no recibe nada
+    @rtype: DEvuelve el registro eliminado, caso contrario devuelve el error generado
+    """
     nowDate = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'delete/',
@@ -226,7 +247,6 @@ def creditoPersonas_delete(request, pk):
             err = {"error": "No existe"}
             createLog(logModel, err, logExcepcion)
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
         # tomar el dato
         if request.method == 'DELETE':
             serializer = CreditoPersonasSerializer(query, data={'state': '0', 'updated_at': str(nowDate)}, partial=True)
@@ -245,6 +265,11 @@ def creditoPersonas_delete(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def creditoPersonas_list(request):
+    """
+    Este metodo sirve para listar los
+    @type request: recibe page, page_size, empresaComercial_id, empresaIfis_id, estado, tipoCredito, user_id, canal, cargarOrigen, enviado
+    @rtype: DEvuelve una lista, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'list/',
@@ -316,6 +341,12 @@ def creditoPersonas_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def uploadEXCEL_creditosPreaprobados(request):
+    """
+    ESte metodo sirve para cargar el archivo de credito preaprobados empleados
+    @type pk: el id de la tabla creditopreaprobado empleados
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
     contValidos = 0
     contInvalidos = 0
     contTotal = 0
@@ -367,6 +398,12 @@ def uploadEXCEL_creditosPreaprobados(request):
 
 # INSERTAR DATOS EN LA BASE INDIVIDUAL
 def insertarDato_creditoPreaprobado(dato, empresa_financiera):
+    """
+    ESte metodo sirve para enviar el correo
+    @param dato: recibe la fila del excel
+    @param empresa_financiera: recibe la empresa
+    @rtype: No devuelve nada
+    """
     try:
         timezone_now = timezone.localtime(timezone.now())
         data = {}
@@ -398,6 +435,12 @@ def insertarDato_creditoPreaprobado(dato, empresa_financiera):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def uploadEXCEL_creditosPreaprobados_empleados(request):
+    """
+    ESte metodo sirve para cargar el archivo de credito preaprobados empleados
+    @type pk: el id de la tabla creditopreaprobado empleados
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
     contValidos = 0
     contInvalidos = 0
     contTotal = 0
@@ -450,6 +493,12 @@ def uploadEXCEL_creditosPreaprobados_empleados(request):
 
 # INSERTAR DATOS EN LA BASE INDIVIDUAL
 def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera):
+    """
+    ESte metodo sirve para enviar el correo
+    @param dato: recibe la fila del excel
+    @param empresa_financiera: recibe la empresa
+    @rtype: No devuelve nada
+    """
     try:
         timezone_now = timezone.localtime(timezone.now())
         data = {}
@@ -481,6 +530,12 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def creditoPersonas_listOne_persona(request, pk):
+    """
+    Este metod sirve para obtener un creditopersona
+    @type pk: recibe el id de la tabla credito persona
+    @type request: no recibe
+    @rtype: DEvuelve el registro obtenido, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -513,6 +568,11 @@ def creditoPersonas_listOne_persona(request, pk):
 # ENCONTRAR CODIGO CREDITO PREAPROBADO
 @api_view(['POST'])
 def creditoPersonas_creditoPreaprobado_codigo(request):
+    """
+    Este metodo sirve para consultar un credito por el codigo
+    @type request: recibe el codigo, cedula, rucEmpresa
+    @rtype: devuelve el registro, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'creditoPreaprobado/codigo',
@@ -564,6 +624,12 @@ def creditoPersonas_creditoPreaprobado_codigo(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def creditoPersonas_lecturaArchivos(request, pk):
+    """
+    Este metodo sirve para obtener los datos de un archivo
+    @type pk: recibe el id del credito
+    @type request: no recibe nada
+    @rtype: devuelve los datos del documento, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'lecturaArchivos/' + pk,
@@ -597,6 +663,11 @@ def creditoPersonas_lecturaArchivos(request, pk):
 
 
 def obtenerDatosArchivos(nombreArchivo):
+    """
+    Este metodo sirve para leer un documento pdf
+    @type nombreArchivo: recibe el nombre del archivo a leer
+    @rtype: DEvuelve los datos del archivo, caso contrario devuelve el error generado
+    """
     # Function invokes
     jobId = InvokeTextDetectJob('globalredpymes', nombreArchivo)
     print("Started job with id: {}".format(jobId))
@@ -692,6 +763,11 @@ def JobResults(jobId):
 
 @api_view(['GET'])
 def pruebaConsumer(request):
+    """
+    Este metodo sirve para actualizar la cola aws
+    @type request: no recibe nada
+    @rtype: No devuelve nada
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -715,6 +791,11 @@ def pruebaConsumer(request):
 
 
 def enviarCorreoSolicitud(email):
+    """
+    Este metodo sirve para enviar el corrreo
+    @type email: Recibe el email
+    @rtype: no devuelve nada
+    """
     subject, from_email, to = 'Generación de código para crédito aprobado', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
@@ -745,6 +826,11 @@ def enviarCorreoSolicitud(email):
 
 
 def enviarCorreoSolicitudEnviada(email):
+    """
+    Este metodo sirve para enviar el corrreo
+    @type email: Recibe el email
+    @rtype: no devuelve nada
+    """
     subject, from_email, to = 'Estamos revisando sus documentos', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
@@ -781,6 +867,11 @@ def enviarCorreoSolicitudEnviada(email):
 
 
 def enviarCorreoSolicitudEnviadaLineaCredito(email):
+    """
+    Este metodo sirve para enviar el corrreo
+    @type email: Recibe el email
+    @rtype: no devuelve nada
+    """
     subject, from_email, to = 'Estamos revisando sus documentos', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
@@ -821,6 +912,12 @@ def enviarCorreoSolicitudEnviadaLineaCredito(email):
 # ENCONTRAR UNO
 @api_view(['POST'])
 def creditoPersonas_listOne_sinAutenticar(request, pk):
+    """
+    Este metod sirve para obtener un creditopersona
+    @type pk: recibe el id de la tabla credito persona
+    @type request: no recibe
+    @rtype: DEvuelve el registro obtenido, caso contrario devuelve el error generado
+    """
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
         'endPoint': logApi + 'listOne/',
@@ -857,6 +954,12 @@ def creditoPersonas_listOne_sinAutenticar(request, pk):
 # ACTUALIZAR SIN AUTENTICAR
 @api_view(['POST'])
 def creditoPersonas_update_sinAutenticar(request, pk):
+    """
+    Este metod sirve para actualizar un creditopersona
+    @type pk: recibe el id de la tabla credito persona
+    @type request: recibe los campos de la tabla credito personas
+    @rtype: DEvuelve el registro obtenido, caso contrario devuelve el error generado
+    """
     request.POST._mutable = True
     timezone_now = timezone.localtime(timezone.now())
     logModel = {
@@ -900,6 +1003,12 @@ def creditoPersonas_update_sinAutenticar(request, pk):
 
 
 def enviarCorreoSolicitudGarante(email, id, garante, solicitante):
+    """
+    Este metodo sirve para enviar el correo de credito negado
+    @type email: recibe el email
+    @type montoAprobado: recibe el monto aprobado
+    @rtype: no devuelve nada
+    """
     subject, from_email, to = 'Autorización de la Madrina/Padrino', "credicompra.bigpuntos@corporacionomniglobal.com", \
                               email
     txt_content = f"""
