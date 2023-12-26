@@ -12,6 +12,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
+# Sumar Fechas
+from datetime import datetime
+from datetime import timedelta
 # ObjectId
 from bson import ObjectId
 # logs
@@ -60,9 +63,12 @@ def facturas_list(request):
             # Filtros
             filters = {"state": "1"}
 
-            if 'inicio' and 'fin' in request.data:
-                if request.data['inicio'] and request.data['fin'] != '':
-                    filters['created_at__range'] = [str(request.data['inicio']), str(request.data['fin'])]
+            if 'fin' in request.data:
+                if request.data['fin'] != None:
+                    filters['created_at__lte'] = datetime.strptime(request.data['fin'], "%Y-%m-%d").date() + timedelta(days=1)
+            if 'inicio' in request.data:
+                if request.data['inicio'] != None:
+                    filters['created_at__gte'] = request.data['inicio']
 
             if 'user_id' in request.data:
                 if request.data['user_id'] != '':
