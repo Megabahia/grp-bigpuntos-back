@@ -8,6 +8,7 @@ from .views import (
     uploadEXCEL_creditosPreaprobados_negocios,
     viewEXCEL_creditosPreaprobados_negocios,
     uploadEXCEL_creditosPreaprobados_automotriz_empleados,
+    comisiones_list, comisionesArchivos_create, comisiones_delete, uploadEXCEL_comisiones, viewEXCEL_comisiones,
 )
 
 # Esta variable se utiliza para colocar el nombre aplicacion de corp_creditoArchivos
@@ -29,4 +30,9 @@ urlpatterns = [
     path('upload/creditos/preaprobados/automotriz/empleados/<int:pk>',
          uploadEXCEL_creditosPreaprobados_automotriz_empleados,
          name="uploadEXCEL_creditosPreaprobados_automotriz_empleados"),
+    path('create/comisiones/', comisionesArchivos_create, name="comisionesArchivos_create"),
+    path('list/comisiones/', comisiones_list, name="comisiones_list"),
+    path('delete/comisiones/<str:pk>', comisiones_delete, name="comisiones_delete"),
+    path('upload/comisiones/<str:pk>', uploadEXCEL_comisiones, name="uploadEXCEL_comisiones"),
+    path('view/comisiones/<str:pk>', viewEXCEL_comisiones, name="viewEXCEL_comisiones"),
 ]

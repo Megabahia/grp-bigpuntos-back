@@ -10,6 +10,7 @@ from .views import (
     uploadEXCEL_monedasRegaladas,
     list_monedas_regaladas_empresa,
     pruebaConsumer,
+    comiciones_list,
 )
 
 # Esta variable se utiliza para colocar el nombre aplicacion de facturas
@@ -27,4 +28,5 @@ urlpatterns = [
     path('upload/monedas', uploadEXCEL_monedasRegaladas, name="uploadEXCEL_monedasRegaladas"),
     path('list/monedas/empresas', list_monedas_regaladas_empresa, name="list_monedas_regaladas_empresa"),
     path('pruebaConsumer', pruebaConsumer, name="pruebaConsumer"),
+    path('list/comisiones/', comiciones_list, name="comiciones_list"),
 ]

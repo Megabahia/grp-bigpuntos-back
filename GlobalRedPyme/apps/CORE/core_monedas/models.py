@@ -43,3 +43,24 @@ class Monedas(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     state = models.SmallIntegerField(default=1)
+
+
+# Nube: Bigpuntos
+# Portales: Center, Personas, Corp, IFIS, Credit
+# La clase se conecta con la tabla de monedas de la base datos core
+class Comisiones(models.Model):
+    _id = models.ObjectIdField()
+    user_id = models.CharField(max_length=200, null=True, blank=True)
+    tipoIdentificacion = models.CharField(max_length=200, null=True, blank=True)
+    identificacion = models.CharField(max_length=200, null=True, blank=True)
+    nombres = models.CharField(max_length=200, null=True, blank=True)
+    apellidos = models.CharField(max_length=200, null=True, blank=True)
+    email = models.CharField(max_length=200, null=True, blank=True)
+    empresa_id = models.CharField(max_length=255, null=True, blank=True)
+    monto = models.FloatField(default=0)
+    saldoAnterior = models.FloatField(default=0)
+    fechaAsignacion = models.DateField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    state = models.SmallIntegerField(default=1)

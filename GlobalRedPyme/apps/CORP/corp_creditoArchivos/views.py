@@ -1,10 +1,9 @@
-from .models import PreAprobados
-from ...CENTRAL.central_catalogo.models import Catalogo
+from .models import PreAprobados, ArchivosComisiones
 from ...CORP.corp_creditoPersonas.models import CreditoPersonas
 from ...CORP.corp_creditoPersonas.serializers import CreditoPersonasSerializer
-from ...PERSONAS.personas_personas.models import Personas
+from ...CORE.core_monedas.models import Comisiones
 from .serializers import (
-    CreditoArchivosSerializer
+    CreditoArchivosSerializer, ComisionesArchivosSerializer,
 )
 from ...CORP.corp_empresas.models import Empleados
 from rest_framework import status
@@ -863,3 +862,331 @@ def insertarDato_creditoPreaprobado_automotriz_empleado(dato, empresa_financiera
         return "Dato insertado correctamente"
     except Exception as e:
         return str(e)
+
+
+# CREAR
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def comisionesArchivos_create(request):
+    """
+    El metodo sirve para crear
+    @type request: Recibe los campos de la tabla credito archivo
+    @rtype: DEvuelve el registro creado
+    """
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'create/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'CREAR',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            request.data['created_at'] = str(timezone_now)
+            if 'updated_at' in request.data:
+                request.data.pop('updated_at')
+
+            serializer = ComisionesArchivosSerializer(data=request.data)
+            print('paso')
+            if serializer.is_valid():
+                serializer.save()
+                createLog(logModel, serializer.data, logTransaccion)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            print('despues de lif')
+            createLog(logModel, serializer.errors, logExcepcion)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def comisiones_list(request):
+    """
+    Este metodo sirve para listar
+    @type request: Recibe page, page_size, minimoCarga, maximoCarga, minimoCreacion, maximaCreacion, user_id, campania, tipoCredito
+    @rtype: DEvuelve una lista, caso contrario devuelve el error generado
+    """
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'list/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            # paginacion
+            page_size = int(request.data['page_size'])
+            page = int(request.data['page'])
+            offset = page_size * page
+            limit = offset + page_size
+            # Filtros
+            filters = {"state": "1"}
+
+            if "minimoCarga" in request.data:
+                if request.data["minimoCarga"] != '':
+                    filters['fechaCargaArchivo__gte'] = str(request.data["minimoCarga"])
+
+            if "maximoCarga" in request.data:
+                if request.data["maximoCarga"] != '':
+                    filters['fechaCargaArchivo__lte'] = str(request.data["maximoCarga"])
+
+            if "minimoCreacion" in request.data:
+                if request.data["minimoCreacion"] != '':
+                    filters['created_at__gte'] = str(request.data["minimoCreacion"])
+
+            if "maximaCreacion" in request.data:
+                if request.data["maximaCreacion"] != '':
+                    filters['created_at__lte'] = datetime.strptime(request.data['maximaCreacion'],
+                                                                   "%Y-%m-%d").date() + timedelta(days=1)
+
+            if "user_id" in request.data:
+                if request.data["user_id"] != '':
+                    filters['user_id'] = str(request.data["user_id"])
+
+            if "campania" in request.data:
+                if request.data["campania"] != '':
+                    filters['campania'] = str(request.data["campania"])
+
+            if "empresa_comercial" in request.data:
+                if request.data["empresa_comercial"] != '':
+                    filters['empresa_comercial'] = str(request.data["empresa_comercial"])
+
+            if "tipoCredito" in request.data:
+                if request.data["tipoCredito"] != '':
+                    filters['tipoCredito'] = str(request.data["tipoCredito"])
+
+            # Serializar los datos
+            query = ArchivosComisiones.objects.filter(**filters).order_by('-created_at')
+            serializer = ComisionesArchivosSerializer(query[offset:limit], many=True)
+            new_serializer_data = {'cont': query.count(), 'info': serializer.data}
+            # envio de datos
+            return Response(new_serializer_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def comisiones_delete(request, pk):
+    """
+    Este metodo sirve para eliminar
+    @type pk: recibe el id de la tabla credito archivos
+    @type request: no recibe nada
+    @rtype: Devuelve el registro eliminado, caso contrario devuelve el error generado
+    """
+    nowDate = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'delete/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'BORRAR',
+        'fechaInicio': str(nowDate),
+        'dataEnviada': '{}',
+        'fechaFin': str(nowDate),
+        'dataRecibida': '{}'
+    }
+    try:
+        try:
+            query = ArchivosComisiones.objects.filter(pk=ObjectId(pk), state=1).first()
+        except ArchivosComisiones.DoesNotExist:
+            err = {"error": "No existe"}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+        # tomar el dato
+        if request.method == 'DELETE':
+            serializer = ComisionesArchivosSerializer(query, data={'state': '0', 'updated_at': str(nowDate)},
+                                                      partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                createLog(logModel, serializer.data, logTransaccion)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            createLog(logModel, serializer.errors, logExcepcion)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        createLog(logModel, err, logExcepcion)
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+    # METODO SUBIR ARCHIVOS EXCEL
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def uploadEXCEL_comisiones(request, pk):
+    """
+    ESte metodo sirve para cargar el archivo de cominiones
+    @type pk: el id de la tabla comisiones
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
+    contValidos = 0
+    contInvalidos = 0
+    contTotal = 0
+    errores = []
+    try:
+        if request.method == 'POST':
+            archivo = ArchivosComisiones.objects.filter(pk=ObjectId(pk), state=1).first()
+            # environ init
+            env = environ.Env()
+            environ.Env.read_env()  # LEE ARCHIVO .ENV
+            client_s3 = boto3.client(
+                's3',
+                aws_access_key_id=env.str('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key=env.str('AWS_SECRET_ACCESS_KEY')
+            )
+            with tempfile.TemporaryDirectory() as d:
+                ruta = d + 'creditosPreAprobados.xlsx'
+                s3 = boto3.resource('s3')
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
+
+            first = True  # si tiene encabezado
+            #             uploaded_file = request.FILES['documento']
+            # you may put validations here to check extension or file size
+            wb = openpyxl.load_workbook(ruta)
+            # getting a particular sheet by name out of many sheets
+            worksheet = wb["Aprobar Comisiones"]
+            # worksheet = wb["Preaprobar líneas-de-crédito_CO"]
+            lines = list()
+        for row in worksheet.iter_rows():
+            row_data = list()
+            for cell in row:
+                if cell.value is None:
+                    break
+                row_data.append(str(cell.value))
+            if row_data:
+                lines.append(row_data)
+
+        for dato in lines:
+            contTotal += 1
+            if first:
+                first = False
+                continue
+            else:
+                if len(dato) == 7:
+                    resultadoInsertar = insertarDato_comisiones(dato, archivo.empresa_financiera,
+                                                                archivo.empresa_comercial)
+                    if resultadoInsertar != 'Dato insertado correctamente':
+                        contInvalidos += 1
+                        errores.append({"error": "Error en la línea " + str(contTotal) + ": " + str(resultadoInsertar)})
+                    else:
+                        contValidos += 1
+                else:
+                    contInvalidos += 1
+                    errores.append({"error": "Error en la línea " + str(
+                        contTotal) + ": la fila tiene un tamaño incorrecto (" + str(len(dato)) + ")"})
+
+        result = {"mensaje": "La Importación se Realizo Correctamente",
+                  "correctos": contValidos,
+                  "incorrectos": contInvalidos,
+                  "errores": errores
+                  }
+        os.remove(ruta)
+        # archivo.state = 0
+        archivo.estado = "Cargado"
+        archivo.save()
+        return Response(result, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        err = {"error": 'Error verifique el archivo, un error ha ocurrido: {}'.format(e)}
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+# INSERTAR DATOS EN LA BASE INDIVIDUAL
+def insertarDato_comisiones(dato, empresa_financiera, empresa_comercial):
+    """
+    ESte metodo sirve para enviar el correo
+    @param dato: recibe la fila del excel
+    @param empresa_financiera: recibe la empresa
+    @param empresa_comercial: recibe la empresa
+    @rtype: No devuelve nada
+    """
+    try:
+        if (not utils.__validar_ced_ruc(str(dato[4]), 0)):
+            return f"""El usuario {dato[1]} {dato[2]} tiene la identificación incorrecta."""
+
+        timezone_now = timezone.localtime(timezone.now())
+        data = {}
+        # data['user_id'] = persona.user_id
+        data['fechaAsignacion'] = dato[0][0:10].replace('"', "") if dato[0] != "NULL" else None
+        data['nombres'] = dato[1].replace('"', "") if dato[1] != "NULL" else None
+        data['apellidos'] = dato[2].replace('"', "") if dato[2] != "NULL" else None
+        data['identificacion'] = dato[4].replace('"', "") if dato[4] != "NULL" else None
+        data['tipoIdentificacion'] = dato[3].replace('"', "") if dato[3] != "NULL" else None
+        data['monto'] = dato[5].replace('"', "") if dato[5] != "NULL" else None
+        data['saldoAnterior'] = dato[6].replace('"', "") if dato[6] != "NULL" else None
+        data['empresa_id'] = empresa_financiera
+        data['created_at'] = str(timezone_now)
+        # inserto el dato con los campos requeridos
+        creditoPreAprobado = Comisiones.objects.create(**data)
+        # creditoSerializer = ComisionesSerializer(creditoPreAprobado)
+        # publish(creditoSerializer.data)
+        return "Dato insertado correctamente"
+    except Exception as e:
+        return str(e)
+
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def viewEXCEL_comisiones(request, pk):
+    """
+    ESte metodo sirve para cargar el archivo de credito preaprobados empleados
+    @type pk: el id de la tabla creditopreaprobado empleados
+    @type request: no recibe nada
+    @rtype: Devuelve los registros correctos, incorrectos, caso contrario devuelve el error generado
+    """
+    contValidos = 0
+    contInvalidos = 0
+    contTotal = 0
+    errores = []
+    try:
+        if request.method == 'GET':
+            archivo = PreAprobados.objects.filter(pk=pk, state=1).first()
+            # environ init
+            env = environ.Env()
+            environ.Env.read_env()  # LEE ARCHIVO .ENV
+            client_s3 = boto3.client(
+                's3',
+                aws_access_key_id=env.str('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key=env.str('AWS_SECRET_ACCESS_KEY')
+            )
+            with tempfile.TemporaryDirectory() as d:
+                ruta = d + 'creditosPreAprobados.xlsx'
+                s3 = boto3.resource('s3')
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
+
+            first = True  # si tiene encabezado
+            #             uploaded_file = request.FILES['documento']
+            # you may put validations here to check extension or file size
+            wb = openpyxl.load_workbook(ruta)
+            # getting a particular sheet by name out of many sheets
+            worksheet = wb["Preaprobar líneas-de-crédito_CO"]
+            lines = list()
+        for row in worksheet.iter_rows():
+            row_data = list()
+            for cell in row:
+                if cell.value is None:
+                    break
+                row_data.append(str(cell.value))
+            if row_data:
+                lines.append(row_data)
+        os.remove(ruta)
+        return Response(lines, status=status.HTTP_200_OK)
+    except Exception as e:
+        err = {"error": 'Error verifique el archivo, un error ha ocurrido: {}'.format(e)}
+        return Response(err, status=status.HTTP_400_BAD_REQUEST)

@@ -1,8 +1,9 @@
-from .models import Monedas
+from .models import Monedas, Comisiones
 from ...PERSONAS.personas_personas.models import Personas
 from ...CORP.corp_empresas.models import Empresas
 from .serializers import (
-    MonedasSerializer, MonedasUsuarioSerializer, ListMonedasSerializer, ListMonedasRegaladasSerializer
+    MonedasSerializer, MonedasUsuarioSerializer, ListMonedasSerializer, ListMonedasRegaladasSerializer,
+    ListComisionesSerializer
 )
 from .cron import hi
 from rest_framework import status
@@ -598,3 +599,52 @@ def pruebaConsumer(request):
         err = {"error": 'Un error ha ocurrido: {}'.format(e)}
         createLog(logModel, err, logExcepcion)
         return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def comiciones_list(request):
+    """
+    Este metodo se usa para listar las monedas por usuario de la tabla monedas de la base datos core
+    @type request: El campo request recibe page, page_size, user_id
+    @rtype: Devuelve una lista de las monedas de los usuario, caso contrario devuelve el error generado
+    """
+    timezone_now = timezone.localtime(timezone.now())
+    logModel = {
+        'endPoint': logApi + 'list/',
+        'modulo': logModulo,
+        'tipo': logExcepcion,
+        'accion': 'LEER',
+        'fechaInicio': str(timezone_now),
+        'dataEnviada': '{}',
+        'fechaFin': str(timezone_now),
+        'dataRecibida': '{}'
+    }
+    if request.method == 'POST':
+        try:
+            logModel['dataEnviada'] = str(request.data)
+            # paginacion
+            page_size = int(request.data['page_size'])
+            page = int(request.data['page'])
+            offset = page_size * page
+            limit = offset + page_size
+            # Filtros
+            filters = {"state": "1"}
+
+            if 'user_id' in request.data and request.data['user_id'] != '':
+                filters['user_id'] = request.data['user_id']
+
+            if 'identificacion' in request.data and request.data['identificacion'] != '':
+                filters['identificacion'] = request.data['identificacion']
+
+            # Serializar los datos
+            query = Comisiones.objects.filter(**filters).order_by('-created_at')
+            serializer = ListComisionesSerializer(query[offset:limit], many=True)
+            new_serializer_data = {'cont': query.count(),
+                                   'info': serializer.data}
+            # envio de datos
+            return Response(new_serializer_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+            createLog(logModel, err, logExcepcion)
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)

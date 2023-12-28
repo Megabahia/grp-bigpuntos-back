@@ -6,7 +6,7 @@ from ...CORP.corp_empresas.models import Empresas
 from ...PERSONAS.personas_personas.models import Personas
 
 from .models import (
-    Monedas
+    Monedas, Comisiones
 )
 
 
@@ -124,5 +124,19 @@ class MonedasGuardarSerializer(serializers.ModelSerializer):
     # el campo read_only_fields solo permite la lectura
     class Meta:
         model = Monedas
+        fields = '__all__'
+        read_only_fields = ['_id']
+
+
+# NUBE DE BIGPUNTOS
+# PORTALES: CENTER, PERSONAS, corp, ifis, credit
+# Esta clase sirve para conectar el modelo de la tabla de Facturas de la nube de bigpuntos
+# para convertir en un objeto de python con el objetivo de manipular los datos y se utiliza
+class ListComisionesSerializer(serializers.ModelSerializer):
+    # La clase meta se relaciona con la tabla Monedas
+    # el campo fields indica los campos que se devolveran
+    # el campo read_only_fields solo permite la lectura
+    class Meta:
+        model = Comisiones
         fields = '__all__'
         read_only_fields = ['_id']
