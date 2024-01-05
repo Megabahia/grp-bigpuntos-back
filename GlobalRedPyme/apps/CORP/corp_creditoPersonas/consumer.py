@@ -52,6 +52,7 @@ def get_queue_url():
         for message in queue.receive_messages(MaxNumberOfMessages=max_queue_messages):
             # process message body
             body = json.loads(message.body)
+            print('llego las colas')
             if body['Subject'] != 'IFIS':
                 jsonRequest = json.loads(body['Message'])
                 _idCredidPerson = json.loads(body['Message'])['external_id']
@@ -77,6 +78,7 @@ def get_queue_url():
                     credito = CreditoPersonas.objects.create(**jsonRequest)
                 else:
                     CreditoPersonas.objects.filter(pk=ObjectId(_idCredidPerson)).update(**jsonRequest)
+                    print('se actualiza')
                     credito = query
                 # Crear objeto en firebase para las notificaciones
                 config.FIREBASE_DB.collection('creditosPersonas').document(str(credito._id)).set(jsonRequest)

@@ -38,7 +38,7 @@ def publish(data):
         'estadoCuentaTarjeta', 'facturasPendiente', 'imagen', 'imagenComercial',
         'autorizacion', 'cedulaGarante', 'papeletaVotacionGarante', 'fotoGarante',
         'impuestoPredialGarante', 'matriculaVehiculoGarante',
-        'planillaDomicilioGarante'
+        'planillaDomicilioGarante', 'solicitudCredito', 'buroCreditoIfis',
     ]
 
     for campo in campos:

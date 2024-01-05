@@ -467,6 +467,7 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
         data['canal'] = 'Empleado-PreAprobado'
         # persona = Personas.objects.filter(identificacion=dato[5],state=1).first()
         # data['user_id'] = persona.user_id
+        data['estadoCivil'] = dato[6]
         data['numeroIdentificacion'] = dato[7]
         data['nombres'] = dato[8].replace('"', "") if dato[8] != "NULL" else None
         data['apellidos'] = dato[9].replace('"', "") if dato[9] != "NULL" else None
