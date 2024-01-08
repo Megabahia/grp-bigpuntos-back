@@ -845,12 +845,12 @@ def insertarDato_creditoPreaprobado_automotriz_empleado(dato, empresa_financiera
                         </p>
                         <br>
                         <p>Ingrese al siguiente link y acceda a su crédito: 
-                        <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
+                        <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumerAutomotive'>Link</a>
                         </p>
 
                         Su código de ingreso es: {codigo}<br>
                         <br>
-                        Si su enlace no funciona, copia el siguiente link en una ventana del navegador: {config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer
+                        Si su enlace no funciona, copia el siguiente link en una ventana del navegador: {config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumerAutomotive
                         <br>
                         Saludos,<br>
                         Equipo Global Red Pymes.<br>
