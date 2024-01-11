@@ -219,7 +219,7 @@ def uploadEXCEL_creditosPreaprobados(request, pk):
             with tempfile.TemporaryDirectory() as d:
                 ruta = d + 'creditosPreAprobados.xlsx'
                 s3 = boto3.resource('s3')
-                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
 
             first = True  # si tiene encabezado
             #             uploaded_file = request.FILES['documento']
@@ -290,7 +290,7 @@ def uploadEXCEL_creditosPreaprobados_empleados(request, pk):
             with tempfile.TemporaryDirectory() as d:
                 ruta = d + 'creditosPreAprobados.xlsx'
                 s3 = boto3.resource('s3')
-                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
 
             first = True  # si tiene encabezado
             #             uploaded_file = request.FILES['documento']
@@ -460,7 +460,7 @@ def insertarDato_creditoPreaprobado_empleado(dato, empresa_financiera, empresa_c
                         <p>Ingrese al siguiente link y acceda a su crédito: 
                         <a href='{config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer'>Link</a>
                         </p>
-        
+
                         Su código de ingreso es: {codigo}<br>
                         <br>
                         Si su enlace no funciona, copia el siguiente link en una ventana del navegador: {config.API_FRONT_END_CENTRAL}/pages/preApprovedCreditConsumer
@@ -499,7 +499,7 @@ def uploadEXCEL_creditosPreaprobados_negocios(request, pk):
             with tempfile.TemporaryDirectory() as d:
                 ruta = d + 'creditosPreAprobados.xlsx'
                 s3 = boto3.resource('s3')
-                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
 
             first = True  # si tiene encabezado
             #             uploaded_file = request.FILES['documento']
@@ -594,55 +594,11 @@ def insertarDato_creditoPreaprobado_microCredito(dato, empresa_financiera, empre
         empresaInfo['celular'] = dato[11]
         data['empresaInfo'] = empresaInfo
         data['cargarOrigen'] = 'BIGPUNTOS'
+        empresaInfo['nombreIfi'] = dato[11]
         # inserto el dato con los campos requeridos
         creditoPreAprobado = CreditoPersonas.objects.create(**data)
         creditoSerializer = CreditoPersonasSerializer(creditoPreAprobado)
-        subject, from_email, to = 'Usted tiene una  Línea de Crédito Preaprobada para su Negocio', "credicompra.bigpuntos@corporacionomniglobal.com", \
-                                  dato[10]
-        txt_content = f"""
-        FELICIDADES!
-        
-        Estimad@ {data['nombresCompleto']}
-        
-        Nos complace comunicarle que usted tiene una LÍNEA DE CRÉDITO PREAPROBADA otorgada por {dato[13]} de $ {data['monto']}
-        para que pueda realizar pagos a sus proveedores y/o empleados.
-        
-        Para acceder a su Línea de Crédito y realizar pagos a sus proveedores y/o empleados, por favor haga click en
-         el siguiente enlace: LINK
-         
-        {codigo}
-        """
-        html_content = f"""
-                <html>
-                    <body>
-                        <h1><b>FELICIDADES!</b></h1>
-                        <br>
-                        <p>Estimad@ {data['nombresCompleto']}</p>
-                        <br>
-                        <p>
-                         Nos complace comunicarle que usted tiene una LÍNEA DE CRÉDITO PREAPROBADA otorgada por {dato[13]} 
-                         de $ {data['monto']} para que pueda realizar pagos a sus proveedores y/o empleados.
-                        </p>
-                        <br>
-                        <p>
-                        Para acceder a su Línea de Crédito y realizar pagos a sus proveedores y/o empleados, por favor haga click en el siguiente enlace:
-                        <a href='{config.API_FRONT_END_IFISCLIENTES}/pages/preApprovedCreditLine?email={dato[10]}&nombre={data['nombresCompleto']}'>Link</a>
-                        </p>
 
-                        <p>Su código de ingreso es: {codigo}</p>
-                        <br>
-                        <br>
-                        <p>
-                        <b>Crédito Pagos en la mejor opción de crecimiento para su negocio</b>
-                        </p>
-                        <br>
-                        Saludos,<br>
-                        Crédito Pagos – Big Puntos<br>
-                    </body>
-                </html>
-                """
-        # CodigoCreditoPreaprobado.objects.create(codigo=codigo, cedula=data['numeroIdentificacion'], monto=data['monto'])
-        sendEmail(subject, txt_content, from_email, to, html_content)
         publish(creditoSerializer.data)
         return "Dato insertado correctamente"
     except Exception as e:
@@ -670,7 +626,7 @@ def viewEXCEL_creditosPreaprobados_negocios(request, pk):
             with tempfile.TemporaryDirectory() as d:
                 ruta = d + 'creditosPreAprobados.xlsx'
                 s3 = boto3.resource('s3')
-                s3.meta.client.download_file('globalredpymes', str(archivo.linkArchivo), ruta)
+                s3.meta.client.download_file(env.str('AWS_STORAGE_BUCKET_NAME'), str(archivo.linkArchivo), ruta)
 
             first = True  # si tiene encabezado
             #             uploaded_file = request.FILES['documento']
