@@ -92,7 +92,8 @@ def get_queue_url():
             # Borramos SQS
             message.delete()
     except Exception as e:
-        err = {"error": 'Un error ha ocurrido: {}'.format(e)}
+        err = {"error COlA": 'Un error ha ocurrido: {}'.format(e)}
+        print(err)
         createLog(logModel, err, logExcepcion)
         return err
 

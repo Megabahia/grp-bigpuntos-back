@@ -24,6 +24,7 @@ def publish(data):
     env = environ.Env()
     environ.Env.read_env()  # LEE ARCHIVO .ENV
     campos = [
+        'pagare', 'contratosCuenta', 'tablaAmortizacion',
         'reporteBuro', 'identificacion', 'identificacionConyuge',
         'papeletaVotacionConyuge', 'ruc', 'rolesPago', 'panillaIESS',
         'documentoAprobacion', 'papeletaVotacion', 'planillaLuzDomicilio',
@@ -45,6 +46,7 @@ def publish(data):
         if campo in data:
             valor = data.pop(campo)
             valor = unquote(str(valor).replace(env.str('URL_BUCKET'), ''))
+            print(campo, valor)
             if valor != 'None':
                 data[campo] = valor
                 replicate(valor)
